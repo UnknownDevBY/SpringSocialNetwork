@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="My social network using Spring Boot and Thymeleaf">
+    <title>Social network</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css" type="text/css" media="all">
+</head>
+<body> 
+    <main class="sign fadeIn">
+        <div>
+            <h1 id="hello">Hello</h1>
+            <form action="/" method="post">
+                <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+                <br>
+                <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+                <br>
+                <div>
+                    <label for="itech_remember">Запомнить меня?</label>
+                    <input type="checkbox" id="itech_remember" name="itech_remember">
+                </div>
+                <input type="submit" value="Войти">  
+            </form>
+            <p id="registration">Нет аккаунта? <a href="/registration">Регистрация</a></p>
+            <div th:if="${error != null}">
+                <p th:text="${error}" style="color: red;">Error</p>
+            </div>
+        </div>
+    </main> 
+</body>
+</html>

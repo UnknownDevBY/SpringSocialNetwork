@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Переписка</title>
+  <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+</head>
+<body>
+<header>
+  <p><a href="/"><em class="logo">Social network</em></a></p>
+  <div th:if="${currentUser != null}" class="logout">
+    <form action="/" method="get">
+      <input type="submit" value="Выход">
+    </form>
+  </div>
+</header>
+<div class="menu">
+  <ul>
+    <li><a class="active" href="/search">Поиск</a></li>
+  </ul>
+  <ul th:if="${currentUser != null}">
+    <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+    <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+    <li><a href="#contact">Группы</a></li>
+    <li><a href="/messages">Сообщения</a></li>
+    <li><a href="#about">Фотографии</a></li>
+  </ul>
+  <div>
+    <form th:if="${currentUser == null}" action="/" method="post">
+      <input style="display: none;" type="text" name="currentPage" th:value="'/users/' + ${pageUser.id}">
+      <input type="text" id="login" name="login" placeholder="E-mail">
+      <br>
+      <input type="password" id="pass" name="pass" placeholder="Пароль">
+      <br>
+      <input type="submit" value="Войти">
+    </form>
+  </div>
+</div>
+  <main class="messages-block">
+    <a th:href="'/users/' + ${opponentsId}" class="convers-opponent">Владислав Ефимчик</a>
+    <form class="new-message new-post" method="post">
+      <textarea id="message" name="message"></textarea>
+      <input type="submit" value="Отправить">
+    </form>
+    <div class="convers-content">
+      <div th:each="message : ${messages}">
+        <div th:if="${message.from.id == currentUser.id}" class="my-message">
+          <p th:text="${message.content}"></p>
+        </div>
+        <div th:if="${message.to.id == currentUser.id}" class="opponents-message">
+          <p th:text="${message.content}"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

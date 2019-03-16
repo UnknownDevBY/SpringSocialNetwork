@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Поиск</title>
+  <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+</head>
+<body>
+<header>
+  <p><a href="/"><em class="logo">Social network</em></a></p>
+  <div th:if="${currentUser != null}" class="logout">
+    <form action="/logout" method="get">
+      <input type="submit" value="Выход">
+    </form>
+  </div>
+</header>
+<div class="menu">
+  <ul>
+    <li><a class="active" href="/search">Поиск</a></li>
+  </ul>
+  <ul th:if="${currentUser != null}">
+    <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+    <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+    <li><a href="#contact">Группы</a></li>
+    <li><a href="/messages">Сообщения</a></li>
+    <li><a href="#about">Фотографии</a></li>
+  </ul>
+  <div>
+    <form th:if="${currentUser == null}" action="/" method="post">
+      <input type="text" id="login" name="login" placeholder="E-mail">
+      <br>
+      <input type="password" id="pass" name="pass" placeholder="Пароль">
+      <br>
+      <input type="submit" value="Войти">
+    </form>
+  </div>
+</div>
+  <main class="messages-block">
+    <form class="new-message" method="get">
+      <span th:if="${param.value != null}">
+        <input th:value="${param.value}" type="text" id="value" name="value" placeholder="Введите имя пользователя или его часть" />
+      </span>
+      <span th:if="${param.value == null}">
+        <input type="text" id="value" name="value" placeholder="Введите имя пользователя или его часть" />
+      </span>
+      <input type="submit" value="Отправить">
+    </form>
+    <div class="convers-content">
+      <div th:each="user : ${users}" class="global-user">
+        <img th:if="${user.avatarId == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+        <img th:if="${user.avatarId != null}" class="friends-list-person-av" th:src="'/images/' + ${user.avatarId}" src="../static/img/no-avatar.png" alt="">
+        <a th:text="${user.userName} + ' ' + ${user.userSurname}" th:href="'/users/' + ${user.userId}" class="friends-name">Владислав Ефимчик</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

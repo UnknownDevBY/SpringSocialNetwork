@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="ceram (generated)" id="1552728684590-1">
+        <createTable tableName="friendship">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0" name="is_confirmed" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_id" type="INT"/>
+            <column name="to_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-2">
+        <createTable tableName="message">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="content" type="VARCHAR(511)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sending_time" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_id" type="INT"/>
+            <column name="to_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-3">
+        <createTable tableName="photo">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="img" type="LONGBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_post" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_avatar" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="was_avatar" type="BIT(1)"/>
+            <column name="user_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-4">
+        <createTable tableName="post">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="post_time" type="datetime(6)"/>
+            <column name="author_id" type="INT"/>
+            <column name="owner_id" type="INT"/>
+            <column name="content" type="VARCHAR(511)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-5">
+        <createTable tableName="privacy_settings">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="a" name="full_info" type="CHAR(1)"/>
+            <column defaultValue="a" name="photos" type="CHAR(1)"/>
+            <column defaultValue="a" name="friends" type="CHAR(1)"/>
+            <column defaultValue="a" name="post_authors" type="CHAR(1)"/>
+            <column defaultValue="a" name="messages" type="CHAR(1)"/>
+            <column name="user_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-6">
+        <createTable tableName="user">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sex" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(63)"/>
+            <column name="bio" type="VARCHAR(255)"/>
+            <column name="interests" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-7">
+        <createIndex indexName="author_id" tableName="post">
+            <column name="author_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-8">
+        <createIndex indexName="from_id" tableName="friendship">
+            <column name="from_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-9">
+        <createIndex indexName="from_id" tableName="message">
+            <column name="from_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-10">
+        <createIndex indexName="owner_id" tableName="post">
+            <column name="owner_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-11">
+        <createIndex indexName="to_id" tableName="friendship">
+            <column name="to_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-12">
+        <createIndex indexName="to_id" tableName="message">
+            <column name="to_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-13">
+        <createIndex indexName="user_id" tableName="photo">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-14">
+        <createIndex indexName="user_id" tableName="privacy_settings">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-15">
+        <addForeignKeyConstraint baseColumnNames="from_id" baseTableName="friendship" constraintName="friendship_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-16">
+        <addForeignKeyConstraint baseColumnNames="to_id" baseTableName="friendship" constraintName="friendship_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-17">
+        <addForeignKeyConstraint baseColumnNames="from_id" baseTableName="message" constraintName="message_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-18">
+        <addForeignKeyConstraint baseColumnNames="to_id" baseTableName="message" constraintName="message_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-19">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="photo" constraintName="photo_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-20">
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="post" constraintName="post_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-21">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="post" constraintName="post_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="ceram (generated)" id="1552728684590-22">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="privacy_settings" constraintName="privacy_settings_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+</databaseChangeLog>

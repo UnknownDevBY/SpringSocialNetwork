@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать</title>
+    <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+</head>
+<body>
+<header>
+    <p><a href="/"><em class="logo">Social network</em></a></p>
+    <div th:if="${currentUser != null}" class="logout">
+        <form action="/" method="get">
+            <input type="submit" value="Выход">
+        </form>
+    </div>
+</header>
+<div class="menu">
+    <ul>
+        <li><a class="active" href="/search">Поиск</a></li>
+    </ul>
+    <ul th:if="${currentUser != null}">
+        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+        <li><a href="#contact">Группы</a></li>
+        <li><a href="/messages">Сообщения</a></li>
+        <li><a href="#about">Фотографии</a></li>
+    </ul>
+    <div>
+        <form th:if="${currentUser == null}" action="/" method="post">
+            <input style="display: none;" type="text" name="currentPage" th:value="'/user/' + ${pageUser.id}">
+            <input type="text" id="login" name="login" placeholder="E-mail">
+            <br>
+            <input type="password" id="pass" name="pass" placeholder="Пароль">
+            <br>
+            <input type="submit" value="Войти">
+        </form>
+    </div>
+</div>
+<main class="edit">
+    <form action="/edit" method="post" enctype="multipart/form-data">
+        <div class="privacy-link">
+           <a title="Перейти к настройкам" href="/privacy-settings">Настройки приватности</a>
+       </div>
+       <label for="name">Имя</label>
+       <div>
+          <input th:value="${currentUser.name}" type="text" id="name" name="name" minlength="3" maxlength="31" required="required">
+      </div>
+      <label for="surname">Фамилия</label>
+      <div>
+          <input th:value="${currentUser.surname}" type="text" id="surname" name="surname" minlength="2" maxlength="31" required="required">
+      </div>
+      <label for="city">Город</label>
+      <div>
+       <input th:value="${currentUser.city}" type="text" id="city" name="city" maxlength="31">
+   </div>
+   <label for="pass">Сменить пароль (не менее 6 символов)</label>
+   <div>
+      <input type="password" id="pass" name="pass" minlength="6">  
+  </div>
+  <div>
+    <p>Пол</p>
+    <label for="male">Мужчина</label>
+    <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'm') == 0}" type="radio" name="sex" id="male" value="m" required="required">
+    <label for="female">Женщина</label>
+    <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'f') == 0}" type="radio" name="sex" id="female" value="f">
+</div>
+<label for="dateOfBirth">Дата рождения</label>
+<div>
+    <input th:value="${currentUser.dateOfBirth}" type="date" id="dateOfBirth" name="dateOfBirth" required="required">
+</div>
+<label for="bio">О себе</label>
+<div>
+    <textarea th:text="${currentUser.bio == null} ? '' : ${currentUser.bio}" id="bio" name="bio"></textarea>
+</div>
+<label for="interests">Увлечения</label>
+<div>
+   <textarea th:text="${currentUser.interests == null} ? '' : ${currentUser.interests}" id="interests" name="interests"></textarea>
+</div>
+<p th:text="${error}" style="color: red" id="error"></p>
+<input type="submit" value="Подтвердить">  
+</form>
+</main>
+</body>
+</html>
