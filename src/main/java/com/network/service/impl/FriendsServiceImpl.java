@@ -25,7 +25,7 @@ public class FriendsServiceImpl implements FriendsService {
             int userId = user.getId();
             UserDto friend = new UserDto();
             friend.setUserName(user.getName());
-            friend.setAvatarId(photoRepository.getAvatarIdByUserId(userId));
+            friend.setAvatar(photoRepository.getAvatarByUserId(userId));
             friend.setUserId(userId);
             friend.setUserSurname(user.getSurname());
             relations.add(friend);

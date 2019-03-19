@@ -48,8 +48,8 @@ xmlns:th="http://www.thymeleaf.org">
     </form>
     <div class="convers-content">
       <div th:each="user : ${users}" class="global-user">
-        <img th:if="${user.avatarId == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-        <img th:if="${user.avatarId != null}" class="friends-list-person-av" th:src="'/images/' + ${user.avatarId}" src="../static/img/no-avatar.png" alt="">
+        <img th:if="${user.avatar == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+        <img th:if="${user.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${user.avatar.title}" src="../static/img/no-avatar.png" alt="">
         <a th:text="${user.userName} + ' ' + ${user.userSurname}" th:href="'/users/' + ${user.userId}" class="friends-name">Владислав Ефимчик</a>
       </div>
     </div>

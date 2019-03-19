@@ -10,7 +10,7 @@ xmlns:th="http://www.thymeleaf.org">
 <header>
   <p><a href="/"><em class="logo">Social network</em></a></p>
   <div th:if="${currentUser != null}" class="logout">
-    <form action="/" method="get">
+    <form action="/logout" method="get">
       <input type="submit" value="Выход">
     </form>
   </div>
@@ -45,8 +45,11 @@ xmlns:th="http://www.thymeleaf.org">
     </div>
     <div th:each="messageWindow : ${messageWindows}">
       <div class="message-cover">
-        <div>
-          <img style="width: 100px; height: 100px; overflow: hidden;" class="message-avatar" th:src="'/images/' + ${messageWindow.friend.avatarId}" src="" alt="no-photo">
+        <div th:if="${messageWindow.friend.avatar.title != null}">
+          <img style="width: 100px; height: 100px; overflow: hidden;" class="message-avatar" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${messageWindow.friend.avatar.title}" src="" alt="no-photo">
+        </div>
+        <div th:if="${messageWindow.friend.avatar.title == null}">
+          <img style="width: 100px; height: 100px; overflow: hidden;" class="message-avatar" th:src="@{/img/no-avatar.png}" src="" alt="no-photo">
         </div>
         <div>
           <a th:text="${messageWindow.friend.userName} + ' ' + ${messageWindow.friend.userSurname}" class="message-author" th:href="'/conversations/' + ${messageWindow.friend.userId}">Владислав Ефимчик</a>

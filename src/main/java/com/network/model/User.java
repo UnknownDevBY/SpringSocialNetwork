@@ -59,6 +59,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "to")
     private Set<Message> toMessages;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Likes> likes;
+
     public User() {
 
     }
@@ -213,6 +216,14 @@ public class User implements UserDetails {
 
     public void setToMessages(Set<Message> toMessages) {
         this.toMessages = toMessages;
+    }
+
+    public Set<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Likes> likes) {
+        this.likes = likes;
     }
 
     public Set<Role> getRoles() {

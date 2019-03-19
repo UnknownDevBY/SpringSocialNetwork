@@ -38,7 +38,6 @@ xmlns:th="http://www.thymeleaf.org">
     </ul>
     <div>
         <form th:if="${currentUser == null}" action="/" method="post">
-            <input style="display: none;" type="text" name="currentPage" th:value="'/user/' + ${pageUser.id}">
             <input type="text" id="login" name="login" placeholder="E-mail">
             <br>
             <input type="password" id="pass" name="pass" placeholder="Пароль">
@@ -51,7 +50,7 @@ xmlns:th="http://www.thymeleaf.org">
     <div class="main-info">
         <div class="avatar-block">
             <img th:if="${avatar == null}" class="avatar" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-            <img style="width: 100%" th:if="${avatar != null}" th:src="'/images/' + ${avatar}" alt="">
+            <img style="width: 100%" th:if="${avatar != null}" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt="">
             <div class="message">
                 <div th:if="${currentUser != null}">
                     <a th:if="${currentUser.id == pageUser.id}" href="/edit">Редактировать</a>
@@ -103,7 +102,7 @@ xmlns:th="http://www.thymeleaf.org">
                 <span th:text="'Фотографии: ' + ${allPhotos.size()}" class="amount">Фотографии: 10</span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" class="add-photo-amount" href="/add-photo"><sup>Добавить</sup></a>
                 <div class="list-of-photos">
                     <span style="height: 100%;" th:each="photo : ${allPhotos}">
-                        <img class="photo" th:src="'/images/' + ${photo.id}" alt="">
+                        <img class="photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt="">
                     </span>
                 </div>  
             </div>
@@ -113,8 +112,8 @@ xmlns:th="http://www.thymeleaf.org">
             <div th:if="${!friends.isEmpty() && (privacySettings.areFriendsAllowed)}">
                 <div th:each="friend : ${friends.subList(0, displayFriends)}" class="friends-block">
                     <a th:href="'/users/' + ${friend.userId}" class="friend">
-                        <img th:if="${friend.avatarId == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-                        <img th:if="${friend.avatarId != null}" class="friend-photo" th:src="'/images/' + ${friend.avatarId}" src="../static/img/no-avatar.png" alt="">
+                        <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+                        <img th:if="${friend.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
                         <p th:text="${friend.userName}">Имя</p>
                     </a>
                 </div>
@@ -131,15 +130,30 @@ xmlns:th="http://www.thymeleaf.org">
             <p th:text="'Записи: ' + ${posts.size()}" class="amount">Записи: 0</p>
             <div th:each="post : ${posts}">
                 <div class="post">
-                    <a class="post-author" th:href="'/users/' + ${post.owner.id}">Владислав Ефимчик</a>
-                    <p class="post-time" th:text="${post.postTime}"></p>
+                    <a class="post-author" th:href="'/users/' + ${post.post.owner.id}">Владислав Ефимчик</a>
+                    <p class="post-time" th:text="${post.post.postTime}"></p>
                     <div class="post-content">
-                        <p th:text="${post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+                        <p th:text="${post.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
                     </div>
+                    <div class="like-comment-amount">
+                      <span>
+                          <span th:if="${!post.likedByCurrentUser}">
+                              <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+                          </span>
+                          <span th:if="${post.likedByCurrentUser}">
+                              <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+                          </span>
+                        <span class="like-amount" th:text="${post.likesCount}">10</span>
+                    </span>
+                    <span>
+                        <img class="like-img" th:src="@{/img/comment.svg}" src="../static/img/comment.svg" alt="">
+                        <span class="like-amount">10</span>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </main>
 </body>
 </html>

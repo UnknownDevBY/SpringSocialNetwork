@@ -16,10 +16,16 @@ public interface PhotoRepository extends CrudRepository<Photo, Integer> {
     @Query(value = "SELECT id FROM Photo WHERE user_id = ?1 AND is_avatar = 1", nativeQuery = true)
     Integer getAvatarIdByUserId(int id);
 
+    @Query(value = "SELECT * FROM Photo WHERE user_id = ?1 AND is_avatar = 1", nativeQuery = true)
+    Photo getAvatarByUserId(int id);
+
     Photo getById(int id);
 
     @Modifying
     @Transactional
     @Query(value = "UPDATE Photo SET is_avatar = 0 WHERE user_id = ?1", nativeQuery = true)
     void updateAvatars(int id);
+
+    @Query(value = "SELECT MAX(id) FROM photo", nativeQuery = true)
+    Integer maxId();
 }

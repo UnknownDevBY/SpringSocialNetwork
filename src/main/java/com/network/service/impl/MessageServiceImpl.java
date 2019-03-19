@@ -28,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
             friend.setUserName(userRepository.getNameById(integer));
             friend.setUserSurname(userRepository.getSurnameById(integer));
             friend.setUserId(integer);
-            friend.setAvatarId(photoRepository.getAvatarIdByUserId(integer));
+            friend.setAvatar(photoRepository.getAvatarByUserId(integer));
             MessageDto messageWindow = new MessageDto();
             Message lastMessage = messageRepository.getLastMessage(id, integer);
             messageWindow.setAuthorId(lastMessage.getFrom().getId());

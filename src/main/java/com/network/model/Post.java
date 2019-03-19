@@ -1,6 +1,7 @@
 package com.network.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Post {
@@ -21,6 +22,9 @@ public class Post {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @OneToMany(mappedBy = "post")
+    private Set<Likes> likes;
 
     public Post() {
 
@@ -64,5 +68,13 @@ public class Post {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public Set<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Likes> likes) {
+        this.likes = likes;
     }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface PostRepository extends CrudRepository<Post, Integer> {
 
     List<Post> getByOwnerOrderByPostTimeAsc(User user);
+
+    Post getById(int id);
 }

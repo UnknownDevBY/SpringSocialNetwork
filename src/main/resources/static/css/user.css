@@ -446,6 +446,76 @@ em.logo {
 .load-photo-button:hover {
     background-color: red;
 }
+.photo-block {
+    margin: 20px 20% 50px 20%;
+    display: grid;
+    grid-template-columns: 400px 300px;
+}
+.photo-window {
+    width: 100%;
+}
+.photo-comment-block {
+    background-color: white;
+    text-align: center;
+    align-items: center;
+}
+.photo-owner-name {
+    font-size: 15px;
+    text-decoration: none;
+    color: black;
+}
+.photo-post-time {
+    opacity: 0.5;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+.photo-comment-area {
+    margin-left: 10%;
+    display: inline;
+    float: left;
+    max-width: 50%;
+    min-width: 50%;
+    max-height: 35px;
+    min-height: 35px;
+    overflow: auto;
+}
+.like-img {
+    width: 15px;
+}
+.like-img:hover {
+    opacity: 0.5;
+}
+.like-amount {
+    padding-bottom: 5px;
+    font-size: 14px;
+}
+.like-comment-amount {
+    margin-bottom: 10px;
+}
+.photo-comment {
+    width: 80%;
+    margin-bottom: 5px;
+    margin-left: 25px;
+    overflow: hidden;
+    padding-bottom: 5px;
+    border-bottom: 0.5px solid silver;
+}
+.photo-comment-text {
+    text-align: justify;
+    opacity: 0.7;
+    font-size: 12px;
+}
+.send-photo-comment {
+    float: left;
+    width: 25%;
+    height: 37px;
+    color: white;
+    background-color: black;
+    border: none;
+}
+.send-photo-comment:hover {
+    background-color: red;
+}
 @media screen and (max-width: 1024px) {
     .privacy-settings {
         margin-left: 50px;

@@ -2,6 +2,7 @@ package com.network.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 public class Photo {
@@ -10,10 +11,7 @@ public class Photo {
     @GeneratedValue
     private int id;
 
-    @Lob
-    @NotNull
-    @Column(length = 10_000_000)
-    private byte[] img;
+    private String title;
 
     private boolean isAvatar;
 
@@ -24,6 +22,9 @@ public class Photo {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "photo")
+    private Set<Likes> likes;
 
     public Photo() {
 
@@ -37,12 +38,12 @@ public class Photo {
         this.id = id;
     }
 
-    public byte[] getImg() {
-        return img;
+    public String getTitle() {
+        return title;
     }
 
-    public void setImg(byte[] img) {
-        this.img = img;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public boolean isAvatar() {
@@ -75,5 +76,13 @@ public class Photo {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Set<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Likes> likes) {
+        this.likes = likes;
     }
 }

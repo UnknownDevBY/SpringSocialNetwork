@@ -1,5 +1,6 @@
 package com.network.service.impl;
 
+import com.network.dto.PostDto;
 import com.network.dto.PrivacySettingsDto;
 import com.network.dto.UserDto;
 import com.network.model.Post;
@@ -22,6 +23,7 @@ public class UserPageServiceImpl implements UserPageService {
     @Autowired private PostRepository postRepository;
     @Autowired private PhotoRepository photoRepository;
     @Autowired private PrivacySettingsRepository privacySettingsRepository;
+    @Autowired private LikesRepository likesRepository;
 
     @Override
     public void savePost(int id, String content, User currentUser) {
@@ -42,7 +44,7 @@ public class UserPageServiceImpl implements UserPageService {
             int userId = user.getId();
             UserDto friend = new UserDto();
             friend.setUserName(user.getName());
-            friend.setAvatarId(photoRepository.getAvatarIdByUserId(userId));
+            friend.setAvatar(photoRepository.getAvatarByUserId(userId));
             friend.setUserId(userId);
             friend.setUserSurname(user.getSurname());
             friends.add(friend);
@@ -72,5 +74,20 @@ public class UserPageServiceImpl implements UserPageService {
         }
         else privacySet = new PrivacySettingsDto();
         return privacySet;
+    }
+
+    @Override
+    public List<PostDto> getPosts(User pageUser, User currentUser) {
+        List<PostDto> posts = new ArrayList<>();
+        postRepository.getByOwnerOrderByPostTimeAsc(pageUser).forEach(
+                post -> {
+                    PostDto postDto = new PostDto();
+                    postDto.setPost(post);
+                    postDto.setLikesCount(likesRepository.countByPost(post));
+                    postDto.setLikedByCurrentUser(likesRepository.getByPostAndUser(post, currentUser) != null);
+                    posts.add(postDto);
+                }
+        );
+        return posts;
     }
 }

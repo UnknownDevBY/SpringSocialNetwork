@@ -1,11 +1,13 @@
 package com.network.dto;
 
+import com.network.model.Photo;
+
 public class UserDto {
 
     private int userId;
     private String userName;
     private String userSurname;
-    private Integer avatarId;
+    private Photo avatar;
 
     public UserDto() {
 
@@ -35,12 +37,12 @@ public class UserDto {
         this.userSurname = userSurname;
     }
 
-    public Integer getAvatarId() {
-        return avatarId;
+    public Photo getAvatar() {
+        return avatar;
     }
 
-    public void setAvatarId(Integer avatarId) {
-        this.avatarId = avatarId;
+    public void setAvatar(Photo avatar) {
+        this.avatar = avatar;
     }
 
     @Override
@@ -49,7 +51,6 @@ public class UserDto {
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", userSurname='" + userSurname + '\'' +
-                ", avatarId=" + avatarId +
                 '}';
     }
 }

@@ -28,7 +28,6 @@ xmlns:th="http://www.thymeleaf.org">
   </ul>
   <div>
     <form th:if="${currentUser == null}" action="/" method="post">
-      <input style="display: none;" type="text" name="currentPage" th:value="'/users/' + ${pageUser.id}">
       <input type="text" id="login" name="login" placeholder="E-mail">
       <br>
       <input type="password" id="pass" name="pass" placeholder="Пароль">

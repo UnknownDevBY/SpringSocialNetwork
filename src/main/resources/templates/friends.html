@@ -13,7 +13,7 @@ xmlns:th="http://www.thymeleaf.org">
 <header>
     <p><a href="/"><em class="logo">Social network</em></a></p>
     <div th:if="${currentUser != null}" class="logout">
-        <form action="/" method="get">
+        <form action="/logout" method="get">
             <input type="submit" value="Выход">
         </form>
     </div>
@@ -30,16 +30,6 @@ xmlns:th="http://www.thymeleaf.org">
         <li><a href="#about">Фотографии</a></li>
     </ul>
     <div>
-        <form th:if="${currentUser == null}" action="/" method="post">
-            <input style="display: none;" type="text" name="currentPage" th:value="'/user/' + ${pageUser.id}">
-            <input type="text" id="login" name="login" placeholder="E-mail">
-            <br>
-            <input type="password" id="pass" name="pass" placeholder="Пароль">
-            <br>
-            <input type="submit" value="Войти">
-        </form>
-    </div>
-</div>
         <form th:if="${currentUser == null}" action="/" method="post">
             <input type="text" id="login" name="login" placeholder="E-mail">
             <br>
@@ -58,8 +48,8 @@ xmlns:th="http://www.thymeleaf.org">
                     <div th:if="${!friends.isEmpty()}">
                         <div th:each="friend : ${friends}" class="friends-list-person">
                             <div>
-                                <img th:if="${friend.avatarId == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-                                <img th:if="${friend.avatarId != null}" class="friends-list-person-av" th:src="'/images/' + ${friend.avatarId}" src="../static/img/no-avatar.png" alt="">
+                                <img th:if="${friend.avatar == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+                                <img th:if="${friend.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
                                 <a th:text="${friend.userName} + ' ' + ${friend.userSurname}" th:href="'/users/' + ${friend.userId}" class="friends-name">Владислав Ефимчик</a>
                                 <div th:if="${currentUser != null && currentUser.id == id}">
                                     <a href="">Отправить сообщение</a>
@@ -80,8 +70,8 @@ xmlns:th="http://www.thymeleaf.org">
                     <div th:if="${!subscribers.isEmpty()}">
                         <div th:each="subscriber : ${subscribers}" class="friends-list-person">
                             <div>
-                                <img th:if="${subscriber.avatarId == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-                                <img th:if="${subscriber.avatarId != null}" class="friends-list-person-av" th:src="'/images/' + ${subscriber.avatarId}" src="../static/img/no-avatar.png" alt="">
+                                <img th:if="${subscriber.avatar == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+                                <img th:if="${subscriber.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${subscriber.avatar.title}" src="../static/img/no-avatar.png" alt="">
                                 <a th:text="${subscriber.userName} + ' ' + ${subscriber.userSurname}" th:href="'/user/' + ${subscriber.userId}" class="friends-name">Владислав Ефимчик</a>
                                 <div th:if="${currentUser != null && currentUser.id == id}">
                                     <a th:href="'/user/addFriendship/' + ${subscriber.userId}">Принять заявку</a>
@@ -102,8 +92,8 @@ xmlns:th="http://www.thymeleaf.org">
                     <div th:if="${!subscriptions.isEmpty()}">
                         <div th:each="subscription : ${subscriptions}" class="friends-list-person">
                             <div>
-                                <img th:if="${subscription.avatarId == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-                                <img th:if="${subscription.avatarId != null}" class="friends-list-person-av" th:src="'/images/' + ${subscription.avatarId}" src="../static/img/no-avatar.png" alt="">
+                                <img th:if="${subscription.avatar == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+                                <img th:if="${subscription.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${subscription.avatar.title}" src="../static/img/no-avatar.png" alt="">
                                 <a th:text="${subscription.userName} + ' ' + ${subscription.userSurname}" th:href="'/user/' + ${subscription.userId}" class="friends-name">Владислав Ефимчик</a>
                                 <div th:if="${currentUser != null && currentUser.id == id}">
                                     <a th:href="'/user/removeFriendship/' + ${subscription.userId}">Отписаться</a>

@@ -9,6 +9,7 @@ import com.network.repository.UserRepository;
 import com.network.service.FriendsService;
 import com.network.service.UserPageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,9 @@ public class FriendsController {
     @Autowired private UserPageService userPageService;
     @Autowired private FriendsService friendsService;
 
+    @Value("${s3.bucket}")
+    private String bucketName;
+
     @GetMapping("/friends/{id}")
     public String showFriends(@PathVariable int id,
                               @AuthenticationPrincipal User currentUser,
@@ -41,6 +45,7 @@ public class FriendsController {
             else return "redirect:/";
         }
         model.put("id", id);
+        model.put("bucketName", bucketName);
         int currentUserId = currentUser.getId();
         boolean areFriends = userPageService.isFirstFriendToSecond(id, currentUserId) && userPageService.isFirstFriendToSecond(currentUserId, id);
         PrivacySettingsDto privacySettingsDto = userPageService.getPrivacySettings(currentUser, pageUser, areFriends);

@@ -3,13 +3,16 @@ package com.network.controller;
 import com.network.dto.UserDto;
 import com.network.model.User;
 import com.network.repository.PhotoRepository;
-import com.network.repository.PostRepository;
 import com.network.repository.UserRepository;
 import com.network.service.UserPageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +22,10 @@ public class UserPageController {
 
     @Autowired private UserRepository userRepository;
     @Autowired private PhotoRepository photoRepository;
-    @Autowired private PostRepository postRepository;
     @Autowired private UserPageService userPageService;
+
+    @Value("${s3.bucket}")
+    private String bucketName;
 
     @GetMapping("/users/{id}")
     public String showUser(@PathVariable int id,
@@ -40,10 +45,11 @@ public class UserPageController {
         model.put("is2friendTo1", is2friendTo1);
         model.put("currentUser", currentUser);
         model.put("pageUser", pageUser);
-        model.put("avatar", photoRepository.getAvatarIdByUserId(id));
+        model.put("avatar", photoRepository.getAvatarByUserId(id));
         model.put("allPhotos", photoRepository.getByUserId(id));
-        model.put("posts", postRepository.getByOwnerOrderByPostTimeAsc(pageUser));
+        model.put("posts", userPageService.getPosts(pageUser, currentUser));
         model.put("privacySettings", userPageService.getPrivacySettings(currentUser, pageUser, areFriends));
+        model.put("bucketName", bucketName);
         return "user";
     }
 

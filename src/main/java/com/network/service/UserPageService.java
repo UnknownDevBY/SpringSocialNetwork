@@ -1,5 +1,6 @@
 package com.network.service;
 
+import com.network.dto.PostDto;
 import com.network.dto.PrivacySettingsDto;
 import com.network.dto.UserDto;
 import com.network.model.User;
@@ -12,4 +13,5 @@ public interface UserPageService {
     List<UserDto> getFriends(User pageUser);
     boolean isFirstFriendToSecond(int id1, int id2);
     PrivacySettingsDto getPrivacySettings(User currentUser, User pageUser, boolean areFriends);
+    List<PostDto> getPosts(User pageUser, User currentUser);
 }
