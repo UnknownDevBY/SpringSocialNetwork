@@ -21,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/registration", "/img/**", "/css/**", "/search/**");
+                .antMatchers("/registration", "/img/**", "/css/**");
     }
 
     @Override
@@ -29,15 +29,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers( "/", "/communities/public/**", "/users/**", "/photos/**").permitAll()
+                .antMatchers( "/", "/communities/public/**", "/users/**", "/photos/**", "/search/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
                 .formLogin()
                 .loginPage("/")
+                .loginProcessingUrl("/login")
                 .usernameParameter("itech_login")
                 .passwordParameter("itech_pass")
-                .successForwardUrl("/search")
+                .successForwardUrl("/news")
                 .permitAll()
                 .and()
 

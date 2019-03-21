@@ -68,7 +68,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "admin")
     private Set<Community> adminIn;
 
-    @ManyToMany(mappedBy = "subscribers")
+    @ManyToMany(mappedBy = "subscribers", fetch = FetchType.EAGER)
     private Set<Community> communities;
 
     public User() {

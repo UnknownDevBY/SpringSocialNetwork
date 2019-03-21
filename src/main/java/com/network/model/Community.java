@@ -17,7 +17,7 @@ public class Community {
     @Column(length = 127)
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "admin_id")
     private User admin;
 
@@ -32,7 +32,7 @@ public class Community {
     @OneToMany(mappedBy = "community")
     private Set<Photo> photos;
 
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community", fetch = FetchType.EAGER)
     private Set<Post> posts;
 
     public Community() {

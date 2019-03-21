@@ -537,6 +537,17 @@ em.logo {
     margin-top: 5px;
     font-size: 14px;
 }
+.news-block {
+    background-color: white; 
+    width: 60%;
+    margin-left: 15%;
+}
+.news-photo-block {
+    width: 60%;
+    margin-left: 20%;
+    padding-top: 30px;
+    border-bottom: 1px solid silver;
+}
 @media screen and (max-width: 1024px) {
     .privacy-settings {
         margin-left: 50px;

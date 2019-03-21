@@ -26,15 +26,20 @@ xmlns:th="http://www.thymeleaf.org">
         <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
         <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
         <li><a href="/communities">Группы</a></li>
+        <li><a href="/news">Новости</a></li>
         <li><a href="/messages">Сообщения</a></li>
         <li><a href="#about">Фотографии</a></li>
     </ul>
     <div>
-        <form th:if="${currentUser == null}" action="/" method="post">
-            <input type="text" id="login" name="login" placeholder="E-mail">
+        <form th:if="${currentUser == null}" action="/login" method="post">
+            <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
             <br>
-            <input type="password" id="pass" name="pass" placeholder="Пароль">
+            <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
             <br>
+            <div>
+                <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+                <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+            </div>
             <input type="submit" value="Войти">
         </form>
     </div>

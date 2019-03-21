@@ -3,39 +3,44 @@
 xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Добавить фото</title>
+  <title th:text="${community.title}"></title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
 </head>
 <body>
-  <header>
-    <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div th:if="${currentUser != null}" class="logout">
-      <form action="/logout" method="get">
-        <input type="submit" value="Выход">
-      </form>
-    </div>
-  </header>
-  <div class="menu">
-    <ul>
-      <li><a class="active" href="/search">Поиск</a></li>
-    </ul>
-    <ul th:if="${currentUser != null}">
-      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-      <li><a href="/communities">Группы</a></li>
-      <li><a href="/messages">Сообщения</a></li>
-      <li><a href="#about">Фотографии</a></li>
-    </ul>
-    <div>
-      <form th:if="${currentUser == null}" action="/" method="post">
-        <input type="text" id="login" name="login" placeholder="E-mail">
-        <br>
-        <input type="password" id="pass" name="pass" placeholder="Пароль">
-        <br>
-        <input type="submit" value="Войти">
-      </form>
-    </div>
+<header>
+  <p><a href="/"><em class="logo">Social network</em></a></p>
+  <div th:if="${currentUser != null}" class="logout">
+    <form action="/logout" method="get">
+      <input type="submit" value="Выход">
+    </form>
   </div>
+</header>
+<div class="menu">
+  <ul>
+    <li><a class="active" href="/search">Поиск</a></li>
+  </ul>
+  <ul th:if="${currentUser != null}">
+    <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+    <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+    <li><a href="/communities">Группы</a></li>
+    <li><a href="/news">Новости</a></li>
+    <li><a href="/messages">Сообщения</a></li>
+    <li><a href="#about">Фотографии</a></li>
+  </ul>
+  <div>
+    <form th:if="${currentUser == null}" action="/login" method="post">
+      <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+      <br>
+      <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+      <br>
+      <div>
+        <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+        <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+      </div>
+      <input type="submit" value="Войти">
+    </form>
+  </div>
+</div>
   <main>
     <div class="photo-block">
       <div style="background-color: white;">
@@ -47,7 +52,7 @@ xmlns:th="http://www.thymeleaf.org">
         </div>
         <div th:each="post : ${posts}" style="margin-top: 20px; padding: 10px; border-top: 1px solid silver;" class="post">
           <a th:href="'/communities/public/' + ${community.id}">Владислав Ефимчик</a>
-          <p class="post-time" th:text="${post.post.postTime}"></p>
+          <p class="post-time" th:text="${post.post.postTime}">12-00</p>
           <div class="post-content">
             <p style="margin-bottom: 10px;" th:text="${post.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
           </div>
@@ -94,14 +99,14 @@ xmlns:th="http://www.thymeleaf.org">
             <a th:if="${currentUser != null && community.admin.id == currentUser.id}" href="/add-photo"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
             <a th:if="${currentUser == null || community.admin.id != currentUser.id}" th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
           </span>
-          <div th:if="${community.admin.id != currentUser.id}" class="message">
-            <div th:if="${currentUser != null}">
+          <div th:if="${currentUser != null}" class="message">
+            <div th:if="${community.admin.id != currentUser.id}">
               <a th:if="${!isSubscribed}" th:href="'/subscribe/' + ${community.id} + '/' + ${currentUser.id}">Подписаться</a>
               <a th:if="${isSubscribed}" th:href="'/subscribe/' + ${community.id} + '/' + ${currentUser.id}">Отписаться</a>
             </div>
-            <div th:if="${currentUser == null}">
-              <a href="/">Войдите</a>
-            </div>
+          </div>
+          <div th:if="${currentUser == null}">
+            <a href="/">Войдите</a>
           </div>
         </div>
         <div class="list-of-friends">
