@@ -516,6 +516,27 @@ em.logo {
 .send-photo-comment:hover {
     background-color: red;
 }
+.photo-click-left, .photo-click-right {
+    opacity: 0.2;
+    padding: 10px;
+    font-weight: 900;
+    position: absolute;
+    height: 50px;
+    width: 30px;
+}
+.photo-click-right {
+    margin-left: 380px;
+}
+.photo-click-left:hover, .photo-click-right:hover {
+    opacity: 1;
+}
+.show-comments-summary {
+    padding: 0;
+    padding-bottom: 5px;
+    height: 20px;
+    margin-top: 5px;
+    font-size: 14px;
+}
 @media screen and (max-width: 1024px) {
     .privacy-settings {
         margin-left: 50px;

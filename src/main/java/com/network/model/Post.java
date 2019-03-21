@@ -23,8 +23,15 @@ public class Post {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "community_id")
+    private Community community;
+
     @OneToMany(mappedBy = "post")
     private Set<Likes> likes;
+
+    @OneToMany(mappedBy = "post")
+    private Set<Comment> comments;
 
     public Post() {
 
@@ -70,11 +77,27 @@ public class Post {
         this.owner = owner;
     }
 
+    public Community getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Community community) {
+        this.community = community;
+    }
+
     public Set<Likes> getLikes() {
         return likes;
     }
 
     public void setLikes(Set<Likes> likes) {
         this.likes = likes;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 }

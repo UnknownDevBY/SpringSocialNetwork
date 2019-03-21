@@ -23,4 +23,9 @@ public class S3ServiceImpl implements S3Service {
     public void uploadFile(String name, MultipartFile file) throws IOException {
         s3client.putObject(new PutObjectRequest(bucketName, name, file.getInputStream(), null));
     }
+
+    @Override
+    public void deleteFile(String name) {
+        s3client.deleteObject(bucketName, name);
+    }
 }

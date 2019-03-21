@@ -7,12 +7,13 @@ public class PrivacySettingsDto {
     private boolean arePhotosAllowed = true;
     private boolean areFriendsAllowed = true;
     private boolean canLeavePosts = true;
+    private boolean canLeaveComments = true;
 
     public PrivacySettingsDto() {
 
     }
 
-    public PrivacySettingsDto(boolean areFriends, Character messages, Character fullInfo, Character photos, Character friends, Character postAuthors) {
+    public PrivacySettingsDto(boolean areFriends, Character messages, Character fullInfo, Character photos, Character friends, Character postAuthors, Character comments) {
         if(messages != null && ((!areFriends && messages == 'f') || messages == 'm')) {
             canSendMessages = false;
         }
@@ -27,6 +28,9 @@ public class PrivacySettingsDto {
         }
         if(postAuthors != null && ((!areFriends && postAuthors == 'f') || postAuthors == 'm')) {
             canLeavePosts = false;
+        }
+        if(comments != null && ((!areFriends && comments == 'f') || comments == 'm')) {
+            canLeaveComments = false;
         }
     }
 
@@ -68,6 +72,14 @@ public class PrivacySettingsDto {
 
     public boolean isCanLeavePosts() {
         return canLeavePosts;
+    }
+
+    public boolean isCanLeaveComments() {
+        return canLeaveComments;
+    }
+
+    public void setCanLeaveComments(boolean canLeaveComments) {
+        this.canLeaveComments = canLeaveComments;
     }
 
     @Override

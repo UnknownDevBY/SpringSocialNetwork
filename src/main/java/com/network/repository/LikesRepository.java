@@ -17,6 +17,8 @@ public interface LikesRepository extends CrudRepository<Likes, Integer> {
 
     Likes getByPostAndUser(Post post, User user);
 
+    Likes getByPhotoAndUser(Photo post, User user);
+
     @Query(value = "SELECT COUNT(*) FROM likes WHERE user_id = ?1 AND post_id = ?2", nativeQuery = true)
     int countByUserIdAndPostId(int userId, int postId);
 

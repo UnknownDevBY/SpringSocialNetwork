@@ -12,19 +12,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return
-//                new PasswordEncoder() {
-//            @Override
-//            public String encode(CharSequence charSequence) {
-//                return charSequence.toString();
-//            }
-//
-//            @Override
-//            public boolean matches(CharSequence charSequence, String s) {
-//                return charSequence.toString().equals(s);
-//            }
-//        };
-        new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     public void addViewControllers(ViewControllerRegistry registry) {

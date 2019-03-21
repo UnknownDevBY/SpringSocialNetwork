@@ -32,7 +32,7 @@ public class UserPageController {
                            @AuthenticationPrincipal User currentUser,
                            Map<String, Object> model) {
         User pageUser = userRepository.getById(id);
-        if(userRepository.getById(id) == null) {
+        if(!userRepository.existsById(id)) {
             return "redirect:/";
         }
         boolean is1friendTo2 = currentUser != null && userPageService.isFirstFriendToSecond(currentUser.getId(), id);
@@ -46,7 +46,7 @@ public class UserPageController {
         model.put("currentUser", currentUser);
         model.put("pageUser", pageUser);
         model.put("avatar", photoRepository.getAvatarByUserId(id));
-        model.put("allPhotos", photoRepository.getByUserId(id));
+        model.put("allPhotos", userPageService.getPhotos(pageUser, currentUser));
         model.put("posts", userPageService.getPosts(pageUser, currentUser));
         model.put("privacySettings", userPageService.getPrivacySettings(currentUser, pageUser, areFriends));
         model.put("bucketName", bucketName);
@@ -58,7 +58,7 @@ public class UserPageController {
                           @AuthenticationPrincipal User currentUser,
                           @RequestParam String content,
                           Map<String, Object> model) {
-        userPageService.savePost(id, content, currentUser);
+        userPageService.savePost(id, content, currentUser, null);
         return showUser(id, currentUser, model);
     }
 }

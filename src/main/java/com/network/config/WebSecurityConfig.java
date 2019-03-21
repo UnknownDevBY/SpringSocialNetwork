@@ -21,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/registration", "/img/**", "/css/**", "/images/*");
+                .antMatchers("/registration", "/img/**", "/css/**", "/search/**");
     }
 
     @Override
@@ -29,7 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers( "/", "/users/*", "/search", "/photos/**", "/likes/**").permitAll()
+                .antMatchers( "/", "/communities/public/**", "/users/**", "/photos/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
 

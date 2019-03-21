@@ -24,7 +24,7 @@ public class AddPhotoController {
     public String addPhoto(@RequestParam(required = false) Boolean makeAvatar,
                            @RequestParam MultipartFile newPhoto,
                            @AuthenticationPrincipal User currentUser) throws IOException {
-        addPhotoService.savePhoto(makeAvatar, newPhoto, currentUser);
+        addPhotoService.savePhoto(makeAvatar, newPhoto, currentUser, null);
         return "redirect:/users/" + currentUser.getId();
     }
 }

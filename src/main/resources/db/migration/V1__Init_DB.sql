@@ -8,14 +8,14 @@ create table friendship (
 create table message (
   id integer primary key auto_increment,
   content varchar(511) not null,
-  sending_time varchar(255) not null,
+  sending_time datetime not null,
   from_id integer not null,
   to_id integer not null
 );
 
 create table photo (
   id integer primary key auto_increment,
-  date_of_post varchar(255),
+  date_of_post datetime,
   img longblob not null,
   is_avatar bit not null,
   was_avatar bit not null,
@@ -25,9 +25,9 @@ create table photo (
 create table post (
   id integer primary key auto_increment,
   content varchar(511) not null,
-  post_time varchar(255) not null,
-  author_id integer not null,
-  owner_id integer not null
+  post_time datetime not null,
+  author_id integer,
+  owner_id integer
 );
 
 create table privacy_settings (

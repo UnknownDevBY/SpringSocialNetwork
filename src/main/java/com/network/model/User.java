@@ -62,6 +62,15 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<Likes> likes;
 
+    @OneToMany(mappedBy = "user")
+    private Set<Comment> comments;
+
+    @OneToMany(mappedBy = "admin")
+    private Set<Community> adminIn;
+
+    @ManyToMany(mappedBy = "subscribers")
+    private Set<Community> communities;
+
     public User() {
 
     }
@@ -226,6 +235,30 @@ public class User implements UserDetails {
         this.likes = likes;
     }
 
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Set<Community> getAdminIn() {
+        return adminIn;
+    }
+
+    public void setAdminIn(Set<Community> adminIn) {
+        this.adminIn = adminIn;
+    }
+
+    public Set<Community> getCommunities() {
+        return communities;
+    }
+
+    public void setCommunities(Set<Community> communities) {
+        this.communities = communities;
+    }
+
     public Set<Role> getRoles() {
         return Collections.singleton(Role.USER);
     }
@@ -258,6 +291,16 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        else {
+            User user = (User) obj;
+            return id == user.id;
+        }
     }
 
     @Override

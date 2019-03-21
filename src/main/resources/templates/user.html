@@ -32,7 +32,7 @@ xmlns:th="http://www.thymeleaf.org">
       <ul th:if="${currentUser != null}">
         <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
         <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-        <li><a href="#contact">Группы</a></li>
+          <li><a href="/communities">Группы</a></li>
         <li><a href="/messages">Сообщения</a></li>
         <li><a href="#about">Фотографии</a></li>
     </ul>
@@ -50,7 +50,10 @@ xmlns:th="http://www.thymeleaf.org">
     <div class="main-info">
         <div class="avatar-block">
             <img th:if="${avatar == null}" class="avatar" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-            <img style="width: 100%" th:if="${avatar != null}" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt="">
+            <span th:if="${avatar != null}">
+                <a th:if="${currentUser != null && pageUser.id == currentUser.id}" href="/add-photo"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
+                <a th:if="${currentUser == null || pageUser.id != currentUser.id}" th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
+            </span>
             <div class="message">
                 <div th:if="${currentUser != null}">
                     <a th:if="${currentUser.id == pageUser.id}" href="/edit">Редактировать</a>
@@ -102,7 +105,7 @@ xmlns:th="http://www.thymeleaf.org">
                 <span th:text="'Фотографии: ' + ${allPhotos.size()}" class="amount">Фотографии: 10</span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" class="add-photo-amount" href="/add-photo"><sup>Добавить</sup></a>
                 <div class="list-of-photos">
                     <span style="height: 100%;" th:each="photo : ${allPhotos}">
-                        <img class="photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt="">
+                        <a th:href="'/photos/' + ${photo.photo.id}"><img class="photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${photo.photo.title}" alt=""></a>
                     </span>
                 </div>  
             </div>
@@ -112,7 +115,7 @@ xmlns:th="http://www.thymeleaf.org">
             <div th:if="${!friends.isEmpty() && (privacySettings.areFriendsAllowed)}">
                 <div th:each="friend : ${friends.subList(0, displayFriends)}" class="friends-block">
                     <a th:href="'/users/' + ${friend.userId}" class="friend">
-                        <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+                        <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../st atic/img/no-avatar.png" alt="">
                         <img th:if="${friend.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
                         <p th:text="${friend.userName}">Имя</p>
                     </a>
@@ -129,26 +132,46 @@ xmlns:th="http://www.thymeleaf.org">
             </div>
             <p th:text="'Записи: ' + ${posts.size()}" class="amount">Записи: 0</p>
             <div th:each="post : ${posts}">
+                <a th:if="${currentUser != null && post.post.author.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/post/' + ${post.post.id}">X</a>
                 <div class="post">
                     <a class="post-author" th:href="'/users/' + ${post.post.owner.id}">Владислав Ефимчик</a>
                     <p class="post-time" th:text="${post.post.postTime}"></p>
                     <div class="post-content">
-                        <p th:text="${post.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+                        <p style="margin-bottom: 10px;" th:text="${post.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
                     </div>
                     <div class="like-comment-amount">
                       <span>
-                          <span th:if="${!post.likedByCurrentUser}">
+                          <span th:if="${currentUser == null}">
+                              <img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/black_like.svg" alt="">
+                          </span>
+                          <span th:if="${currentUser != null && !post.likedByCurrentUser}">
                               <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
                           </span>
-                          <span th:if="${post.likedByCurrentUser}">
+                          <span th:if="${currentUser != null && post.likedByCurrentUser}">
                               <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
                           </span>
-                        <span class="like-amount" th:text="${post.likesCount}">10</span>
-                    </span>
-                    <span>
+                          <span class="like-amount" th:text="${post.likesCount}">10</span>
+                      </span>
+                      <span>
                         <img class="like-img" th:src="@{/img/comment.svg}" src="../static/img/comment.svg" alt="">
-                        <span class="like-amount">10</span>
+                        <span class="like-amount" th:text="${post.comments == null ? 0 : post.comments.size()}">10</span>
                     </span>
+                </div>
+                <div>
+                    <details th:if="${post.comments != null && post.comments.size() != 0}">
+                        <summary class="show-comments-summary">Показать комментарии</summary>
+                        <div th:each="comment : ${post.comments}">
+                            <div class="photo-comment">
+                                <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
+                                <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
+                                <p class="photo-comment-text" th:text="${comment.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis atque sequi eius eligendi, consectetur tempore obcaecati earum placeat, harum labore officia facere veniam deleniti ipsa fuga eveniet vitae, libero, repudiandae. Minima quis, et nobis recusandae impedit quia dolore, necessitatibus cum debitis quaerat alias provident minus. Sequi culpa, possimus nam voluptatum?</p>
+                            </div>
+                        </div>
+                    </details>
+                    <form th:if="${currentUser != null && privacySettings.canLeaveComments}" th:action="'/comment/post/' + ${post.post.id}" method="post">
+                        <textarea id="content" name="content" class="photo-comment-area" maxlength="255" minlength="1"></textarea>
+                        <input class="post-comment-input send-photo-comment" type="submit" value="Оставить комментарий">
+                    </form>
                 </div>
             </div>
         </div>

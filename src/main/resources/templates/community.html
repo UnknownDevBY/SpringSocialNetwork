@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Добавить фото</title>
+  <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+</head>
+<body>
+  <header>
+    <p><a href="/"><em class="logo">Social network</em></a></p>
+    <div th:if="${currentUser != null}" class="logout">
+      <form action="/logout" method="get">
+        <input type="submit" value="Выход">
+      </form>
+    </div>
+  </header>
+  <div class="menu">
+    <ul>
+      <li><a class="active" href="/search">Поиск</a></li>
+    </ul>
+    <ul th:if="${currentUser != null}">
+      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+      <li><a href="/communities">Группы</a></li>
+      <li><a href="/messages">Сообщения</a></li>
+      <li><a href="#about">Фотографии</a></li>
+    </ul>
+    <div>
+      <form th:if="${currentUser == null}" action="/" method="post">
+        <input type="text" id="login" name="login" placeholder="E-mail">
+        <br>
+        <input type="password" id="pass" name="pass" placeholder="Пароль">
+        <br>
+        <input type="submit" value="Войти">
+      </form>
+    </div>
+  </div>
+  <main>
+    <div class="photo-block">
+      <div style="background-color: white;">
+        <div th:if="${currentUser != null && currentUser.id == community.admin.id}">
+          <form class="new-post" method="post">
+            <textarea id="content" name="content" placeholder="Новая запись" minlength="1"></textarea>
+            <input type="submit" value="Отправить">
+          </form>
+        </div>
+        <div th:each="post : ${posts}" style="margin-top: 20px; padding: 10px; border-top: 1px solid silver;" class="post">
+          <a th:href="'/communities/public/' + ${community.id}">Владислав Ефимчик</a>
+          <p class="post-time" th:text="${post.post.postTime}"></p>
+          <div class="post-content">
+            <p style="margin-bottom: 10px;" th:text="${post.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+          </div>
+          <div class="like-comment-amount">
+            <span>
+              <span th:if="${currentUser == null}">
+                <img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/black_like.svg" alt="">
+              </span>
+              <span th:if="${currentUser != null && !post.likedByCurrentUser}">
+                <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+              </span>
+              <span th:if="${currentUser != null && post.likedByCurrentUser}">
+                <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+              </span>
+              <span class="like-amount" th:text="${post.likesCount}">10</span>
+            </span>
+            <span>
+              <img class="like-img" th:src="@{/img/comment.svg}" src="../static/img/comment.svg" alt="">
+              <span class="like-amount" th:text="${post.comments == null ? 0 : post.comments.size()}">10</span>
+            </span>
+          </div>
+          <div>
+            <details th:if="${post.comments != null && post.comments.size() != 0}">
+              <summary class="show-comments-summary">Показать комментарии</summary>
+              <div th:each="comment : ${post.comments}">
+                <div class="photo-comment">
+                  <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
+                  <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
+                  <p class="photo-comment-text" th:text="${comment.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis atque sequi eius eligendi, consectetur tempore obcaecati earum placeat, harum labore officia facere veniam deleniti ipsa fuga eveniet vitae, libero, repudiandae. Minima quis, et nobis recusandae impedit quia dolore, necessitatibus cum debitis quaerat alias provident minus. Sequi culpa, possimus nam voluptatum?</p>
+                </div>
+              </div>
+            </details>
+            <form th:if="${currentUser != null}" th:action="'/comment/post/' + ${post.post.id}" method="post">
+              <textarea id="content" name="content" class="photo-comment-area" maxlength="255" minlength="1" placeholder="Оставьте комментарий"></textarea>
+              <input class="post-comment-input send-photo-comment" type="submit" value="Отправить">
+            </form>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="avatar-block">
+          <img th:if="${avatar == null}" class="avatar" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+          <span th:if="${avatar != null}">
+            <a th:if="${currentUser != null && community.admin.id == currentUser.id}" href="/add-photo"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
+            <a th:if="${currentUser == null || community.admin.id != currentUser.id}" th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
+          </span>
+          <div th:if="${community.admin.id != currentUser.id}" class="message">
+            <div th:if="${currentUser != null}">
+              <a th:if="${!isSubscribed}" th:href="'/subscribe/' + ${community.id} + '/' + ${currentUser.id}">Подписаться</a>
+              <a th:if="${isSubscribed}" th:href="'/subscribe/' + ${community.id} + '/' + ${currentUser.id}">Отписаться</a>
+            </div>
+            <div th:if="${currentUser == null}">
+              <a href="/">Войдите</a>
+            </div>
+          </div>
+        </div>
+        <div class="list-of-friends">
+            <a th:text="'Подписчики: ' + ${subscribers.size()}" class="amount">Подписчики: 10</a>
+            <div th:if="${!subscribers.isEmpty()}">
+                <div class="friends-block">
+                  <div th:each="subscriber : ${subscribers}">
+                    <a th:href="'/users/' + ${subscriber.userId}" class="friend">
+                      <img th:if="${subscriber.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+                      <img th:if="${subscriber.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${subscriber.avatar.title}" src="../static/img/no-avatar.png" alt="">
+                      <p th:text="${subscriber.userName}">Имя</p>
+                    </a>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <h3 style="margin-top: 15px; margin-left: 10px;">Админ: <a th:if="'/users/' + ${community.admin.id}" th:text="${community.admin.name} + ' ' + ${community.admin.surname}" href="">Владислав Ефимчик</a></h3>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

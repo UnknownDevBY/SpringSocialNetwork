@@ -1,23 +1,23 @@
 package com.network.dto;
 
 import com.network.model.Comment;
-import com.network.model.Post;
+import com.network.model.Photo;
 
 import java.util.List;
 
-public class PostDto {
+public class PhotoDto {
 
-    private Post post;
+    private Photo photo;
     private Integer likesCount;
     private boolean isLikedByCurrentUser;
     private List<Comment> comments;
 
-    public Post getPost() {
-        return post;
+    public Photo getPhoto() {
+        return photo;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     public Integer getLikesCount() {

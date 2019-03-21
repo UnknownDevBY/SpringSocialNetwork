@@ -39,7 +39,7 @@ xmlns:th="http://www.thymeleaf.org">
       <ul th:if="${currentUser != null}">
         <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
         <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-        <li><a href="#contact">Группы</a></li>
+          <li><a href="/communities">Группы</a></li>
         <li><a href="/messages">Сообщения</a></li>
         <li><a href="#about">Фотографии</a></li>
     </ul>

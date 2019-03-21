@@ -24,6 +24,9 @@ public class PrivacySettings {
     @Column(length = 1)
     private Character postAuthors;
 
+    @Column(length = 1)
+    private Character comments;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -38,6 +41,7 @@ public class PrivacySettings {
         photos = privacySettings.photos;
         friends = privacySettings.friends;
         postAuthors = privacySettings.postAuthors;
+        comments = privacySettings.comments;
     }
 
     public int getId() {
@@ -86,6 +90,14 @@ public class PrivacySettings {
 
     public void setPostAuthors(Character postAuthors) {
         this.postAuthors = postAuthors;
+    }
+
+    public Character getComments() {
+        return comments;
+    }
+
+    public void setComments(Character comments) {
+        this.comments = comments;
     }
 
     public User getUser() {

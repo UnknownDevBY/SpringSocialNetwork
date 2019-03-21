@@ -1,6 +1,9 @@
 package com.network.repository;
 
+import com.network.model.Community;
 import com.network.model.Photo;
+import com.network.model.Post;
+import com.network.model.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -21,11 +24,18 @@ public interface PhotoRepository extends CrudRepository<Photo, Integer> {
 
     Photo getById(int id);
 
+    Photo getAllByCommunityAndWasAvatarTrue(Community community);
+
+    List<Photo> getByUserOrderByDateOfPostAsc(User user);
+
+    @Query(value = "SELECT MAX(id) FROM photo WHERE id < ?1", nativeQuery = true)
+    Integer getPreviousPhotoId(int id);
+
+    @Query(value = "SELECT MIN(id) FROM photo WHERE id > ?1", nativeQuery = true)
+    Integer getNextPhotoId(int id);
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE Photo SET is_avatar = 0 WHERE user_id = ?1", nativeQuery = true)
     void updateAvatars(int id);
-
-    @Query(value = "SELECT MAX(id) FROM photo", nativeQuery = true)
-    Integer maxId();
 }

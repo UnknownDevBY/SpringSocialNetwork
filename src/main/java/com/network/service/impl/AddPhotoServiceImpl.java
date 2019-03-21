@@ -1,6 +1,7 @@
 package com.network.service.impl;
 
 import com.google.common.io.Files;
+import com.network.model.Community;
 import com.network.model.Photo;
 import com.network.model.User;
 import com.network.repository.PhotoRepository;
@@ -22,7 +23,7 @@ public class AddPhotoServiceImpl implements AddPhotoService {
     @Autowired private S3Service s3Service;
 
     @Override
-    public void savePhoto(Boolean makeAvatar, MultipartFile newPhoto, User currentUser) throws IOException {
+    public void savePhoto(Boolean makeAvatar, MultipartFile newPhoto, User currentUser, Community community) throws IOException {
         if(!newPhoto.isEmpty()) {
             boolean isAvatar = makeAvatar != null;
             Photo photo = new Photo();
@@ -30,9 +31,13 @@ public class AddPhotoServiceImpl implements AddPhotoService {
             photo.setTitle(title);
             photo.setAvatar(isAvatar);
             photo.setWasAvatar(isAvatar);
-            photo.setUser(currentUser);
-            if(isAvatar)
-                photoRepository.updateAvatars(currentUser.getId());
+            if (currentUser != null) {
+                photo.setUser(currentUser);
+                if(isAvatar)
+                    photoRepository.updateAvatars(currentUser.getId());
+            }
+            if (community != null)
+                photo.setCommunity(community);
             s3Service.uploadFile(title, newPhoto);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             photo.setDateOfPost(format.format(new java.util.Date()));

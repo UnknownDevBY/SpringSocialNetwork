@@ -19,12 +19,19 @@ public class Photo {
 
     private boolean wasAvatar;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "community_id")
+    private Community community;
+
     @OneToMany(mappedBy = "photo")
     private Set<Likes> likes;
+
+    @OneToMany(mappedBy = "photo")
+    private Set<Comment> comments;
 
     public Photo() {
 
@@ -78,11 +85,27 @@ public class Photo {
         this.user = user;
     }
 
+    public Community getCommunity() {
+        return community;
+    }
+
+    public void setCommunity(Community community) {
+        this.community = community;
+    }
+
     public Set<Likes> getLikes() {
         return likes;
     }
 
     public void setLikes(Set<Likes> likes) {
         this.likes = likes;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 }

@@ -22,7 +22,7 @@ xmlns:th="http://www.thymeleaf.org">
     <ul th:if="${currentUser != null}">
         <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
         <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-        <li><a href="#contact">Группы</a></li>
+        <li><a href="/communities">Группы</a></li>
         <li><a href="/messages">Сообщения</a></li>
         <li><a href="#about">Фотографии</a></li>
     </ul>
@@ -43,40 +43,48 @@ xmlns:th="http://www.thymeleaf.org">
             <label for="fullInfo">Кто может писать мне сообщения?</label>
             <select name="messages" id="messages" required="required">
                 <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.messages, 'a') == 0}">Все</option>
-                <option value="f" th:selected="${T(java.lang.Character).compare(curPrivSet.messages, 'f') == 0}">Только друзья</option>
-                <option value="m" th:selected="${T(java.lang.Character).compare(curPrivSet.messages, 'm') == 0}">Только я</option>
+                <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.messages, 'f') == 0}">Только друзья</option>
+                <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.messages, 'm') == 0}">Только я</option>
             </select>
         </div>
         <div class="privacy-option">
             <label for="fullInfo">Кто может просматривать информацию обо мне?</label>
             <select name="fullInfo" id="fullInfo" required="required">
                 <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.fullInfo, 'a') == 0}">Все</option>
-                <option value="f" th:selected="${T(java.lang.Character).compare(curPrivSet.fullInfo, 'f') == 0}">Только друзья</option>
-                <option value="m" th:selected="${T(java.lang.Character).compare(curPrivSet.fullInfo, 'm') == 0}">Только я</option>
+                <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.fullInfo, 'f') == 0}">Только друзья</option>
+                <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.fullInfo, 'm') == 0}">Только я</option>
             </select>
         </div>
         <div class="privacy-option">
             <label for="photos">Кто может просматривать мои фото?</label>
             <select name="photos" id="photos" required="required">
                 <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.photos, 'a') == 0}">Все</option>
-                <option value="f" th:selected="${T(java.lang.Character).compare(curPrivSet.photos, 'f') == 0}">Только друзья</option>
-                <option value="m" th:selected="${T(java.lang.Character).compare(curPrivSet.photos, 'm') == 0}">Только я</option>
+                <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'f') == 0}">Только друзья</option>
+                <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'm') == 0}">Только я</option>
             </select>
         </div>
         <div class="privacy-option">
             <label for="friends">Кто может просматривать моих друзей?</label>
             <select name="friends" id="friends" required="required">
                 <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.photos, 'a') == 0}">Все</option>
-                <option value="f" th:selected="${T(java.lang.Character).compare(curPrivSet.photos, 'f') == 0}">Только друзья</option>
-                <option value="m" th:selected="${T(java.lang.Character).compare(curPrivSet.photos, 'm') == 0}">Только я</option>
+                <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'f') == 0}">Только друзья</option>
+                <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'm') == 0}">Только я</option>
             </select>
         </div>
         <div class="privacy-option">
             <label for="postAuthors">Кто может оставлять посты на моей странице?</label>
             <select name="postAuthors" id="postAuthors" required="required">
                 <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.postAuthors, 'a') == 0}">Все</option>
-                <option value="f" th:selected="${T(java.lang.Character).compare(curPrivSet.postAuthors, 'f') == 0}">Только друзья</option>
-                <option value="m" th:selected="${T(java.lang.Character).compare(curPrivSet.postAuthors, 'm') == 0}">Только я</option>
+                <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.postAuthors, 'f') == 0}">Только друзья</option>
+                <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.postAuthors, 'm') == 0}">Только я</option>
+            </select>
+        </div>
+        <div class="privacy-option">
+            <label for="fullInfo">Кто может комментировать мои записи?</label>
+            <select name="comments" id="comments" required="required">
+                <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.comments, 'a') == 0}">Все</option>
+                <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.comments, 'f') == 0}">Только друзья</option>
+                <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.comments, 'm') == 0}">Только я</option>
             </select>
         </div>
         <div class="privacy-buttons">
