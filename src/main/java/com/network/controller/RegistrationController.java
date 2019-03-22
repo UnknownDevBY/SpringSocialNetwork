@@ -1,5 +1,6 @@
 package com.network.controller;
 
+import com.network.aspect.annotation.Registration;
 import com.network.model.User;
 import com.network.repository.UserRepository;
 import com.network.service.RegistrationService;
@@ -26,6 +27,7 @@ public class RegistrationController {
         return "registration";
     }
 
+    @Registration
     @PostMapping("/registration")
     public String addUser(@ModelAttribute User user,
                           @RequestParam String pass,
