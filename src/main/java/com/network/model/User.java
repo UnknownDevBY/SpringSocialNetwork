@@ -71,6 +71,10 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "subscribers", fetch = FetchType.EAGER)
     private Set<Community> communities;
 
+    @OneToMany(mappedBy = "user")
+    private Set<PhotoAlbum> photoAlbums;
+
+
     public User() {
 
     }
@@ -257,6 +261,14 @@ public class User implements UserDetails {
 
     public void setCommunities(Set<Community> communities) {
         this.communities = communities;
+    }
+
+    public Set<PhotoAlbum> getPhotoAlbums() {
+        return photoAlbums;
+    }
+
+    public void setPhotoAlbums(Set<PhotoAlbum> photoAlbums) {
+        this.photoAlbums = photoAlbums;
     }
 
     public Set<Role> getRoles() {

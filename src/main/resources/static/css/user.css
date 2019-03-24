@@ -548,6 +548,18 @@ em.logo {
     padding-top: 30px;
     border-bottom: 1px solid silver;
 }
+.albums {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: auto;
+}
+.album-cover {
+    margin-top: 10px;
+    margin-left: 15%;
+    margin-right: 15%;
+    text-align: center;
+    align-items: center;
+}
 @media screen and (max-width: 1024px) {
     .privacy-settings {
         margin-left: 50px;

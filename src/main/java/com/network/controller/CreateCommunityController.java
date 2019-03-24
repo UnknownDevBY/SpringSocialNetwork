@@ -21,17 +21,17 @@ public class CreateCommunityController {
     @Autowired private AddPhotoService addPhotoService;
     @Autowired private CreateCommunityService createCommunityService;
 
-    @GetMapping("/create-community")
+    @GetMapping("/communities/create")
     public String open() {
         return "createGroup";
     }
 
-    @PostMapping("/create-community")
+    @PostMapping("/communities/create")
     public String open(@ModelAttribute Community community,
                        @RequestParam MultipartFile avatar,
                        @AuthenticationPrincipal User currentUser) throws IOException {
-        addPhotoService.savePhoto(true, avatar, null, community);
+        addPhotoService.savePhoto(true, avatar, null, community, null);
         createCommunityService.createCommunity(community, currentUser);
-        return "redirect:/users/" + currentUser.getId();
+        return "redirect:/communities";
     }
 }

@@ -14,4 +14,6 @@ public interface CommentRepository extends CrudRepository<Comment, Integer> {
     List<Comment> getAllByPost(Post post);
 
     List<Comment> getAllByPhoto(Photo photo);
+
+    List<Comment> getByContentContains(String content);
 }

@@ -1,9 +1,11 @@
 package com.network.service.impl;
 
+import com.network.dto.PostDto;
 import com.network.dto.UserDto;
+import com.network.model.Comment;
+import com.network.model.Hashtag;
 import com.network.model.User;
-import com.network.repository.PhotoRepository;
-import com.network.repository.UserRepository;
+import com.network.repository.*;
 import com.network.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,10 @@ public class SearchServiceImpl implements SearchService {
 
     @Autowired private PhotoRepository photoRepository;
     @Autowired private UserRepository userRepository;
+    @Autowired private PostRepository postRepository;
+    @Autowired private CommentRepository commentRepository;
+    @Autowired private HashtagRepository hashtagRepository;
+    @Autowired private UserPageServiceImpl userPageService;
 
     @Override
     public List<User> findUsersByValue(String value) {
@@ -44,4 +50,21 @@ public class SearchServiceImpl implements SearchService {
         });
         return reducedUsers;
     }
+
+    @Override
+    public List<PostDto> findAllPostsByHashtag(String hashtag, User currentUser) {
+        if(hashtagRepository.existsByContent(hashtag)) {
+            List<PostDto> postDtos = new ArrayList<>();
+            postRepository.getByContentContains("#" + hashtag).forEach(userPageService.setPostDto(postDtos, currentUser));
+            return postDtos;
+        } else return null;
+    }
+
+    @Override
+    public List<Comment> findAllCommentsByHashtag(String hashtag) {
+        if(hashtagRepository.existsByContent(hashtag)) {
+            return commentRepository.getByContentContains("#" + hashtag);
+        } else return null;
+    }
+
 }

@@ -22,12 +22,19 @@ public class SearchController {
 
     @RequestMapping("/search")
     public String showAllUsers(@RequestParam(required = false) String value,
+                               @RequestParam(required = false) String hashtag,
                                @AuthenticationPrincipal User currentUser,
                                Model model) {
-        List<User> users = searchService.findUsersByValue(value);
+        if(hashtag != null) {
+            model.addAttribute("posts", searchService.findAllPostsByHashtag(hashtag, currentUser));
+            model.addAttribute("comments", searchService.findAllCommentsByHashtag(hashtag));
+        } else {
+            List<User> users = searchService.findUsersByValue(value);
+            model.addAttribute("users", searchService.reducedUsers(users, currentUser != null ? currentUser.getId() : 0));
+        }
         model.addAttribute("currentUser", currentUser);
-        model.addAttribute("users", searchService.reducedUsers(users, currentUser != null ? currentUser.getId() : 0));
         model.addAttribute("bucketName", bucketName);
         return "search";
     }
+
 }

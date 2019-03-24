@@ -10,6 +10,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PhotoRepository extends CrudRepository<Photo, Integer> {
 
@@ -26,7 +27,13 @@ public interface PhotoRepository extends CrudRepository<Photo, Integer> {
 
     Photo getAllByCommunityAndWasAvatarTrue(Community community);
 
-    List<Photo> getByUserOrderByDateOfPostAsc(User user);
+    List<Photo> getByUserOrderByDateOfPostDesc(User user);
+
+    List<Photo> getAllByUser_IdAndPhotoAlbumIsNull(int id);
+
+    List<Photo> getAllByUser_Id(int id);
+
+    List<Photo> getAllByPhotoAlbum_Id(int id);
 
     @Query(value = "SELECT MAX(id) FROM photo WHERE id < ?1", nativeQuery = true)
     Integer getPreviousPhotoId(int id);

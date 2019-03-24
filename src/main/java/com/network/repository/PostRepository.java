@@ -13,5 +13,7 @@ public interface PostRepository extends CrudRepository<Post, Integer> {
 
     List<Post> getByCommunityOrderByPostTimeAsc(Community community);
 
+    List<Post> getByContentContains(String content);
+
     Post getById(int id);
 }

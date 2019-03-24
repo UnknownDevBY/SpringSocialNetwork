@@ -4,10 +4,7 @@ import com.network.dto.PhotoDto;
 import com.network.dto.PostDto;
 import com.network.dto.PrivacySettingsDto;
 import com.network.dto.UserDto;
-import com.network.model.Community;
-import com.network.model.Post;
-import com.network.model.PrivacySettings;
-import com.network.model.User;
+import com.network.model.*;
 import com.network.repository.*;
 import com.network.service.UserPageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 public class UserPageServiceImpl implements UserPageService {
@@ -27,6 +25,7 @@ public class UserPageServiceImpl implements UserPageService {
     @Autowired private PrivacySettingsRepository privacySettingsRepository;
     @Autowired private LikesRepository likesRepository;
     @Autowired private CommentRepository commentRepository;
+    @Autowired private CommentServiceImpl commentService;
 
     @Override
     public void savePost(int id, String content, User currentUser, Community community) {
@@ -38,6 +37,9 @@ public class UserPageServiceImpl implements UserPageService {
             post.setAuthor(currentUser);
             post.setOwner(userRepository.getById(id));
         } else post.setCommunity(community);
+        List<Hashtag> hashtags = new ArrayList<>();
+        post.setHashtags(hashtags);
+        commentService.getHashtags(content).forEach(commentService.action(hashtags));
         postRepository.save(post);
     }
 
@@ -85,23 +87,14 @@ public class UserPageServiceImpl implements UserPageService {
     @Override
     public List<PostDto> getPosts(User pageUser, User currentUser) {
         List<PostDto> posts = new ArrayList<>();
-        postRepository.getByOwnerOrderByPostTimeAsc(pageUser).forEach(
-                post -> {
-                    PostDto postDto = new PostDto();
-                    postDto.setPost(post);
-                    postDto.setComments(commentRepository.getAllByPost(post));
-                    postDto.setLikesCount(likesRepository.countByPost(post));
-                    postDto.setLikedByCurrentUser(likesRepository.getByPostAndUser(post, currentUser) != null);
-                    posts.add(postDto);
-                }
-        );
+        postRepository.getByOwnerOrderByPostTimeAsc(pageUser).forEach(setPostDto(posts, currentUser));
         return posts;
     }
 
     @Override
     public List<PhotoDto> getPhotos(User pageUser, User currentUser) {
         List<PhotoDto> photos = new ArrayList<>();
-        photoRepository.getByUserOrderByDateOfPostAsc(pageUser).forEach(
+        photoRepository.getByUserOrderByDateOfPostDesc(pageUser).forEach(
                 photo -> {
                     PhotoDto photoDto = new PhotoDto();
                     photoDto.setPhoto(photo);
@@ -112,5 +105,16 @@ public class UserPageServiceImpl implements UserPageService {
                 }
         );
         return photos;
+    }
+
+    public Consumer<? super Post> setPostDto(List<PostDto> posts, User currentUser) {
+        return post -> {
+            PostDto postDto = new PostDto();
+            postDto.setPost(post);
+            postDto.setComments(commentRepository.getAllByPost(post));
+            postDto.setLikesCount(likesRepository.countByPost(post));
+            postDto.setLikedByCurrentUser(likesRepository.getByPostAndUser(post, currentUser) != null);
+            posts.add(postDto);
+        };
     }
 }

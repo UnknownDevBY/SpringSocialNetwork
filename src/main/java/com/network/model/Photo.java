@@ -19,7 +19,7 @@ public class Photo {
 
     private boolean wasAvatar;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -32,6 +32,10 @@ public class Photo {
 
     @OneToMany(mappedBy = "photo")
     private Set<Comment> comments;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "album_id")
+    private PhotoAlbum photoAlbum;
 
     public Photo() {
 
@@ -107,5 +111,13 @@ public class Photo {
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    public PhotoAlbum getPhotoAlbum() {
+        return photoAlbum;
+    }
+
+    public void setPhotoAlbum(PhotoAlbum photoAlbum) {
+        this.photoAlbum = photoAlbum;
     }
 }

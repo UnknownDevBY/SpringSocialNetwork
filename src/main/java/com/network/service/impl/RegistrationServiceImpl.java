@@ -22,6 +22,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void saveUser(User user, String pass, MultipartFile avatar) throws IOException {
         user.setPassword(passwordEncoder.encode(pass));
         userRepository.save(user);
-        addPhotoService.savePhoto(true, avatar, user, null);
+        addPhotoService.savePhoto(true, avatar, user, null, null);
     }
 }

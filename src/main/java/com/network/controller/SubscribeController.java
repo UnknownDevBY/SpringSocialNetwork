@@ -14,7 +14,9 @@ public class SubscribeController {
     @Autowired private SubscribeService subscribeService;
 
     @GetMapping("/subscribe/{communityId}/{userId}")
-    public String subscribe(@PathVariable int communityId, @PathVariable int userId, HttpServletRequest request) {
+    public String subscribe(@PathVariable int communityId,
+                            @PathVariable int userId,
+                            HttpServletRequest request) {
         subscribeService.updateSubscription(communityId, userId);
         return "redirect:" + request.getHeader("Referer");
     }

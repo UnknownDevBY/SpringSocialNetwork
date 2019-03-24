@@ -16,16 +16,14 @@ xmlns:th="http://www.thymeleaf.org">
   </div>
 </header>
 <div class="menu">
-  <ul>
-    <li><a class="active" href="/search">Поиск</a></li>
-  </ul>
   <ul th:if="${currentUser != null}">
+    <li><a class="active" href="/search">Поиск</a></li>
     <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
     <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
     <li><a href="/communities">Группы</a></li>
     <li><a href="/news">Новости</a></li>
     <li><a href="/messages">Сообщения</a></li>
-    <li><a href="#about">Фотографии</a></li>
+    <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
   </ul>
   <div>
     <form th:if="${currentUser == null}" action="/login" method="post">
@@ -42,7 +40,7 @@ xmlns:th="http://www.thymeleaf.org">
   </div>
 </div>
   <main class="messages-block">
-    <a style="text-decoration: none;" href="/create-community">Создать группу</a>
+    <a style="text-decoration: none;" href="/communities/create">Создать группу</a>
     <form class="new-message" method="get">
       <span th:if="${param.value != null}">
         <input th:value="${param.value}" type="text" id="value" name="value" placeholder="Введите имя пользователя или его часть" />

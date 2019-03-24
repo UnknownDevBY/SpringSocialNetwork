@@ -26,17 +26,15 @@ xmlns:th="http://www.thymeleaf.org">
         </div>
     </header>
     <div class="menu">
-        <ul>
-          <li><a class="active" href="/search">Поиск</a></li>
-      </ul>
-      <ul th:if="${currentUser != null}">
-        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-          <li><a href="/communities">Группы</a></li>
-          <li><a href="/news">Новости</a></li>
-          <li><a href="/messages">Сообщения</a></li>
-        <li><a href="#about">Фотографии</a></li>
-    </ul>
+        <ul th:if="${currentUser != null}">
+            <li><a class="active" href="/search">Поиск</a></li>
+            <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+            <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+            <li><a href="/communities">Группы</a></li>
+            <li><a href="/news">Новости</a></li>
+            <li><a href="/messages">Сообщения</a></li>
+            <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+        </ul>
     <div>
         <form th:if="${currentUser == null}" action="/login" method="post">
             <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
@@ -56,7 +54,7 @@ xmlns:th="http://www.thymeleaf.org">
         <div class="avatar-block">
             <img th:if="${avatar == null}" class="avatar" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
             <span th:if="${avatar != null}">
-                <a th:if="${currentUser != null && pageUser.id == currentUser.id}" href="/add-photo"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
+                <a th:if="${currentUser != null && pageUser.id == currentUser.id}" href="/photos/add"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
                 <a th:if="${currentUser == null || pageUser.id != currentUser.id}" th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
             </span>
             <div class="message">
@@ -106,8 +104,11 @@ xmlns:th="http://www.thymeleaf.org">
                     </div>   
                 </details>
             </div>
+            <div>
+                <a th:if="${currentUser != null && currentUser.id == pageUser.id && allPhotos.isEmpty()}" class="add-photo-amount" href="/photos/add"><sup>Добавить фото</sup></a>
+            </div>
             <div th:if="${!allPhotos.isEmpty() && (privacySettings.arePhotosAllowed)}">
-                <span th:text="'Фотографии: ' + ${allPhotos.size()}" class="amount">Фотографии: 10</span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" class="add-photo-amount" href="/add-photo"><sup>Добавить</sup></a>
+                <span class="amount"><a th:text="'Фотографии: ' + ${allPhotos.size()}" th:href="'/albums/' + ${pageUser.id} + '/0'">Фотографии: 10</a></span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" class="add-photo-amount" href="/photos/add"><sup>Добавить</sup></a>
                 <div class="list-of-photos">
                     <span style="height: 100%;" th:each="photo : ${allPhotos}">
                         <a th:href="'/photos/' + ${photo.photo.id}"><img class="photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${photo.photo.title}" alt=""></a>
@@ -142,7 +143,10 @@ xmlns:th="http://www.thymeleaf.org">
                     <a class="post-author" th:href="'/users/' + ${post.post.owner.id}">Владислав Ефимчик</a>
                     <p class="post-time" th:text="${post.post.postTime}"></p>
                     <div class="post-content">
-                        <p style="margin-bottom: 10px;" th:text="${post.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+                                <span th:each="word : ${post.post.content.split(' ')}">
+                                    <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
+                                    <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
+                                </span>
                     </div>
                     <div class="like-comment-amount">
                       <span>
@@ -169,7 +173,12 @@ xmlns:th="http://www.thymeleaf.org">
                             <div class="photo-comment">
                                 <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
                                 <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
-                                <p class="photo-comment-text" th:text="${comment.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis atque sequi eius eligendi, consectetur tempore obcaecati earum placeat, harum labore officia facere veniam deleniti ipsa fuga eveniet vitae, libero, repudiandae. Minima quis, et nobis recusandae impedit quia dolore, necessitatibus cum debitis quaerat alias provident minus. Sequi culpa, possimus nam voluptatum?</p>
+                                <p th:id="'comment' + ${comment.id}" class="photo-comment-text">
+                                    <span th:each="word : ${comment.content.split(' ')}">
+                                    <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '">Я</span>
+                                    <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '">#ефимчик</a>
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </details>

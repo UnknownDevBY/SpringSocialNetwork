@@ -4,7 +4,9 @@ import com.network.dto.PostDto;
 import com.network.dto.UserDto;
 import com.network.model.Community;
 import com.network.model.User;
-import com.network.repository.*;
+import com.network.repository.CommunityRepository;
+import com.network.repository.PhotoRepository;
+import com.network.repository.PostRepository;
 import com.network.service.CommunitiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,8 @@ public class CommunitiesServiceImpl implements CommunitiesService {
 
     @Autowired private CommunityRepository communityRepository;
     @Autowired private PostRepository postRepository;
-    @Autowired private CommentRepository commentRepository;
-    @Autowired private LikesRepository likesRepository;
     @Autowired private PhotoRepository photoRepository;
+    @Autowired private UserPageServiceImpl userPageService;
 
     @Override
     public List<Community> findCommunitiesByValue(String value, User currentUser) {
@@ -38,16 +39,7 @@ public class CommunitiesServiceImpl implements CommunitiesService {
     @Override
     public List<PostDto> getPosts(Community community, User currentUser) {
         List<PostDto> posts = new ArrayList<>();
-        postRepository.getByCommunityOrderByPostTimeAsc(community).forEach(
-                post -> {
-                    PostDto postDto = new PostDto();
-                    postDto.setPost(post);
-                    postDto.setComments(commentRepository.getAllByPost(post));
-                    postDto.setLikesCount(likesRepository.countByPost(post));
-                    postDto.setLikedByCurrentUser(likesRepository.getByPostAndUser(post, currentUser) != null);
-                    posts.add(postDto);
-                }
-        );
+        postRepository.getByCommunityOrderByPostTimeAsc(community).forEach(userPageService.setPostDto(posts, currentUser));
         return posts;
     }
 

@@ -8,5 +8,5 @@ import java.io.IOException;
 
 public interface AddPhotoService {
 
-    void savePhoto(Boolean makeAvatar, MultipartFile newPhoto, User currentUser, Community community) throws IOException;
+    void savePhoto(Boolean makeAvatar, MultipartFile newPhoto, User currentUser, Community community, String album) throws IOException;
 }

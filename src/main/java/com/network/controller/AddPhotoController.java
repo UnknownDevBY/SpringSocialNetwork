@@ -1,6 +1,7 @@
 package com.network.controller;
 
 import com.network.model.User;
+import com.network.repository.PhotoAlbumRepository;
 import com.network.service.AddPhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,19 +16,22 @@ import java.io.IOException;
 public class AddPhotoController {
 
     @Autowired private AddPhotoService addPhotoService;
+    @Autowired private PhotoAlbumRepository albumRepository;
 
-    @GetMapping("/add-photo")
+    @GetMapping("/photos/add")
     public String openAddPhoto(@AuthenticationPrincipal User currentUser,
                                Model model) {
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("albums", albumRepository.getAllTitlesByUserId(currentUser.getId()));
         return "addPhoto";
     }
 
-    @PostMapping("/add-photo")
+    @PostMapping("/photos/add")
     public String addPhoto(@RequestParam(required = false) Boolean makeAvatar,
                            @RequestParam MultipartFile newPhoto,
+                           @RequestParam(required = false) String album,
                            @AuthenticationPrincipal User currentUser) throws IOException {
-        addPhotoService.savePhoto(makeAvatar, newPhoto, currentUser, null);
+        addPhotoService.savePhoto(makeAvatar, newPhoto, currentUser, null, album);
         return "redirect:/users/" + currentUser.getId();
     }
 }
