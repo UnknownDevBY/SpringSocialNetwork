@@ -55,7 +55,7 @@ xmlns:th="http://www.thymeleaf.org">
                                 <img th:if="${friend.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
                                 <a th:text="${friend.userName} + ' ' + ${friend.userSurname}" th:href="'/users/' + ${friend.userId}" class="friends-name">Владислав Ефимчик</a>
                                 <div th:if="${currentUser != null && currentUser.id == id}">
-                                    <a href="">Отправить сообщение</a>
+                                    <a th:href="'/users/friendship/' + ${friend.userId}">Удалить из друзей</a>
                                 </div>
                             </div>
                         </div>
@@ -75,9 +75,9 @@ xmlns:th="http://www.thymeleaf.org">
                             <div>
                                 <img th:if="${subscriber.avatar == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
                                 <img th:if="${subscriber.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${subscriber.avatar.title}" src="../static/img/no-avatar.png" alt="">
-                                <a th:text="${subscriber.userName} + ' ' + ${subscriber.userSurname}" th:href="'/user/' + ${subscriber.userId}" class="friends-name">Владислав Ефимчик</a>
+                                <a th:text="${subscriber.userName} + ' ' + ${subscriber.userSurname}" th:href="'/users/' + ${subscriber.userId}" class="friends-name">Владислав Ефимчик</a>
                                 <div th:if="${currentUser != null && currentUser.id == id}">
-                                    <a th:href="'/user/addFriendship/' + ${subscriber.userId}">Принять заявку</a>
+                                    <a th:href="'/users/friendship/' + ${subscriber.userId}">Принять заявку</a>
                                 </div>
                             </div>
                         </div>
@@ -97,9 +97,9 @@ xmlns:th="http://www.thymeleaf.org">
                             <div>
                                 <img th:if="${subscription.avatar == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
                                 <img th:if="${subscription.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${subscription.avatar.title}" src="../static/img/no-avatar.png" alt="">
-                                <a th:text="${subscription.userName} + ' ' + ${subscription.userSurname}" th:href="'/user/' + ${subscription.userId}" class="friends-name">Владислав Ефимчик</a>
+                                <a th:text="${subscription.userName} + ' ' + ${subscription.userSurname}" th:href="'/users/' + ${subscription.userId}" class="friends-name">Владислав Ефимчик</a>
                                 <div th:if="${currentUser != null && currentUser.id == id}">
-                                    <a th:href="'/user/removeFriendship/' + ${subscription.userId}">Отписаться</a>
+                                    <a th:href="'/users/friendship/' + ${subscription.userId}">Отписаться</a>
                                 </div>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 package com.network.controller;
 
 import com.network.dto.PhotoDto;
+import com.network.model.Photo;
 import com.network.model.User;
 import com.network.repository.CommentRepository;
 import com.network.repository.PhotoRepository;
@@ -30,14 +31,17 @@ public class PhotoController {
                             @AuthenticationPrincipal User currentUser,
                             HttpServletRequest request,
                             Model model) {
-        if(!photoRepository.existsById(id))
+        Photo photo = photoRepository.getById(id);
+        if(photo == null)
             return "redirect:" + request.getHeader("Referer");
+        User owner = photo.getUser();
         PhotoDto photoDto = photoService.getPhoto(id, currentUser);
         model.addAttribute("photo", photoDto);
         model.addAttribute("id", id);
         model.addAttribute("bucketName", bucketName);
-        model.addAttribute("nextPhoto", photoRepository.getNextPhotoId(id));
-        model.addAttribute("prevPhoto", photoRepository.getPreviousPhotoId(id));
+        model.addAttribute("nextPhoto", photoRepository.getPreviousPhotoId(id, owner.getId()));
+        model.addAttribute("prevPhoto", photoRepository.getNextPhotoId(id, owner.getId()));
+        model.addAttribute("owner", owner);
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("comments", commentRepository.getAllByPhoto(photoDto.getPhoto()));
         return "photo";

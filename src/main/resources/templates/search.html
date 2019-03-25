@@ -101,7 +101,6 @@ xmlns:th="http://www.thymeleaf.org">
     <div th:if="${comments != null}">
       <div th:each="comment : ${comments}">
         <div class="photo-comment">
-          <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
           <div th:if="${comment.post != null}">
             <div th:if="${comment.post.author != null}">
               <p th:text="'Комментарий на стене пользователя ' + ${comment.post.owner.name} + ' ' + ${comment.post.owner.surname}" style="font-size: 12px;">Комментарий на стене пользователя Владислав Ефимчик</p>

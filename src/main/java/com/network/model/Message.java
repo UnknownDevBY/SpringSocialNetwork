@@ -14,11 +14,11 @@ public class Message {
 
     private String sendingTime;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "from_id")
     private User from;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "to_id")
     private User to;
 

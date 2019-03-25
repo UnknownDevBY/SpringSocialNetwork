@@ -51,7 +51,7 @@ xmlns:th="http://www.thymeleaf.org">
         <img class="photo-window" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${photo.photo.title}" alt="no-photo">
       </div>
       <div class="photo-comment-block">
-        <a class="photo-owner-name" href="">Владислав Ефимчик</a>
+        <a class="photo-owner-name" th:if="${owner != null}" th:href="'/users/' + ${owner.id}">Владислав Ефимчик</a>
         <p class="photo-post-time" th:text="${photo.photo.dateOfPost}">2015-04-10 12:30</p>
         <div class="like-comment-amount">
           <span>

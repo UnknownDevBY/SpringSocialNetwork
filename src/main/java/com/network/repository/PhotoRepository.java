@@ -35,11 +35,11 @@ public interface PhotoRepository extends CrudRepository<Photo, Integer> {
 
     List<Photo> getAllByPhotoAlbum_Id(int id);
 
-    @Query(value = "SELECT MAX(id) FROM photo WHERE id < ?1", nativeQuery = true)
-    Integer getPreviousPhotoId(int id);
+    @Query(value = "SELECT MAX(id) FROM photo WHERE id < ?1 AND user_id = ?2", nativeQuery = true)
+    Integer getPreviousPhotoId(int id, int userId);
 
-    @Query(value = "SELECT MIN(id) FROM photo WHERE id > ?1", nativeQuery = true)
-    Integer getNextPhotoId(int id);
+    @Query(value = "SELECT MIN(id) FROM photo WHERE id > ?1 AND user_id = ?2", nativeQuery = true)
+    Integer getNextPhotoId(int id, int userId);
 
     @Modifying
     @Transactional

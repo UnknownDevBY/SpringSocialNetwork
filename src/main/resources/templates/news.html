@@ -70,7 +70,7 @@ xmlns:th="http://www.thymeleaf.org">
       <div th:if="${news.photo != null}">
         <div class="news-photo-block">
           <a style="text-decoration: none;" href="">
-            <h3 class="photo-owner-name" th:text="${news.photo.author.name} + ' ' + ${news.photo.author.surname}">Владислав Ефимчик</h3>
+            <h3 class="photo-owner-name" th:text="${news.photo.user.name} + ' ' + ${news.photo.user.surname}">Владислав Ефимчик</h3>
             <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
           </a>
           <a th:href="'/photos/' + ${news.photo.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${news.photo.title}" alt=""></a>

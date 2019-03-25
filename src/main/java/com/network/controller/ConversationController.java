@@ -30,7 +30,7 @@ public class ConversationController {
     @PostMapping("/conversations/{id}")
     public String sendMessage(@PathVariable int id,
                               @NotBlank @RequestParam String message,
-                              @SessionAttribute(value = "currentUser", required = false) User currentUser,
+                              @AuthenticationPrincipal User currentUser,
                               Model model) {
         conversationService.saveMessage(id, currentUser, message);
         return openConversation(id, currentUser, model);
