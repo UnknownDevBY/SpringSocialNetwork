@@ -7,7 +7,7 @@ import java.util.List;
 public class PhotoAlbum {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 63)

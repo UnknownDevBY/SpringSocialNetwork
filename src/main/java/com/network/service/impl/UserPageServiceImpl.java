@@ -10,7 +10,7 @@ import com.network.service.UserPageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -26,12 +26,12 @@ public class UserPageServiceImpl implements UserPageService {
     @Autowired private LikesRepository likesRepository;
     @Autowired private CommentRepository commentRepository;
     @Autowired private CommentServiceImpl commentService;
+    @Autowired private FriendsServiceImpl friendsService;
 
     @Override
     public void savePost(int id, String content, User currentUser, Community community) {
         Post post = new Post();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        post.setPostTime(format.format(new java.util.Date()));
+        post.setPostTime(new Timestamp(System.currentTimeMillis()));
         post.setContent(content);
         if (currentUser != null) {
             post.setAuthor(currentUser);
@@ -46,23 +46,14 @@ public class UserPageServiceImpl implements UserPageService {
     @Override
     public List<UserDto> getFriends(User pageUser) {
         List<UserDto> friends = new ArrayList<>();
-        friendshipRepository.getAllFriends(pageUser.getId()).forEach(e -> {
-            User user = e.getTo();
-            int userId = user.getId();
-            UserDto friend = new UserDto();
-            friend.setUserName(user.getName());
-            friend.setAvatar(photoRepository.getAvatarByUserId(userId));
-            friend.setUserId(userId);
-            friend.setUserSurname(user.getSurname());
-            friends.add(friend);
-        });
+        friendsService.getAllFriends(pageUser).forEach(friendsService.setUserDto(friends));
         return friends;
     }
 
     @Override
     public boolean isFirstFriendToSecond(int id1, int id2) {
-        Boolean value = friendshipRepository.getIsConfirmed(id1, id2);
-        return value != null ? value : false;
+        Friendship value = friendshipRepository.getByFrom_IdAndTo_Id(id1, id2);
+        return value != null;
     }
 
     @Override

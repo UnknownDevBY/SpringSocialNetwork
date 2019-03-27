@@ -1,16 +1,16 @@
 create table community(
-  id int primary key auto_increment,
+  id serial primary key,
   description varchar(127),
   title varchar(63) not null,
   admin_id int,
-  foreign key (admin_id) references user(id)
+  foreign key (admin_id) references users(id)
 );
 
 create table community_subscribers(
-  id int primary key auto_increment,
+  id serial primary key,
   user_id int,
   community_id int,
-  foreign key (user_id) references user(id),
+  foreign key (user_id) references users(id),
   foreign key (community_id) references community(id)
 );
 

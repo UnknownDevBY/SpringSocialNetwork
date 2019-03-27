@@ -22,7 +22,6 @@ import java.util.Map;
 public class FriendsController {
 
     @Autowired private UserRepository userRepository;
-    @Autowired private FriendshipRepository friendshipRepository;
     @Autowired private PrivacySettingsRepository privacySettingsRepository;
     @Autowired private UserPageService userPageService;
     @Autowired private FriendsService friendsService;
@@ -59,9 +58,9 @@ public class FriendsController {
     }
 
     private void setModel(User pageUser, Map<String, Object> model) {
-        model.put("friends", friendsService.setRelation(friendshipRepository.getAllFriends(pageUser.getId()), "friends"));
-        model.put("subscribers", friendsService.setRelation(friendshipRepository.getAllSubscribers(pageUser.getId()), "subscribers"));
-        model.put("subscriptions", friendsService.setRelation(friendshipRepository.getAllSubscriptions(pageUser.getId()), "subscriptions"));
+        model.put("friends", userPageService.getFriends(pageUser));
+        model.put("subscribers", friendsService.setRelation(friendsService.getAllSubscribers(pageUser)));
+        model.put("subscriptions", friendsService.setRelation(friendsService.getAllSubscriptions(pageUser)));
     }
 
     private boolean areFriendsAllowed(int id, User currentUser, PrivacySettings privacySettings, PrivacySettingsDto privacySettingsDto) {

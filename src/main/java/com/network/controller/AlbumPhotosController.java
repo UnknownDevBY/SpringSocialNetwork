@@ -32,7 +32,7 @@ public class AlbumPhotosController {
                             @AuthenticationPrincipal User currentUser,
                             HttpServletRequest request,
                             Model model) {
-        if(!userRepository.existsById(userId) || albumRepository.existsById(albumId))
+        if(!userRepository.existsById(userId) || (!albumRepository.existsById(albumId) && albumId != 0))
             return "redirect:" + request.getHeader("Referer");
         model.addAttribute("bucketName", bucketName);
         model.addAttribute("currentUser", currentUser);

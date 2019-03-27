@@ -2,20 +2,21 @@ package com.network.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
 public class Photo {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String title;
 
     private boolean isAvatar;
 
-    private String dateOfPost;
+    private Timestamp dateOfPost;
 
     private boolean wasAvatar;
 
@@ -65,11 +66,11 @@ public class Photo {
         isAvatar = avatar;
     }
 
-    public String getDateOfPost() {
+    public Timestamp getDateOfPost() {
         return dateOfPost;
     }
 
-    public void setDateOfPost(String dateOfPost) {
+    public void setDateOfPost(Timestamp dateOfPost) {
         this.dateOfPost = dateOfPost;
     }
 

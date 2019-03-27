@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class Hashtag {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String content;

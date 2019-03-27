@@ -48,10 +48,10 @@ xmlns:th="http://www.thymeleaf.org">
     </div>
     <div th:each="messageWindow : ${messageWindows}">
       <div class="message-cover">
-        <div th:if="${messageWindow.friend.avatar.title != null}">
+        <div th:if="${messageWindow.friend.avatar != null}">
           <img style="width: 100px; height: 100px; overflow: hidden;" class="message-avatar" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${messageWindow.friend.avatar.title}" src="" alt="no-photo">
         </div>
-        <div th:if="${messageWindow.friend.avatar.title == null}">
+        <div th:if="${messageWindow.friend.avatar == null}">
           <img style="width: 100px; height: 100px; overflow: hidden;" class="message-avatar" th:src="@{/img/no-avatar.png}" src="" alt="no-photo">
         </div>
         <div>

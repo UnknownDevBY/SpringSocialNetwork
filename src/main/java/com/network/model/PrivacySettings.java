@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class PrivacySettings {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 1)

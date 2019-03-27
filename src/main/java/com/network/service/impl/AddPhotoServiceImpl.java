@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 @Service
@@ -35,8 +36,7 @@ public class AddPhotoServiceImpl implements AddPhotoService {
             photo.setWasAvatar(isAvatar);
             setPhotoOwners(album, currentUser, photo, isAvatar, community);
             s3Service.uploadFile(title, newPhoto);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            photo.setDateOfPost(format.format(new java.util.Date()));
+            photo.setDateOfPost(new Timestamp(System.currentTimeMillis()));
             photoRepository.save(photo);
         }
     }

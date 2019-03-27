@@ -1,18 +1,19 @@
 package com.network.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 public class Message {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 511)
     private String content;
 
-    private String sendingTime;
+    private Timestamp sendingTime;
 
     @ManyToOne
     @JoinColumn(name = "from_id")
@@ -42,11 +43,11 @@ public class Message {
         this.content = content;
     }
 
-    public String getSendingTime() {
+    public Timestamp getSendingTime() {
         return sendingTime;
     }
 
-    public void setSendingTime(String sendingTime) {
+    public void setSendingTime(Timestamp sendingTime) {
         this.sendingTime = sendingTime;
     }
 

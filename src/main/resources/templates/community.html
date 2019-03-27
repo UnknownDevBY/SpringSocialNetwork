@@ -51,7 +51,7 @@ xmlns:th="http://www.thymeleaf.org">
         <div th:each="post : ${posts}" style="margin-top: 20px; padding: 10px; border-top: 1px solid silver;" class="post">
           <a th:href="'/communities/public/' + ${community.id}">Владислав Ефимчик</a>
           <p class="post-time" th:text="${post.post.postTime}">12-00</p>
-          <div class="post-content">
+          <div th:id="'post' + ${post.post.id}" class="post-content">
                               <span th:each="word : ${post.post.content.split(' ')}">
                                     <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
                                     <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
@@ -91,7 +91,7 @@ xmlns:th="http://www.thymeleaf.org">
                 </div>
               </div>
             </details>
-            <form th:if="${currentUser != null}" th:action="'/comment/post/' + ${post.post.id}" method="post">
+            <form style="height: 60px;" th:if="${currentUser != null}" th:action="'/comment/post/' + ${post.post.id}" method="post">
               <textarea id="content" name="content" class="photo-comment-area" maxlength="255" minlength="1" placeholder="Оставьте комментарий"></textarea>
               <input class="post-comment-input send-photo-comment" type="submit" value="Отправить">
             </form>

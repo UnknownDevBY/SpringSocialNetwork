@@ -1,5 +1,5 @@
 create table hashtag(
-  id int primary key auto_increment,
+  id serial primary key,
   content varchar(63) not null,
   post_id int,
   comment_id int,

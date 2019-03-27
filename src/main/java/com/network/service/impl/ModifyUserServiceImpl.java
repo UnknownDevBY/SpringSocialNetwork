@@ -19,9 +19,8 @@ public class ModifyUserServiceImpl implements ModifyUserService {
             relation = new Friendship();
             relation.setFrom(currentUser);
             relation.setTo(pageUser);
-            relation.setConfirmed(true);
+            friendshipRepository.save(relation);
         }
-        else relation.setConfirmed(!relation.isConfirmed());
-        friendshipRepository.save(relation);
+        else friendshipRepository.delete(relation);
     }
 }

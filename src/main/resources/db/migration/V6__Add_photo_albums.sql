@@ -1,8 +1,8 @@
 create table photo_album(
-  id int primary key auto_increment,
+  id serial primary key,
   title varchar(63) not null,
   user_id int,
-  foreign key (user_id) references user (id)
+  foreign key (user_id) references users (id)
 );
 
 alter table photo

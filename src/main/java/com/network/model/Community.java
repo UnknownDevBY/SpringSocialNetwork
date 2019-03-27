@@ -8,7 +8,7 @@ import java.util.Set;
 public class Community {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 63)

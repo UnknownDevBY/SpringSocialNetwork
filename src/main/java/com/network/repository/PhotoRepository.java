@@ -17,10 +17,10 @@ public interface PhotoRepository extends CrudRepository<Photo, Integer> {
     @Query(value = "SELECT * FROM Photo WHERE user_id = ?1 ORDER BY date_of_post DESC", nativeQuery = true)
     List<Photo> getByUserId(int id);
 
-    @Query(value = "SELECT id FROM Photo WHERE user_id = ?1 AND is_avatar = 1", nativeQuery = true)
+    @Query(value = "SELECT id FROM Photo WHERE user_id = ?1 AND is_avatar = TRUE", nativeQuery = true)
     Integer getAvatarIdByUserId(int id);
 
-    @Query(value = "SELECT * FROM Photo WHERE user_id = ?1 AND is_avatar = 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM Photo WHERE user_id = ?1 AND is_avatar = TRUE", nativeQuery = true)
     Photo getAvatarByUserId(int id);
 
     Photo getById(int id);
@@ -43,6 +43,6 @@ public interface PhotoRepository extends CrudRepository<Photo, Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Photo SET is_avatar = 0 WHERE user_id = ?1", nativeQuery = true)
+    @Query(value = "UPDATE Photo SET is_avatar = TRUE WHERE user_id = ?1", nativeQuery = true)
     void updateAvatars(int id);
 }

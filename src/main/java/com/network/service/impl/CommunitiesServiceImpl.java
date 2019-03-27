@@ -19,8 +19,8 @@ public class CommunitiesServiceImpl implements CommunitiesService {
 
     @Autowired private CommunityRepository communityRepository;
     @Autowired private PostRepository postRepository;
-    @Autowired private PhotoRepository photoRepository;
     @Autowired private UserPageServiceImpl userPageService;
+    @Autowired private FriendsServiceImpl friendsService;
 
     @Override
     public List<Community> findCommunitiesByValue(String value, User currentUser) {
@@ -46,15 +46,7 @@ public class CommunitiesServiceImpl implements CommunitiesService {
     @Override
     public List<UserDto> getSubscribers(Community community) {
         List<UserDto> friends = new ArrayList<>();
-        community.getSubscribers().forEach(user -> {
-            int userId = user.getId();
-            UserDto friend = new UserDto();
-            friend.setUserName(user.getName());
-            friend.setAvatar(photoRepository.getAvatarByUserId(userId));
-            friend.setUserId(userId);
-            friend.setUserSurname(user.getSurname());
-            friends.add(friend);
-        });
+        community.getSubscribers().forEach(friendsService.setUserDto(friends));
         return friends;
     }
 }

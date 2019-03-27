@@ -1,6 +1,7 @@
 package com.network.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
@@ -8,10 +9,10 @@ import java.util.Set;
 public class Post {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String postTime;
+    private Timestamp postTime;
 
     @Column(length = 511)
     private String content;
@@ -49,11 +50,11 @@ public class Post {
         this.id = id;
     }
 
-    public String getPostTime() {
+    public Timestamp getPostTime() {
         return postTime;
     }
 
-    public void setPostTime(String postTime) {
+    public void setPostTime(Timestamp postTime) {
         this.postTime = postTime;
     }
 

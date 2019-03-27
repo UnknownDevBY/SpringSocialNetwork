@@ -8,6 +8,7 @@ import com.network.service.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 @Service
@@ -23,7 +24,7 @@ public class ConversationServiceImpl implements ConversationService {
         message.setTo(userRepository.getById(id));
         message.setContent(content);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        message.setSendingTime(format.format(new java.util.Date()));
+        message.setSendingTime(new Timestamp(System.currentTimeMillis()));
         messageRepository.save(message);
     }
 }

@@ -1,37 +1,36 @@
 create table friendship (
-  id integer primary key auto_increment,
-  is_confirmed bit not null,
+  id serial primary key,
   from_id integer not null,
   to_id integer not null
 );
 
 create table message (
-  id integer primary key auto_increment,
+  id serial primary key,
   content varchar(511) not null,
-  sending_time datetime not null,
+  sending_time timestamp not null,
   from_id integer not null,
   to_id integer not null
 );
 
 create table photo (
-  id integer primary key auto_increment,
-  date_of_post datetime,
-  img longblob not null,
-  is_avatar bit not null,
-  was_avatar bit not null,
+  id serial primary key,
+  date_of_post timestamp,
+  title varchar(31),
+  is_avatar boolean not null,
+  was_avatar boolean not null,
   user_id integer
 );
 
 create table post (
-  id integer primary key auto_increment,
+  id serial primary key,
   content varchar(511) not null,
-  post_time datetime not null,
+  post_time timestamp not null,
   author_id integer,
   owner_id integer
 );
 
 create table privacy_settings (
-  id integer primary key auto_increment,
+  id serial primary key,
   friends char(1) default 'a',
   full_info char(1) default 'a',
   messages char(1) default 'a',
@@ -40,8 +39,8 @@ create table privacy_settings (
   user_id integer
 );
 
-create table user (
-  id integer primary key auto_increment,
+create table users (
+  id serial primary key,
   bio varchar(255),
   city varchar(255),
   date_of_birth varchar(255),
@@ -56,32 +55,32 @@ create table user (
 
 alter table friendship
   add constraint friendship_user_fk1
-  foreign key (from_id) references user (id);
+  foreign key (from_id) references users (id);
 
 alter table friendship
   add constraint friendship_user_fk2
-  foreign key (to_id) references user (id);
+  foreign key (to_id) references users (id);
 
 alter table message
   add constraint message_user_fk1
-  foreign key (from_id) references user (id);
+  foreign key (from_id) references users (id);
 
 alter table message
   add constraint message_user_fk2
-  foreign key (to_id) references user (id);
+  foreign key (to_id) references users (id);
 
 alter table photo
   add constraint photo_user_fk
-  foreign key (user_id) references user (id);
+  foreign key (user_id) references users (id);
 
 alter table post
   add constraint post_user_fk1
-  foreign key (author_id) references user (id);
+  foreign key (author_id) references users (id);
 
 alter table post
   add constraint post_user_fk2
-  foreign key (owner_id) references user (id);
+  foreign key (owner_id) references users (id);
 
 alter table privacy_settings
   add constraint privacy_settings_user_fk
-  foreign key (user_id) references user (id);
+  foreign key (user_id) references users (id);

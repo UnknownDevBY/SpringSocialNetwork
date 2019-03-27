@@ -142,7 +142,7 @@ xmlns:th="http://www.thymeleaf.org">
                 <div class="post">
                     <a class="post-author" th:href="'/users/' + ${post.post.owner.id}">Владислав Ефимчик</a>
                     <p class="post-time" th:text="${post.post.postTime}"></p>
-                    <div class="post-content">
+                    <div th:id="'post' + ${post.post.id}" class="post-content">
                                 <span th:each="word : ${post.post.content.split(' ')}">
                                     <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
                                     <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>

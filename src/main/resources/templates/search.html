@@ -57,8 +57,14 @@ xmlns:th="http://www.thymeleaf.org">
     </div>
     <div th:if="${posts != null}">
       <div style="text-decoration: none;" th:each="post : ${posts}" class="post">
-        <p style="font-size: 12px;">Стена пользователя Владислав Ефимчик</p>
-        <a class="post-author" th:href="'/users/' + ${post.post.owner.id} + '#post' + ${post.post.id}">Владислав Ефимчик</a>
+        <div th:if="${post.post.owner != null}">
+          <p style="font-size: 12px;" th:text="'Стена пользователя ' + ${post.post.owner.name} + ' ' + ${post.post.owner.surname}">Стена пользователя Владислав Ефимчик</p>
+          <a class="post-author" th:href="'/users/' + ${post.post.owner.id} + '#post' + ${post.post.id}" th:text="${post.post.author.name} + ' ' + ${post.post.author.surname}">Владислав Ефимчик</a>
+        </div>
+        <div th:if="${post.post.owner == null}">
+          <p style="font-size: 12px;" th:text="'Группа ' + ${post.post.community.title}">Стена пользователя Владислав Ефимчик</p>
+          <a class="post-author" th:href="'/communities/public/' + ${post.post.community.id} + '#post' + ${post.post.id}" th:text="${post.post.community.title}">Владислав Ефимчик</a>
+        </div>
         <p class="post-time" th:text="${post.post.postTime}"></p>
         <div style="margin-bottom: 10px;" class="post-content">
           <span  th:each="word : ${post.post.content.split(' ')}">

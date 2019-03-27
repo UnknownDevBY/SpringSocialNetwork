@@ -6,10 +6,8 @@ import javax.persistence.*;
 public class Friendship {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private boolean isConfirmed;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "from_id")
@@ -28,14 +26,6 @@ public class Friendship {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
     }
 
     public User getFrom() {
