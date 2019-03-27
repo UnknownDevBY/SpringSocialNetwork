@@ -182,7 +182,7 @@ xmlns:th="http://www.thymeleaf.org">
                             </div>
                         </div>
                     </details>
-                    <form th:if="${currentUser != null && privacySettings.canLeaveComments}" th:action="'/comment/post/' + ${post.post.id}" method="post">
+                    <form style="height: 50px;" th:if="${currentUser != null && privacySettings.canLeaveComments}" th:action="'/comment/post/' + ${post.post.id}" method="post">
                         <textarea id="content" name="content" class="photo-comment-area" maxlength="255" minlength="1"></textarea>
                         <input class="post-comment-input send-photo-comment" type="submit" value="Оставить комментарий">
                     </form>
