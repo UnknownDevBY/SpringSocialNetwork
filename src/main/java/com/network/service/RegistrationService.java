@@ -8,4 +8,5 @@ import java.io.IOException;
 public interface RegistrationService {
 
     void saveUser(User user, String pass, MultipartFile avatar) throws IOException;
+    String getError(User user);
 }

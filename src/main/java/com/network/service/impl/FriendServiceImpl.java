@@ -1,11 +1,10 @@
 package com.network.service.impl;
 
+import com.network.component.UserDtoTransformer;
 import com.network.dto.UserDto;
-import com.network.model.Friendship;
 import com.network.model.User;
 import com.network.repository.FriendshipRepository;
-import com.network.repository.PhotoRepository;
-import com.network.service.FriendsService;
+import com.network.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +12,17 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
-public class FriendsServiceImpl implements FriendsService {
+public class FriendServiceImpl implements FriendService {
 
-    @Autowired private PhotoRepository photoRepository;
+    @Autowired private UserDtoTransformer userDtoTransformer;
     @Autowired private FriendshipRepository friendshipRepository;
 
     @Override
     public List<UserDto> setRelation(Set<User> relation) {
-        List<UserDto> relations = new ArrayList<>();
-        relation.forEach(setUserDto(relations));
-        return relations;
+        return relation.stream().map(userDtoTransformer::toUserDto).collect(Collectors.toList());
     }
 
     @Override
@@ -57,18 +54,4 @@ public class FriendsServiceImpl implements FriendsService {
         });
         return friends;
     }
-
-    public Consumer<? super User> setUserDto(List<UserDto> relations) {
-        return user -> {
-            int userId = user.getId();
-            UserDto friend = new UserDto();
-            friend.setUserName(user.getName());
-            friend.setAvatar(photoRepository.getAvatarByUserId(userId));
-            friend.setUserId(userId);
-            friend.setUserSurname(user.getSurname());
-            relations.add(friend);
-        };
-    }
-
-
 }

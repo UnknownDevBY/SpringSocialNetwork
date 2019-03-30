@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.Date;
 
 @Controller
 public class RegistrationController {
 
-    @Autowired private UserRepository userRepository;
     @Autowired private RegistrationService registrationService;
 
     @GetMapping("/registration")
@@ -29,16 +29,13 @@ public class RegistrationController {
 
     @Registration
     @PostMapping("/registration")
-    public String addUser(@ModelAttribute User user,
+    public String addUser(@Valid @ModelAttribute User user,
                           @RequestParam String pass,
                           @RequestParam MultipartFile avatar,
                           Model model) throws IOException {
-        if(System.currentTimeMillis() - Date.valueOf(user.getDateOfBirth()).getTime() < 441_504_000_000L) {
-            model.addAttribute("error", "Вы должны быть старше 14-и лет");
-            return "registration";
-        }
-        if(userRepository.getByEmail(user.getEmail()) != null) {
-            model.addAttribute("error", "Пользователь с таким логином уже существует");
+        String error = registrationService.getError(user);
+        if(error != null) {
+            model.addAttribute("error", error);
             return "registration";
         }
         registrationService.saveUser(user, pass, avatar);

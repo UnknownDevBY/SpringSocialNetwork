@@ -7,38 +7,38 @@ xmlns:th="http://www.thymeleaf.org">
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
 </head>
 <body>
-<header>
-  <p><a href="/"><em class="logo">Social network</em></a></p>
-  <div th:if="${currentUser != null}" class="logout">
-    <form action="/logout" method="get">
-      <input type="submit" value="Выход">
-    </form>
+  <header>
+    <p><a href="/"><em class="logo">Social network</em></a></p>
+    <div th:if="${currentUser != null}" class="logout">
+      <form action="/logout" method="get">
+        <input type="submit" value="Выход">
+      </form>
+    </div>
+  </header>
+  <div class="menu">
+    <ul th:if="${currentUser != null}">
+      <li><a class="active" href="/search">Поиск</a></li>
+      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+      <li><a href="/communities">Группы</a></li>
+      <li><a href="/news">Новости</a></li>
+      <li><a href="/messages">Сообщения</a></li>
+      <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+    </ul>
+    <div>
+      <form th:if="${currentUser == null}" action="/login" method="post">
+        <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+        <br>
+        <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+        <br>
+        <div>
+          <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+          <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+        </div>
+        <input type="submit" value="Войти">
+      </form>
+    </div>
   </div>
-</header>
-<div class="menu">
-  <ul th:if="${currentUser != null}">
-    <li><a class="active" href="/search">Поиск</a></li>
-    <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-    <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-    <li><a href="/communities">Группы</a></li>
-    <li><a href="/news">Новости</a></li>
-    <li><a href="/messages">Сообщения</a></li>
-    <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
-  </ul>
-  <div>
-    <form th:if="${currentUser == null}" action="/login" method="post">
-      <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-      <br>
-      <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-      <br>
-      <div>
-        <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-        <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
-      </div>
-      <input type="submit" value="Войти">
-    </form>
-  </div>
-</div>
   <main>
     <div th:each="news : ${allNews}" class="news-block">
       <div th:if="${news.post != null}">
@@ -54,29 +54,29 @@ xmlns:th="http://www.thymeleaf.org">
           </div>
           <div th:if="${news.post.community == null}">
             <span th:if="${news.post.author.id != news.post.owner.id}">
-            <p class="photo-post-time"><a th:href="'/users/' + ${news.post.author.id}" th:text="${news.post.author.name} + ' ' + ${news.post.author.surname}">Иван</a> на стене <a
-                    th:href="'/users/' + ${news.post.owner.id}" th:text="${news.post.owner.name} + ' ' + ${news.post.owner.surname}">Олега</a></p>
-          </span>
-            <a th:href="'/users/' + ${news.post.author.id}" style="text-decoration: none;" href="">
-              <h3 class="photo-owner-name" th:text="${news.post.author.name} + ' ' + ${news.post.author.surname}">Владислав Ефимчик</h3>
-              <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
-            </a>
-            <div class="post-content">
-              <p style="margin-bottom: 10px;" th:text="${news.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+              <p class="photo-post-time"><a th:href="'/users/' + ${news.post.author.id}" th:text="${news.post.author.name} + ' ' + ${news.post.author.surname}">Иван</a> на стене <a
+                th:href="'/users/' + ${news.post.owner.id}" th:text="${news.post.owner.name} + ' ' + ${news.post.owner.surname}">Олега</a></p>
+              </span>
+              <a th:href="'/users/' + ${news.post.author.id}" style="text-decoration: none;" href="">
+                <h3 class="photo-owner-name" th:text="${news.post.author.name} + ' ' + ${news.post.author.surname}">Владислав Ефимчик</h3>
+                <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
+              </a>
+              <div class="post-content">
+                <p style="margin-bottom: 10px;" th:text="${news.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div th:if="${news.photo != null}">
-        <div class="news-photo-block">
-          <a style="text-decoration: none;" href="">
-            <h3 class="photo-owner-name" th:text="${news.photo.user.name} + ' ' + ${news.photo.user.surname}">Владислав Ефимчик</h3>
-            <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
-          </a>
-          <a th:href="'/photos/' + ${news.photo.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${news.photo.title}" alt=""></a>
+        <div th:if="${news.photo != null}">
+          <div class="news-photo-block">
+            <a style="text-decoration: none;" href="">
+              <h3 class="photo-owner-name" th:text="${news.photo.user.name} + ' ' + ${news.photo.user.surname}">Владислав Ефимчик</h3>
+              <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
+            </a>
+            <a th:href="'/photos/' + ${news.photo.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${news.photo.title}" alt=""></a>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
-</body>
-</html>
+    </main>
+  </body>
+  </html>

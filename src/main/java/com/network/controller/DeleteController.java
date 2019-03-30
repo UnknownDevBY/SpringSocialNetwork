@@ -18,9 +18,8 @@ public class DeleteController {
     @GetMapping("/delete/{type}/{id}")
     public String delete(@PathVariable String type,
                          @PathVariable int id,
-                         @AuthenticationPrincipal User currentUser,
-                         HttpServletRequest request) {
+                         @AuthenticationPrincipal User currentUser) {
         deleteService.deleteObject(type, id, currentUser);
-        return "redirect:" + request.getHeader("Referer");
+        return "redirect:/users/" + currentUser.getId();
     }
 }

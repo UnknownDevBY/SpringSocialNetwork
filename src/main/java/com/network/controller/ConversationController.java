@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 
 @Controller
@@ -20,7 +21,10 @@ public class ConversationController {
     @GetMapping("/conversations/{id}")
     public String openConversation(@PathVariable int id,
                                    @AuthenticationPrincipal User currentUser,
+                                   HttpServletRequest request,
                                    Model model) {
+        if(conversationService.isValid(currentUser.getId(), id))
+            return "redirect:" + request.getHeader("Referer");
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("opponentsId", id);
         model.addAttribute("messages", messageRepository.getAllMessages(currentUser.getId(), id));
@@ -31,8 +35,9 @@ public class ConversationController {
     public String sendMessage(@PathVariable int id,
                               @NotBlank @RequestParam String message,
                               @AuthenticationPrincipal User currentUser,
+                              HttpServletRequest request,
                               Model model) {
         conversationService.saveMessage(id, currentUser, message);
-        return openConversation(id, currentUser, model);
+        return openConversation(id, currentUser, request, model);
     }
 }

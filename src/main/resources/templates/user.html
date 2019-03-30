@@ -35,162 +35,162 @@ xmlns:th="http://www.thymeleaf.org">
             <li><a href="/messages">Сообщения</a></li>
             <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
         </ul>
-    <div>
-        <form th:if="${currentUser == null}" action="/login" method="post">
-            <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-            <br>
-            <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-            <br>
-            <div>
-                <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-                <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
-            </div>
-            <input type="submit" value="Войти">
-        </form>
+        <div>
+            <form th:if="${currentUser == null}" action="/login" method="post">
+                <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+                <br>
+                <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+                <br>
+                <div>
+                    <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+                    <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+                </div>
+                <input type="submit" value="Войти">
+            </form>
+        </div>
     </div>
-</div>
-<main>
-    <div class="main-info">
-        <div class="avatar-block">
-            <img th:if="${avatar == null}" class="avatar" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-            <span th:if="${avatar != null}">
-                <a th:if="${currentUser != null && pageUser.id == currentUser.id}" href="/photos/add"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
-                <a th:if="${currentUser == null || pageUser.id != currentUser.id}" th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
-            </span>
-            <div class="message">
-                <div th:if="${currentUser != null}">
-                    <a th:if="${currentUser.id == pageUser.id}" href="/edit">Редактировать</a>
-                    <div th:if="${currentUser.id != pageUser.id}">
-                        <div th:if="${privacySettings.canSendMessages}">
-                            <a th:href="'/conversations/' + ${pageUser.id}">Отправить сообщение</a>
+    <main>
+        <div class="main-info">
+            <div class="avatar-block">
+                <img th:if="${avatar == null}" class="avatar" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
+                <span th:if="${avatar != null}">
+                    <a th:if="${currentUser != null && pageUser.id == currentUser.id}" href="/photos/add"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
+                    <a th:if="${currentUser == null || pageUser.id != currentUser.id}" th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}" alt=""></a>
+                </span>
+                <div class="message">
+                    <div th:if="${currentUser != null}">
+                        <a th:if="${currentUser.id == pageUser.id}" href="/edit">Редактировать</a>
+                        <div th:if="${currentUser.id != pageUser.id}">
+                            <div th:if="${privacySettings.canSendMessages}">
+                                <a th:href="'/conversations/' + ${pageUser.id}">Отправить сообщение</a>
+                            </div>
+                            <a th:if="${is1friendTo2 == false && is2friendTo1 == false}" th:href="'friendship/' + ${pageUser.id}">Добавить в друзья</a>
+                            <a onmouseenter='onMouse(this, "Удалить из друзей")'
+                            onmouseleave='onMouse(this, "У Вас в друзьях")' th:href="'friendship/' + ${pageUser.id}" th:if="${is1friendTo2 == true && is2friendTo1 == true}" >У Вас в друзьях</a>
+                            <a onmouseenter='onMouse(this, "Отписаться")'
+                            onmouseleave='onMouse(this, "Вы подписаны")' th:href="'friendship/' + ${pageUser.id}" th:if="${is1friendTo2 == true && is2friendTo1 == false}">Вы подписаны</a>
+                            <a onmouseenter='onMouse(this, "Принять заявку")'
+                            onmouseleave='onMouse(this, "Подписан на Вас")' th:href="'friendship/' + ${pageUser.id}" th:if="${is1friendTo2 == false && is2friendTo1 == true}">Подписан на Вас</a>
                         </div>
-                        <a th:if="${is1friendTo2 == false && is2friendTo1 == false}" th:href="'friendship/' + ${pageUser.id}">Добавить в друзья</a>
-                        <a onmouseenter='onMouse(this, "Удалить из друзей")'
-                        onmouseleave='onMouse(this, "У Вас в друзьях")' th:href="'friendship/' + ${pageUser.id}" th:if="${is1friendTo2 == true && is2friendTo1 == true}" >У Вас в друзьях</a>
-                        <a onmouseenter='onMouse(this, "Отписаться")'
-                        onmouseleave='onMouse(this, "Вы подписаны")' th:href="'friendship/' + ${pageUser.id}" th:if="${is1friendTo2 == true && is2friendTo1 == false}">Вы подписаны</a>
-                        <a onmouseenter='onMouse(this, "Принять заявку")'
-                        onmouseleave='onMouse(this, "Подписан на Вас")' th:href="'friendship/' + ${pageUser.id}" th:if="${is1friendTo2 == false && is2friendTo1 == true}">Подписан на Вас</a>
+                    </div>
+                    <div th:if="${currentUser == null}">
+                        <a href="/">Войдите</a>
                     </div>
                 </div>
-                <div th:if="${currentUser == null}">
-                    <a href="/">Войдите</a>
-                </div>
             </div>
-        </div>
-        <div class="about-person">
-            <div class="name">
-                <p th:text="${pageUser.name} + ' ' + ${pageUser.surname}">Имя Фамилия</p>
-                <div th:if="${pageUser.status != null}">
-                    <p th:text="${pageUser.status}" class="status">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo quis adipisci, hic, unde vero nisi cumque eaque delectus in repellat tempore distinctio aliquid minus facilis!</p>
-                </div>
-            </div>
-            <div class="basic-info">
-                <div>Дата рождения:</div>
-                <div><span th:text="${pageUser.dateOfBirth.toString()}">2001-04-29</span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" href="/edit"><img style="float: right;" th:src="@{/img/edit-picture.png}" src="../static/img/edit-picture.png" alt=""></a></div>
-                <div>Пол:</div>
-                <div th:text="${T(java.lang.Character).compare(pageUser.sex, 'm') == 0} ? 'мужской' : 'женский'">Мужской</div>
-                <div th:if="${pageUser.city != null}">Город:</div>
-                <div th:if="${pageUser.city != null}">Минск</div>
-            </div>
-            <div th:if="${(pageUser.bio != null || pageUser.interests != null) && privacySettings.fullInfoAllowed}">
-                <details>
-                    <summary onclick="setDetails(this)" style="display: block;">Полная информация</summary>
-                    <div class="full-info">
-                        <div th:if="${pageUser.bio != null}">Биография:</div>
-                        <div th:if="${pageUser.bio != null}" th:text="${pageUser.bio}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Provident assumenda asperiores architecto nostrum blanditiis excepturi voluptatibus, velit ad enim. Aperiam voluptatum est fugit quisquam libero distinctio nobis porro, numquam minus dolores cumque omnis atque dolorem hic rerum ducimus nam repudiandae itaque culpa. Molestias maxime placeat magni adipisci possimus iure odit!</div>
-                        <div th:if="${pageUser.interests != null}">Интересы:</div>
-                        <div th:if="${pageUser.interests != null}" th:text="${pageUser.interests}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo veritatis odio ipsa deleniti sapiente blanditiis nobis sint qui eligendi, incidunt ipsam, perspiciatis eum dolorum consequatur temporibus magni minima quas et, eos, in quibusdam commodi dolores at atque. Tempore, cumque. Qui fugit iste voluptatum nihil, quia quibusdam ipsum distinctio rerum neque.</div>
-                    </div>   
-                </details>
-            </div>
-            <div>
-                <a th:if="${currentUser != null && currentUser.id == pageUser.id && allPhotos.isEmpty()}" class="add-photo-amount" href="/photos/add"><sup>Добавить фото</sup></a>
-            </div>
-            <div th:if="${!allPhotos.isEmpty() && (privacySettings.arePhotosAllowed)}">
-                <span class="amount"><a th:text="'Фотографии: ' + ${allPhotos.size()}" th:href="'/albums/' + ${pageUser.id} + '/0'">Фотографии: 10</a></span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" class="add-photo-amount" href="/photos/add"><sup>Добавить</sup></a>
-                <div class="list-of-photos">
-                    <span style="height: 100%;" th:each="photo : ${allPhotos}">
-                        <a th:href="'/photos/' + ${photo.photo.id}"><img class="photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${photo.photo.title}" alt=""></a>
-                    </span>
-                </div>  
-            </div>
-        </div>
-        <div class="list-of-friends">
-            <a th:href="'/friends/' + ${pageUser.id}" th:text="'Друзья: ' + ${friends.size()}" class="amount">Друзья: 10</a>
-            <div th:if="${!friends.isEmpty() && (privacySettings.areFriendsAllowed)}">
-                <div th:each="friend : ${friends.subList(0, displayFriends)}" class="friends-block">
-                    <a th:href="'/users/' + ${friend.userId}" class="friend">
-                        <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../st atic/img/no-avatar.png" alt="">
-                        <img th:if="${friend.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
-                        <p th:text="${friend.userName}">Имя</p>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="about-person">
-            <div th:if="${currentUser != null && (privacySettings.canLeavePosts)}">
-                <p class="post-author">Новая запись</p>
-                <form class="new-post" action="" method="post">
-                    <textarea id="content" name="content"></textarea>
-                    <input type="submit" value="Отправить">
-                </form>
-            </div>
-            <p th:text="'Записи: ' + ${posts.size()}" class="amount">Записи: 0</p>
-            <div th:each="post : ${posts}">
-                <a th:if="${currentUser != null && post.post.author.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/post/' + ${post.post.id}">X</a>
-                <div class="post">
-                    <a class="post-author" th:href="'/users/' + ${post.post.owner.id}">Владислав Ефимчик</a>
-                    <p class="post-time" th:text="${post.post.postTime}"></p>
-                    <div th:id="'post' + ${post.post.id}" class="post-content">
-                                <span th:each="word : ${post.post.content.split(' ')}">
-                                    <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
-                                    <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
-                                </span>
+            <div class="about-person">
+                <div class="name">
+                    <p th:text="${pageUser.name} + ' ' + ${pageUser.surname}">Имя Фамилия</p>
+                    <div th:if="${pageUser.status != null}">
+                        <p th:text="${pageUser.status}" class="status">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo quis adipisci, hic, unde vero nisi cumque eaque delectus in repellat tempore distinctio aliquid minus facilis!</p>
                     </div>
-                    <div class="like-comment-amount">
-                      <span>
-                          <span th:if="${currentUser == null}">
-                              <img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/black_like.svg" alt="">
-                          </span>
-                          <span th:if="${currentUser != null && !post.likedByCurrentUser}">
-                              <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
-                          </span>
-                          <span th:if="${currentUser != null && post.likedByCurrentUser}">
-                              <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
-                          </span>
-                          <span class="like-amount" th:text="${post.likesCount}">10</span>
-                      </span>
-                      <span>
-                        <img class="like-img" th:src="@{/img/comment.svg}" src="../static/img/comment.svg" alt="">
-                        <span class="like-amount" th:text="${post.comments == null ? 0 : post.comments.size()}">10</span>
-                    </span>
+                </div>
+                <div class="basic-info">
+                    <div>Дата рождения:</div>
+                    <div><span th:text="${pageUser.dateOfBirth.toString()}">2001-04-29</span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" href="/edit"><img style="float: right;" th:src="@{/img/edit-picture.png}" src="../static/img/edit-picture.png" alt=""></a></div>
+                    <div>Пол:</div>
+                    <div th:text="${T(java.lang.Character).compare(pageUser.sex, 'm') == 0} ? 'мужской' : 'женский'">Мужской</div>
+                    <div th:if="${pageUser.city != null}">Город:</div>
+                    <div th:if="${pageUser.city != null}">Минск</div>
+                </div>
+                <div th:if="${(pageUser.bio != null || pageUser.interests != null) && privacySettings.fullInfoAllowed}">
+                    <details>
+                        <summary onclick="setDetails(this)" style="display: block;">Полная информация</summary>
+                        <div class="full-info">
+                            <div th:if="${pageUser.bio != null}">Биография:</div>
+                            <div th:if="${pageUser.bio != null}" th:text="${pageUser.bio}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Provident assumenda asperiores architecto nostrum blanditiis excepturi voluptatibus, velit ad enim. Aperiam voluptatum est fugit quisquam libero distinctio nobis porro, numquam minus dolores cumque omnis atque dolorem hic rerum ducimus nam repudiandae itaque culpa. Molestias maxime placeat magni adipisci possimus iure odit!</div>
+                            <div th:if="${pageUser.interests != null}">Интересы:</div>
+                            <div th:if="${pageUser.interests != null}" th:text="${pageUser.interests}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo veritatis odio ipsa deleniti sapiente blanditiis nobis sint qui eligendi, incidunt ipsam, perspiciatis eum dolorum consequatur temporibus magni minima quas et, eos, in quibusdam commodi dolores at atque. Tempore, cumque. Qui fugit iste voluptatum nihil, quia quibusdam ipsum distinctio rerum neque.</div>
+                        </div>   
+                    </details>
                 </div>
                 <div>
-                    <details th:if="${post.comments != null && post.comments.size() != 0}">
-                        <summary class="show-comments-summary">Показать комментарии</summary>
-                        <div th:each="comment : ${post.comments}">
-                            <div class="photo-comment">
-                                <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
-                                <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
-                                <p th:id="'comment' + ${comment.id}" class="photo-comment-text">
-                                    <span th:each="word : ${comment.content.split(' ')}">
-                                    <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '">Я</span>
-                                    <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '">#ефимчик</a>
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </details>
-                    <form style="height: 50px;" th:if="${currentUser != null && privacySettings.canLeaveComments}" th:action="'/comment/post/' + ${post.post.id}" method="post">
-                        <textarea id="content" name="content" class="photo-comment-area" maxlength="255" minlength="1"></textarea>
-                        <input class="post-comment-input send-photo-comment" type="submit" value="Оставить комментарий">
+                    <a th:if="${currentUser != null && currentUser.id == pageUser.id && allPhotos.isEmpty()}" class="add-photo-amount" href="/photos/add"><sup>Добавить фото</sup></a>
+                </div>
+                <div th:if="${!allPhotos.isEmpty() && (privacySettings.arePhotosAllowed)}">
+                    <span class="amount"><a th:text="'Фотографии: ' + ${allPhotos.size()}" th:href="'/albums/' + ${pageUser.id} + '/0'">Фотографии: 10</a></span><a th:if="${currentUser != null && currentUser.id == pageUser.id}" class="add-photo-amount" href="/photos/add"><sup>Добавить</sup></a>
+                    <div class="list-of-photos">
+                        <span style="height: 100%;" th:each="photo : ${allPhotos}">
+                            <a th:href="'/photos/' + ${photo.photo.id}"><img class="photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${photo.photo.title}" alt=""></a>
+                        </span>
+                    </div>  
+                </div>
+            </div>
+            <div class="list-of-friends">
+                <a th:href="'/friends/' + ${pageUser.id}" th:text="'Друзья: ' + ${friends.size()}" class="amount">Друзья: 10</a>
+                <div th:if="${!friends.isEmpty() && (privacySettings.areFriendsAllowed)}">
+                    <div th:each="friend : ${friends.subList(0, displayFriends)}" class="friends-block">
+                        <a th:href="'/users/' + ${friend.userId}" class="friend">
+                            <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../st atic/img/no-avatar.png" alt="">
+                            <img th:if="${friend.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
+                            <p th:text="${friend.userName}">Имя</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="about-person">
+                <div th:if="${currentUser != null && (privacySettings.canLeavePosts)}">
+                    <p class="post-author">Новая запись</p>
+                    <form class="new-post" action="" method="post">
+                        <textarea id="content" name="content"></textarea>
+                        <input type="submit" value="Отправить">
                     </form>
+                </div>
+                <p th:text="'Записи: ' + ${posts.size()}" class="amount">Записи: 0</p>
+                <div th:each="post : ${posts}">
+                    <a th:if="${currentUser != null && post.post.author.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/post/' + ${post.post.id}">X</a>
+                    <div class="post">
+                        <a class="post-author" th:text="${post.post.owner.name} + ' ' + ${post.post.owner.surname}" th:href="'/users/' + ${post.post.owner.id}">Владислав Ефимчик</a>
+                        <p class="post-time" th:text="${post.post.postTime}"></p>
+                        <div th:id="'post' + ${post.post.id}" class="post-content">
+                            <span th:each="word : ${post.post.content.split(' ')}">
+                                <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
+                                <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
+                            </span>
+                        </div>
+                        <div class="like-comment-amount">
+                          <span>
+                              <span th:if="${currentUser == null}">
+                                  <img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/black_like.svg" alt="">
+                              </span>
+                              <span th:if="${currentUser != null && !post.likedByCurrentUser}">
+                                  <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+                              </span>
+                              <span th:if="${currentUser != null && post.likedByCurrentUser}">
+                                  <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+                              </span>
+                              <span class="like-amount" th:text="${post.likesCount}">10</span>
+                          </span>
+                          <span>
+                            <img class="like-img" th:src="@{/img/comment.svg}" src="../static/img/comment.svg" alt="">
+                            <span class="like-amount" th:text="${post.comments == null ? 0 : post.comments.size()}">10</span>
+                        </span>
+                    </div>
+                    <div>
+                        <details th:if="${post.comments != null && post.comments.size() != 0}">
+                            <summary class="show-comments-summary">Показать комментарии</summary>
+                            <div th:each="comment : ${post.comments}">
+                                <div class="photo-comment">
+                                    <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
+                                    <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
+                                    <p th:id="'comment' + ${comment.id}" class="photo-comment-text">
+                                        <span th:each="word : ${comment.content.split(' ')}">
+                                            <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '">Я</span>
+                                            <a th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '">#ефимчик</a>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </details>
+                        <form style="height: 50px;" th:if="${currentUser != null && privacySettings.canLeaveComments}" th:action="'/comment/post/' + ${post.post.id}" method="post">
+                            <textarea id="content" name="content" class="photo-comment-area" maxlength="255" minlength="1"></textarea>
+                            <input class="post-comment-input send-photo-comment" type="submit" value="Оставить комментарий">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </main>
 </body>
 </html>

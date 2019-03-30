@@ -7,56 +7,55 @@ xmlns:th="http://www.thymeleaf.org">
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
 </head>
 <body>
-<header>
+  <header>
     <p><a href="/"><em class="logo">Social network</em></a></p>
     <div th:if="${currentUser != null}" class="logout">
-        <form action="/logout" method="get">
-            <input type="submit" value="Выход">
-        </form>
+      <form action="/logout" method="get">
+        <input type="submit" value="Выход">
+      </form>
     </div>
-</header>
-<div class="menu">
+  </header>
+  <div class="menu">
     <ul th:if="${currentUser != null}">
-        <li><a class="active" href="/search">Поиск</a></li>
-        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-        <li><a href="/communities">Группы</a></li>
-        <li><a href="/news">Новости</a></li>
-        <li><a href="/messages">Сообщения</a></li>
-        <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+      <li><a class="active" href="/search">Поиск</a></li>
+      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+      <li><a href="/communities">Группы</a></li>
+      <li><a href="/news">Новости</a></li>
+      <li><a href="/messages">Сообщения</a></li>
+      <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
     </ul>
     <div>
-        <form th:if="${currentUser == null}" action="/login" method="post">
-            <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-            <br>
-            <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-            <br>
-            <div>
-                <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-                <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
-            </div>
-            <input type="submit" value="Войти">
-        </form>
+      <form th:if="${currentUser == null}" action="/login" method="post">
+        <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+        <br>
+        <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+        <br>
+        <div>
+          <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+          <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+        </div>
+        <input type="submit" value="Войти">
+      </form>
     </div>
-</div>
+  </div>
   <main>
     <div class="convers-content">
       <div class="albums">
-          <a th:href="'/albums/' + ${id} + '/0'" class="album-cover">
-              <img style="width: 80%;" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${defaultAlbum.photos.get(defaultAlbum.photos.size() - 1).title}" alt="">
-              <p th:text="${defaultAlbum.title} + ' (' + ${defaultAlbum.photos.size() + ')'}">Lorem ipsum.</p>
+        <a th:href="'/albums/' + ${id} + '/0'" class="album-cover">
+          <img th:if="${!defaultAlbum.photos.isEmpty()}" style="width: 80%;" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${defaultAlbum.photos.get(0).title}" alt="">
+          <img th:if="${defaultAlbum.photos.isEmpty()}" style="width: 80%;" th:src="@{/img/no-avatar.png}" alt="">
+          <p th:text="${defaultAlbum.title} + ' (' + ${defaultAlbum.photos.size() + ')'}">Lorem ipsum.</p>
+        </a>
+          <a th:each="album : ${albums}" th:href="'/albums/' + ${id} + '/' + ${album.id}" class="album-cover">
+            <img th:if="${!album.photos.isEmpty()}" style="width: 80%;" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${album.photos.get(0).title}" alt="">
+            <img th:if="${album.photos.isEmpty()}" style="width: 80%;" th:src="@{/img/no-avatar.png}" alt="">
+            <p th:text="${album.title} + ' (' + ${album.photos.size() + ')'}">Lorem ipsum.</p>
           </a>
-          <div th:each="album : ${albums}">
-              <a th:href="'/albums/' + ${id} + '/' + ${album.id}" class="album-cover">
-                  <img th:if="${!album.photos.isEmpty()}" style="width: 80%;" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${album.photos.get(album.photos.size() - 1).title}" alt="">
-                  <img th:if="${album.photos.isEmpty()}" style="width: 80%;" th:src="@{/img/no-avatar.png}" alt="">
-                  <p th:text="${album.title} + ' (' + ${album.photos.size() + ')'}">Lorem ipsum.</p>
-              </a>
-          </div>
-          <a th:if="${currentUser != null && currentUser.id == id}" href="/albums/add" class="album-cover">
-            <img class="avatar" th:src="@{/img/plus.svg}" src="../static/img/plus.svg" alt="">
-            <p>Добавить альбом</p>
-          </a>
+        <a th:if="${currentUser != null && currentUser.id == id}" href="/albums/add" class="album-cover">
+          <img class="avatar" th:src="@{/img/plus.svg}" src="../static/img/plus.svg" alt="">
+          <p>Добавить альбом</p>
+        </a>
       </div>
     </div>
   </main>

@@ -9,26 +9,37 @@ public class PrivacySettingsDto {
     private boolean canLeavePosts = true;
     private boolean canLeaveComments = true;
 
-    public PrivacySettingsDto() {
-
-    }
-
-    public PrivacySettingsDto(boolean areFriends, Character messages, Character fullInfo, Character photos, Character friends, Character postAuthors, Character comments) {
+    public void setCanSendMessages(boolean areFriends, Character messages) {
         if(messages != null && ((!areFriends && messages == 'f') || messages == 'm')) {
             canSendMessages = false;
         }
+    }
+
+    public void setFullInfoAllowed(boolean areFriends, Character fullInfo) {
         if(fullInfo != null && ((!areFriends && fullInfo == 'f') || fullInfo == 'm')) {
             isFullInfoAllowed = false;
         }
+    }
+
+    public void setArePhotosAllowed(boolean areFriends, Character photos) {
         if(photos != null && ((!areFriends && photos == 'f') || photos == 'm')) {
             arePhotosAllowed = false;
         }
+    }
+
+    public void setAreFriendsAllowed(boolean areFriends, Character friends) {
         if(friends != null && ((!areFriends && friends == 'f') || friends == 'm')) {
             areFriendsAllowed = false;
         }
+    }
+
+    public void setCanLeavePosts(boolean areFriends, Character postAuthors) {
         if(postAuthors != null && ((!areFriends && postAuthors == 'f') || postAuthors == 'm')) {
             canLeavePosts = false;
         }
+    }
+
+    public void setCanLeaveComments(boolean areFriends, Character comments) {
         if(comments != null && ((!areFriends && comments == 'f') || comments == 'm')) {
             canLeaveComments = false;
         }
@@ -54,6 +65,10 @@ public class PrivacySettingsDto {
         this.canLeavePosts = canLeavePosts;
     }
 
+    public void setCanLeaveComments(boolean canLeaveComments) {
+        this.canLeaveComments = canLeaveComments;
+    }
+
     public boolean isCanSendMessages() {
         return canSendMessages;
     }
@@ -76,10 +91,6 @@ public class PrivacySettingsDto {
 
     public boolean isCanLeaveComments() {
         return canLeaveComments;
-    }
-
-    public void setCanLeaveComments(boolean canLeaveComments) {
-        this.canLeaveComments = canLeaveComments;
     }
 
     @Override

@@ -7,7 +7,7 @@ import com.network.model.User;
 import java.util.List;
 import java.util.Set;
 
-public interface FriendsService {
+public interface FriendService {
 
     List<UserDto> setRelation(Set<User> relation);
     Set<User> getAllSubscribers(User pageUser);

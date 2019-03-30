@@ -2,63 +2,64 @@
 <html lang="en"
 xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Редактировать</title>
-    <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+  <meta charset="UTF-8">
+  <title>Редактировать</title>
+  <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+  <script type="text/javascript" th:src="@{/js/regex.js}" src="../static/js/regex.js"></script>
 </head>
 <body>
-<header>
+  <header>
     <p><a href="/"><em class="logo">Social network</em></a></p>
     <div th:if="${currentUser != null}" class="logout">
-        <form action="/logout" method="get">
-            <input type="submit" value="Выход">
-        </form>
+      <form action="/logout" method="get">
+        <input type="submit" value="Выход">
+      </form>
     </div>
-</header>
-<div class="menu">
+  </header>
+  <div class="menu">
     <ul th:if="${currentUser != null}">
-        <li><a class="active" href="/search">Поиск</a></li>
-        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-        <li><a href="/communities">Группы</a></li>
-        <li><a href="/news">Новости</a></li>
-        <li><a href="/messages">Сообщения</a></li>
-        <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+      <li><a class="active" href="/search">Поиск</a></li>
+      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+      <li><a href="/communities">Группы</a></li>
+      <li><a href="/news">Новости</a></li>
+      <li><a href="/messages">Сообщения</a></li>
+      <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
     </ul>
     <div>
-        <form th:if="${currentUser == null}" action="/login" method="post">
-            <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-            <br>
-            <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-            <br>
-            <div>
-                <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-                <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
-            </div>
-            <input type="submit" value="Войти">
-        </form>
+      <form th:if="${currentUser == null}" action="/login" method="post">
+        <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+        <br>
+        <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+        <br>
+        <div>
+          <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+          <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+        </div>
+        <input type="submit" value="Войти">
+      </form>
     </div>
-</div>
-<main class="edit">
+  </div>
+  <main class="edit">
     <form action="/edit" method="post" enctype="multipart/form-data">
-        <div class="privacy-link">
-           <a title="Перейти к настройкам" href="/privacy-settings">Настройки приватности</a>
-       </div>
-       <label for="name">Имя</label>
-       <div>
-          <input th:value="${currentUser.name}" type="text" id="name" name="name" minlength="3" maxlength="31" required="required">
-      </div>
-      <label for="surname">Фамилия</label>
-      <div>
-          <input th:value="${currentUser.surname}" type="text" id="surname" name="surname" minlength="2" maxlength="31" required="required">
-      </div>
-      <label for="city">Город</label>
-      <div>
-       <input th:value="${currentUser.city}" type="text" id="city" name="city" maxlength="31">
+      <div class="privacy-link">
+       <a title="Перейти к настройкам" href="/privacy-settings">Настройки приватности</a>
+     </div>
+     <label for="name">Имя</label>
+     <div>
+      <input th:value="${currentUser.name}" type="text" id="name" name="name" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="3" maxlength="31" required="required">
+    </div>
+    <label for="surname">Фамилия</label>
+    <div>
+      <input th:value="${currentUser.surname}" type="text" id="surname" name="surname" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31" required="required">
+    </div>
+    <label for="city">Город</label>
+    <div>
+     <input th:value="${currentUser.city}" type="text" id="city" name="city" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31">
    </div>
    <label for="pass">Сменить пароль (не менее 6 символов)</label>
    <div>
-      <input type="password" id="pass" name="pass" minlength="6">  
+    <input type="password" id="pass" name="pass" minlength="6">  
   </div>
   <div>
     <p>Пол</p>
@@ -66,22 +67,23 @@ xmlns:th="http://www.thymeleaf.org">
     <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'm') == 0}" type="radio" name="sex" id="male" value="m" required="required">
     <label for="female">Женщина</label>
     <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'f') == 0}" type="radio" name="sex" id="female" value="f">
-</div>
-<label for="dateOfBirth">Дата рождения</label>
-<div>
+  </div>
+  <label for="dateOfBirth">Дата рождения</label>
+  <div>
     <input th:value="${currentUser.dateOfBirth}" type="date" id="dateOfBirth" name="dateOfBirth" required="required">
-</div>
-<label for="bio">О себе</label>
-<div>
+  </div>
+  <label for="bio">О себе</label>
+  <div>
     <textarea th:text="${currentUser.bio == null} ? '' : ${currentUser.bio}" id="bio" name="bio"></textarea>
-</div>
-<label for="interests">Увлечения</label>
-<div>
+  </div>
+  <label for="interests">Увлечения</label>
+  <div>
    <textarea th:text="${currentUser.interests == null} ? '' : ${currentUser.interests}" id="interests" name="interests"></textarea>
-</div>
-<p th:text="${error}" style="color: red" id="error"></p>
-<input type="submit" value="Подтвердить">  
+ </div>
+ <p th:text="${error}" style="color: red" id="error"></p>
+ <input type="submit" value="Подтвердить">  
 </form>
 </main>
+  <script type="text/javascript" th:src="@{/js/validate-date.js}" src="../static/js/validate-date.js"></script>
 </body>
 </html>

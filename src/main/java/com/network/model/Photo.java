@@ -1,7 +1,6 @@
 package com.network.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -28,8 +27,8 @@ public class Photo {
     @JoinColumn(name = "community_id")
     private Community community;
 
-    @OneToMany(mappedBy = "photo")
-    private Set<Likes> likes;
+    @Column(length = 65535)
+    private String likes;
 
     @OneToMany(mappedBy = "photo")
     private Set<Comment> comments;
@@ -98,11 +97,11 @@ public class Photo {
         this.community = community;
     }
 
-    public Set<Likes> getLikes() {
+    public String getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<Likes> likes) {
+    public void setLikes(String likes) {
         this.likes = likes;
     }
 

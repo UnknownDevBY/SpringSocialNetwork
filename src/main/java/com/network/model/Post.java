@@ -2,7 +2,6 @@ package com.network.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -29,14 +28,11 @@ public class Post {
     @JoinColumn(name = "community_id")
     private Community community;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private Set<Likes> likes;
+    @Column(length = 65535)
+    private String likes;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Comment> comments;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Hashtag> hashtags;
 
     public Post() {
 
@@ -90,11 +86,11 @@ public class Post {
         this.community = community;
     }
 
-    public Set<Likes> getLikes() {
+    public String getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<Likes> likes) {
+    public void setLikes(String likes) {
         this.likes = likes;
     }
 
@@ -104,13 +100,5 @@ public class Post {
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
-    }
-
-    public List<Hashtag> getHashtags() {
-        return hashtags;
-    }
-
-    public void setHashtags(List<Hashtag> hashtags) {
-        this.hashtags = hashtags;
     }
 }

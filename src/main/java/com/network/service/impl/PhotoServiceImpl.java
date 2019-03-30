@@ -1,21 +1,33 @@
 package com.network.service.impl;
 
+import com.google.common.io.Files;
+import com.network.component.LikesListTransformer;
 import com.network.dto.PhotoDto;
+import com.network.model.Community;
 import com.network.model.Photo;
 import com.network.model.User;
 import com.network.repository.CommentRepository;
-import com.network.repository.LikesRepository;
+import com.network.repository.PhotoAlbumRepository;
 import com.network.repository.PhotoRepository;
 import com.network.service.PhotoService;
+import com.network.service.S3Service;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
 
     @Autowired private PhotoRepository photoRepository;
-    @Autowired private LikesRepository likesRepository;
     @Autowired private CommentRepository commentRepository;
+    @Autowired private PhotoAlbumRepository albumRepository;
+    @Autowired private S3Service s3Service;
+    @Autowired private LikesListTransformer likesListTransformer;
 
     @Override
     public PhotoDto getPhoto(int id, User currentUser) {
@@ -23,8 +35,42 @@ public class PhotoServiceImpl implements PhotoService {
         Photo photo = photoRepository.getById(id);
         photoDto.setPhoto(photo);
         photoDto.setComments(commentRepository.getAllByPhoto(photo));
-        photoDto.setLikedByCurrentUser(likesRepository.getByPhotoAndUser(photo, currentUser) != null);
-        photoDto.setLikesCount(likesRepository.countByPhoto(photo));
+        List<Integer> likes = likesListTransformer.deserialize(photo.getLikes());
+        photoDto.setLikedByCurrentUser(currentUser != null && likes.contains(currentUser.getId()));
+        photoDto.setLikesCount(likes.size());
         return photoDto;
+    }
+
+    @Override
+    public void savePhoto(Boolean makeAvatar, MultipartFile newPhoto, User currentUser, Community community, String album) throws IOException {
+        if(!newPhoto.isEmpty()) {
+            boolean isAvatar = makeAvatar != null;
+            Photo photo = new Photo();
+            String title = generateRandomString() + "." + Files.getFileExtension(newPhoto.getOriginalFilename());
+            photo.setTitle(title);
+            photo.setAvatar(isAvatar);
+            photo.setWasAvatar(isAvatar);
+            setPhotoOwners(album, currentUser, photo, isAvatar, community);
+            s3Service.uploadFile(title, newPhoto);
+            photo.setDateOfPost(new Timestamp(System.currentTimeMillis()));
+            photoRepository.save(photo);
+        }
+    }
+
+    private void setPhotoOwners(String album, User currentUser, Photo photo, boolean isAvatar, Community community) {
+        if(!album.isEmpty()) {
+            photo.setPhotoAlbum(albumRepository.getByUserAndTitle(currentUser, album));
+        }
+        if (currentUser != null) {
+            photo.setUser(currentUser);
+            if(isAvatar)
+                photoRepository.updateAvatars(currentUser.getId());
+        }
+        if (community != null)
+            photo.setCommunity(community);
+    }
+
+    private String generateRandomString() {
+        return RandomString.make();
     }
 }

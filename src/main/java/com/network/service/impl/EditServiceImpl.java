@@ -18,6 +18,10 @@ public class EditServiceImpl implements EditService {
         currentUser.setDateOfBirth(user.getDateOfBirth());
         if(user.getCity() != null && !user.getCity().isEmpty())
             currentUser.setCity(user.getCity());
+        if(user.getName() != null && !user.getName().isEmpty())
+            currentUser.setName(user.getName());
+        if(user.getSurname() != null && !user.getSurname().isEmpty())
+            currentUser.setSurname(user.getSurname());
         currentUser.setSex(user.getSex());
         if(user.getBio() != null && !user.getBio().isEmpty())
             currentUser.setBio(user.getBio());

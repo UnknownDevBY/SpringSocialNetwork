@@ -7,46 +7,46 @@ xmlns:th="http://www.thymeleaf.org">
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
 </head>
 <body>
-<header>
-  <p><a href="/"><em class="logo">Social network</em></a></p>
-  <div th:if="${currentUser != null}" class="logout">
-    <form action="/logout" method="get">
-      <input type="submit" value="Выход">
-    </form>
+  <header>
+    <p><a href="/"><em class="logo">Social network</em></a></p>
+    <div th:if="${currentUser != null}" class="logout">
+      <form action="/logout" method="get">
+        <input type="submit" value="Выход">
+      </form>
+    </div>
+  </header>
+  <div class="menu">
+    <ul th:if="${currentUser != null}">
+      <li><a class="active" href="/search">Поиск</a></li>
+      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+      <li><a href="/communities">Группы</a></li>
+      <li><a href="/news">Новости</a></li>
+      <li><a href="/messages">Сообщения</a></li>
+      <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+    </ul>
+    <div>
+      <form th:if="${currentUser == null}" action="/login" method="post">
+        <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+        <br>
+        <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+        <br>
+        <div>
+          <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+          <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+        </div>
+        <input type="submit" value="Войти">
+      </form>
+    </div>
   </div>
-</header>
-<div class="menu">
-  <ul th:if="${currentUser != null}">
-    <li><a class="active" href="/search">Поиск</a></li>
-    <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-    <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-    <li><a href="/communities">Группы</a></li>
-    <li><a href="/news">Новости</a></li>
-    <li><a href="/messages">Сообщения</a></li>
-    <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
-  </ul>
-  <div>
-    <form th:if="${currentUser == null}" action="/login" method="post">
-      <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-      <br>
-      <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-      <br>
-      <div>
-        <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-        <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
-      </div>
-      <input type="submit" value="Войти">
-    </form>
-  </div>
-</div>
   <main class="messages-block">
     <a style="text-decoration: none;" href="/communities/create">Создать группу</a>
     <form class="new-message" method="get">
       <span th:if="${param.value != null}">
-        <input th:value="${param.value}" type="text" id="value" name="value" placeholder="Введите имя пользователя или его часть" />
+        <input th:value="${param.value}" type="text" id="value" name="value" placeholder="Введите название" />
       </span>
       <span th:if="${param.value == null}">
-        <input type="text" id="value" name="value" placeholder="Введите имя пользователя или его часть" />
+        <input type="text" id="value" name="value" placeholder="Введите название" />
       </span>
       <input type="submit" value="Найти">
     </form>

@@ -1,7 +1,6 @@
 package com.network.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Comment {
@@ -23,9 +22,6 @@ public class Comment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    private List<Hashtag> hashtags;
 
     public Comment() {
 
@@ -69,13 +65,5 @@ public class Comment {
 
     public void setPost(Post post) {
         this.post = post;
-    }
-
-    public List<Hashtag> getHashtags() {
-        return hashtags;
-    }
-
-    public void setHashtags(List<Hashtag> hashtags) {
-        this.hashtags = hashtags;
     }
 }

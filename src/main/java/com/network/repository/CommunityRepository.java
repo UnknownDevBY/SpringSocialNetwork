@@ -2,24 +2,15 @@ package com.network.repository;
 
 import com.network.model.Community;
 import com.network.model.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CommunityRepository extends CrudRepository<Community, Integer> {
+public interface CommunityRepository extends JpaRepository<Community, Integer> {
 
     Community getById(int id);
-
-    List<Community> findAll();
-
     List<Community> getAllBySubscribersNotContains(User user);
-
     List<Community> getAllBySubscribersContains(User user);
-
-    List<Community> getAllByTitleStartsWith(String value);
-
     List<Community> getAllByTitleStartsWithAndSubscribersNotContains(String value, User user);
-
     List<Community> getAllByTitleStartsWithAndSubscribersContains(String value, User user);
-
 }

@@ -3,7 +3,11 @@ package com.network.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.annotation.MatchesPattern;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -16,16 +20,33 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank
+    @Size(min = 5, max = 127)
     private String email;
 
+    @NotBlank
+    @Size(min = 2, max = 31)
+    @MatchesPattern("^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$")
     private String name;
 
+    @NotBlank
+    @Size(min = 3, max = 31)
+    @MatchesPattern("^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$")
     private String surname;
 
+    @NotNull
     private char sex;
 
+    @NotNull
+    @MatchesPattern("^((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)$"
+            + "|^(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))$"
+            + "|^(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))$"
+            + "|^(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))$")
     private String dateOfBirth;
 
+    @NotBlank
+    @Size(min = 2, max = 31)
+    @MatchesPattern("^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$")
     private String city;
 
     private String password;
@@ -59,9 +80,6 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "to")
     private Set<Message> toMessages;
-
-    @OneToMany(mappedBy = "user")
-    private Set<Likes> likes;
 
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
@@ -230,14 +248,6 @@ public class User implements UserDetails {
 
     public void setToMessages(Set<Message> toMessages) {
         this.toMessages = toMessages;
-    }
-
-    public Set<Likes> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Set<Likes> likes) {
-        this.likes = likes;
     }
 
     public Set<Comment> getComments() {

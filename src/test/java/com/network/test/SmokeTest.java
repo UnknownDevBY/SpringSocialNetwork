@@ -31,45 +31,37 @@ public class SmokeTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired private AddPhotoController addPhotoController;
     @Autowired private CommentController commentController;
-    @Autowired private CommunitiesController communitiesController;
+    @Autowired private CommunityController communitiesController;
     @Autowired private ConversationController conversationController;
-    @Autowired private CreateCommunityController createCommunityController;
     @Autowired private DeleteController deleteController;
     @Autowired private EditController editController;
-    @Autowired private FriendsController friendsController;
-    @Autowired private LikesController likesController;
+    @Autowired private FriendController friendController;
+    @Autowired private LikeController likeController;
     @Autowired private MessageController messageController;
-    @Autowired private ModifyUserController modifyUserController;
     @Autowired private NewsController newsController;
     @Autowired private PhotoController photoController;
     @Autowired private PrivacySettingsController privacySettingsController;
     @Autowired private RegistrationController registrationController;
     @Autowired private SearchController searchController;
-    @Autowired private SubscribeController subscribeController;
-    @Autowired private UserPageController userPageController;
+    @Autowired private UserController userController;
 
     @Test
     public void contextLoads() {
-        assertNotNull(addPhotoController);
         assertNotNull(commentController);
         assertNotNull(communitiesController);
         assertNotNull(conversationController);
-        assertNotNull(createCommunityController);
         assertNotNull(deleteController);
         assertNotNull(editController);
-        assertNotNull(friendsController);
-        assertNotNull(likesController);
+        assertNotNull(friendController);
+        assertNotNull(likeController);
         assertNotNull(messageController);
-        assertNotNull(modifyUserController);
         assertNotNull(newsController);
         assertNotNull(photoController);
         assertNotNull(privacySettingsController);
         assertNotNull(registrationController);
         assertNotNull(searchController);
-        assertNotNull(subscribeController);
-        assertNotNull(userPageController);
+        assertNotNull(userController);
     }
 
     @Test
@@ -82,7 +74,7 @@ public class SmokeTest {
     @Test
     @WithMockUser
     public void testMocked() throws Exception {
-        testLink("/create-community", "createGroup");
+        testLink("/communities/create", "createGroup");
     }
 
     @Test

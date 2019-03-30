@@ -8,54 +8,41 @@ xmlns:th="http://www.thymeleaf.org">
   <link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
   <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
-  <script>
-    function readURL(input) {
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          $('#photo')
-          .attr('src', e.target.result)
-          .width(150)
-          .height(200);
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-  </script>
+  <script th:src="@{/js/load-photo.js}" src="../static/js/load-photo.js"></script>
 </head>
 <body>
-<header>
+  <header>
     <p><a href="/"><em class="logo">Social network</em></a></p>
     <div th:if="${currentUser != null}" class="logout">
-        <form action="/logout" method="get">
-            <input type="submit" value="Выход">
-        </form>
+      <form action="/logout" method="get">
+        <input type="submit" value="Выход">
+      </form>
     </div>
-</header>
-<div class="menu">
+  </header>
+  <div class="menu">
     <ul th:if="${currentUser != null}">
-        <li><a class="active" href="/search">Поиск</a></li>
-        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-        <li><a href="/communities">Группы</a></li>
-        <li><a href="/news">Новости</a></li>
-        <li><a href="/messages">Сообщения</a></li>
-        <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+      <li><a class="active" href="/search">Поиск</a></li>
+      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+      <li><a href="/communities">Группы</a></li>
+      <li><a href="/news">Новости</a></li>
+      <li><a href="/messages">Сообщения</a></li>
+      <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
     </ul>
     <div>
-        <form th:if="${currentUser == null}" action="/login" method="post">
-            <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-            <br>
-            <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-            <br>
-            <div>
-                <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-                <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
-            </div>
-            <input type="submit" value="Войти">
-        </form>
+      <form th:if="${currentUser == null}" action="/login" method="post">
+        <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+        <br>
+        <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+        <br>
+        <div>
+          <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+          <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+        </div>
+        <input type="submit" value="Войти">
+      </form>
     </div>
-</div>
+  </div>
   <main>
     <div class="convers-content">
       <form class="load-photo" action="/photos/add" method="post" enctype="multipart/form-data">
@@ -69,14 +56,15 @@ xmlns:th="http://www.thymeleaf.org">
           <label for="makeAvatar" style="font-size: 12px;">Сделать аватаром</label>
           <input id="makeAvatar" name="makeAvatar" type="checkbox" value="1">
         </div>
-          <div th:if="${!albums.isEmpty()}" class="addPhoto-item">
-              <label for="album">Выберите альбом</label>
-              <select name="album" id="album" required="required">
-                  <span th:each="album : ${albums}">
-                      <option th:value="${album}" th:text="${album}">Все</option>
-                  </span>
-              </select>
-          </div>
+        <div th:if="${!albums.isEmpty()}" class="addPhoto-item">
+          <label for="album">Выберите альбом</label>
+          <select name="album" id="album">
+            <option value=""></option>
+            <span th:each="album : ${albums}">
+              <option th:value="${album}" th:text="${album}">Все</option>
+            </span>
+          </select>
+        </div>
         <center class="addPhoto-item">
           <input class="load-photo-button" type="submit" value="Загрузить">
         </center>

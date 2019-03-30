@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 @Service
 public class ConversationServiceImpl implements ConversationService {
@@ -23,8 +22,13 @@ public class ConversationServiceImpl implements ConversationService {
         message.setFrom(currentUser);
         message.setTo(userRepository.getById(id));
         message.setContent(content);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         message.setSendingTime(new Timestamp(System.currentTimeMillis()));
         messageRepository.save(message);
+    }
+
+    @Override
+    public boolean isValid(int currentUserId, int opponentsId) {
+        return messageRepository.existsByFrom_IdAndTo_Id(currentUserId, opponentsId) &&
+                messageRepository.existsByFrom_IdAndTo_Id(opponentsId, currentUserId);
     }
 }
