@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
         Post post = new Post();
         post.setPostTime(new Timestamp(System.currentTimeMillis()));
         post.setContent(content);
-        if (currentUser != null) {
-            post.setAuthor(currentUser);
+        post.setAuthor(currentUser);
+        if (community == null) {
             post.setOwner(userRepository.getById(id));
         } else post.setCommunity(community);
         postRepository.save(post);
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<PostDto> getPosts(User pageUser, User currentUser) {
         int currentUserId = currentUser != null ? currentUser.getId() : 0;
-        return postRepository.getByOwnerOrderByPostTimeAsc(pageUser).stream()
+        return postRepository.getByOwnerOrderByPostTimeDesc(pageUser).stream()
                 .map(post -> postDtoTransformer.toPostDto(post, currentUserId))
                 .collect(Collectors.toList());
     }

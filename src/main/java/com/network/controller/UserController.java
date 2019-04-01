@@ -7,12 +7,10 @@ import com.network.repository.UserRepository;
 import com.network.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -55,21 +53,18 @@ public class UserController {
     }
 
     @GetMapping("/users/friendship/{id}")
-    public String addFriend(@PathVariable int id,
-                            HttpServletRequest request,
-                            @AuthenticationPrincipal User currentUser) {
+    @ResponseStatus(HttpStatus.OK)
+    public void addFriend(@PathVariable int id,
+                          @AuthenticationPrincipal User currentUser) {
         User pageUser = userRepository.getById(id);
         userService.modifyRelation(currentUser, pageUser);
-        String referer = request.getHeader("Referer");
-        return "redirect:" + referer;
     }
 
     @PostMapping("/users/{id}")
-    public String addPost(@PathVariable int id,
-                          @AuthenticationPrincipal User currentUser,
-                          @RequestParam String content,
-                          Map<String, Object> model) {
+    @ResponseStatus(HttpStatus.OK)
+    public void addPost(@PathVariable int id,
+                        @AuthenticationPrincipal User currentUser,
+                        @RequestParam String content) {
         userService.savePost(id, content, currentUser, null);
-        return showUser(id, currentUser, model);
     }
 }

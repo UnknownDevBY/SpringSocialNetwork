@@ -1,10 +1,13 @@
 package com.network.service.impl;
 
+import com.network.component.PrivacySettingsDtoTransformer;
 import com.network.component.UserDtoTransformer;
+import com.network.dto.PrivacySettingsDto;
 import com.network.dto.UserDto;
 import com.network.model.User;
 import com.network.repository.FriendshipRepository;
 import com.network.service.FriendService;
+import com.network.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ public class FriendServiceImpl implements FriendService {
 
     @Autowired private UserDtoTransformer userDtoTransformer;
     @Autowired private FriendshipRepository friendshipRepository;
+    @Autowired private PrivacySettingsDtoTransformer privacySettingsDtoTransformer;
+    @Autowired private UserService userService;
 
     @Override
     public List<UserDto> setRelation(Set<User> relation) {
@@ -53,5 +58,13 @@ public class FriendServiceImpl implements FriendService {
                 friends.add(subscriber);
         });
         return friends;
+    }
+
+    @Override
+    public boolean areFriendsAllowed(User pageUser, User currentUser) {
+        boolean areFriends = userService.areFriends(currentUser.getId(), pageUser.getId());
+        PrivacySettingsDto privacySettings = privacySettingsDtoTransformer
+                .toPrivacySettingsDto(currentUser, pageUser, areFriends);
+        return privacySettings.isAreFriendsAllowed();
     }
 }

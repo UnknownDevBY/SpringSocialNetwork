@@ -5,6 +5,9 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title>Переписка</title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+  <script>
+    let conversations = 'conversations';
+  </script>
 </head>
 <body>
   <header>
@@ -41,9 +44,9 @@ xmlns:th="http://www.thymeleaf.org">
   </div>
   <main class="messages-block">
     <a th:href="'/users/' + ${opponentsId}" class="convers-opponent">Владислав Ефимчик</a>
-    <form class="new-message new-post" method="post">
-      <textarea id="message" name="message"></textarea>
-      <input type="submit" value="Отправить">
+    <form class="new-message new-post">
+      <textarea id="content" name="content" maxlength="255" minlength="1" required="required"></textarea>
+      <input th:onclick="'newPost(' + 'conversations, ' + ${opponentsId} + ')'" type="button" value="Отправить">
     </form>
     <div class="convers-content">
       <div th:each="message : ${messages}">
@@ -56,5 +59,6 @@ xmlns:th="http://www.thymeleaf.org">
       </div>
     </div>
   </main>
+  <script type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
 </body>
 </html>

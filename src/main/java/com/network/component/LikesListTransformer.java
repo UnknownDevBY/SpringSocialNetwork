@@ -11,13 +11,16 @@ import java.util.List;
 public class LikesListTransformer {
 
     public String serialize(List<Integer> likes) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try(ObjectOutputStream outputStream = new ObjectOutputStream(baos)) {
-            outputStream.writeObject(likes);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(likes != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try(ObjectOutputStream outputStream = new ObjectOutputStream(baos)) {
+                outputStream.writeObject(likes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
         }
-        return Base64.getEncoder().encodeToString(baos.toByteArray());
+        return null;
     }
 
     public List<Integer> deserialize(String str) {

@@ -4,6 +4,7 @@ import com.network.model.User;
 import com.network.repository.MessageRepository;
 import com.network.service.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +33,10 @@ public class ConversationController {
     }
 
     @PostMapping("/conversations/{id}")
-    public String sendMessage(@PathVariable int id,
-                              @NotBlank @RequestParam String message,
-                              @AuthenticationPrincipal User currentUser,
-                              HttpServletRequest request,
-                              Model model) {
-        conversationService.saveMessage(id, currentUser, message);
-        return openConversation(id, currentUser, request, model);
+    @ResponseStatus(HttpStatus.OK)
+    public void sendMessage(@PathVariable int id,
+                              @NotBlank @RequestParam String content,
+                              @AuthenticationPrincipal User currentUser) {
+        conversationService.saveMessage(id, currentUser, content);
     }
 }

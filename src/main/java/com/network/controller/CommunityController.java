@@ -10,6 +10,7 @@ import com.network.service.PhotoService;
 import com.network.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,12 +88,10 @@ public class CommunityController {
     }
 
     @PostMapping("/communities/public/{id}")
-    public String createPost(@PathVariable int id,
-                             @AuthenticationPrincipal User currentUser,
-                             @RequestParam String content,
-                             HttpServletRequest request,
-                             Model model) {
-        userService.savePost(id, content, null, communityRepository.getById(id));
-        return showPublic(id, currentUser, request, model);
+    @ResponseStatus(HttpStatus.OK)
+    public void createPost(@PathVariable int id,
+                           @AuthenticationPrincipal User currentUser,
+                           @RequestParam String content) {
+        userService.savePost(id, content, currentUser, communityRepository.getById(id));
     }
 }

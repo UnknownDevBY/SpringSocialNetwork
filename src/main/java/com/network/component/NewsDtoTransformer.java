@@ -16,7 +16,10 @@ public class NewsDtoTransformer {
         NewsDto newsDto = new NewsDto();
         newsDto.setPhoto(photo);
         newsDto.setPost(post);
-        newsDto.setPublicationTime(simpleDateFormat.format(photo.getDateOfPost()));
+        if(photo != null)
+            newsDto.setPublicationTime(simpleDateFormat.format(photo.getDateOfPost()));
+        if(post != null)
+            newsDto.setPublicationTime(simpleDateFormat.format(post.getPostTime()));
         return newsDto;
     }
 }

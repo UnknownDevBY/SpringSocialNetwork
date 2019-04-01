@@ -1,9 +1,6 @@
 package com.network.controller;
 
-import com.network.dto.PrivacySettingsDto;
-import com.network.model.PrivacySettings;
 import com.network.model.User;
-import com.network.repository.PrivacySettingsRepository;
 import com.network.repository.UserRepository;
 import com.network.service.FriendService;
 import com.network.service.UserService;
@@ -21,7 +18,6 @@ import java.util.Map;
 public class FriendController {
 
     @Autowired private UserRepository userRepository;
-    @Autowired private PrivacySettingsRepository privacySettingsRepository;
     @Autowired private UserService userService;
     @Autowired private FriendService friendService;
 
@@ -33,20 +29,15 @@ public class FriendController {
                               @AuthenticationPrincipal User currentUser,
                               HttpServletRequest request,
                               Map<String, Object> model) {
-        model.put("currentUser", currentUser);
         User pageUser = userRepository.getById(id);
-        PrivacySettings privacySettings = privacySettingsRepository.getByUser(pageUser);
-        if(pageUser == null && privacySettings.getFriends() != 'a')
+        if(pageUser == null || !friendService.areFriendsAllowed(pageUser, currentUser))
             return "redirect:" + request.getHeader("Referer");
-        boolean areFriends = userService.areFriends(currentUser.getId(), id);
-        PrivacySettingsDto privacySettingsDto = userService.getPrivacySettings(currentUser, pageUser, areFriends);
-        if(privacySettingsDto.isAreFriendsAllowed()) {
-            model.put("id", id);
-            model.put("bucketName", bucketName);
-            model.put("friends", userService.getFriends(pageUser));
-            model.put("subscribers", friendService.setRelation(friendService.getAllSubscribers(pageUser)));
-            model.put("subscriptions", friendService.setRelation(friendService.getAllSubscriptions(pageUser)));
-        } else return "redirect:" + request.getHeader("Referer");
+        model.put("currentUser", currentUser);
+        model.put("id", id);
+        model.put("bucketName", bucketName);
+        model.put("friends", userService.getFriends(pageUser));
+        model.put("subscribers", friendService.setRelation(friendService.getAllSubscribers(pageUser)));
+        model.put("subscriptions", friendService.setRelation(friendService.getAllSubscriptions(pageUser)));
         return "friends";
     }
 }

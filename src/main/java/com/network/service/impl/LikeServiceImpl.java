@@ -41,6 +41,6 @@ public class LikeServiceImpl implements LikeService {
         if(likes.contains(currentUserId))
             likes.remove((Object) currentUserId);
         else likes.add(currentUserId);
-        return likes;
+        return likes.isEmpty() ? null : likes;
     }
 }

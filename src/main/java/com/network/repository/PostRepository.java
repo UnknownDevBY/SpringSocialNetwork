@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
-    List<Post> getByOwnerOrderByPostTimeAsc(User user);
-    List<Post> getByCommunityOrderByPostTimeAsc(Community community);
+    List<Post> getByOwnerOrderByPostTimeDesc(User user);
+    List<Post> getByCommunityOrderByPostTimeDesc(Community community);
     List<Post> getByContentContains(String content);
     Post getById(int id);
 }

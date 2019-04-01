@@ -13,4 +13,5 @@ public interface FriendService {
     Set<User> getAllSubscribers(User pageUser);
     Set<User> getAllSubscriptions(User pageUser);
     Set<User> getAllFriends(User pageUser);
+    boolean areFriendsAllowed(User pageUser, User currentUser);
 }

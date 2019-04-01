@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+
 @Service
 public class EditServiceImpl implements EditService {
 
@@ -14,7 +16,10 @@ public class EditServiceImpl implements EditService {
     @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
-    public void saveEdit(User currentUser, User user) {
+    public void saveEdit(User currentUser, User user, String pass) {
+        if(pass != null && !pass.isEmpty()) {
+            currentUser.setPassword(passwordEncoder.encode(pass));
+        }
         currentUser.setDateOfBirth(user.getDateOfBirth());
         if(user.getCity() != null && !user.getCity().isEmpty())
             currentUser.setCity(user.getCity());
@@ -30,5 +35,10 @@ public class EditServiceImpl implements EditService {
         if(user.getPassword() != null && !user.getPassword().isEmpty())
             currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(currentUser);
+    }
+
+    @Override
+    public boolean ageConfirmed(String dateOfBirth) {
+        return dateOfBirth == null || System.currentTimeMillis() - Date.valueOf(dateOfBirth).getTime() < 441_504_000_000L;
     }
 }

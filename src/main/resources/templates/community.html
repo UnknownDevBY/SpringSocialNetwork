@@ -5,6 +5,14 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title th:text="${community.title}"></title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+  <script>
+      let community = 'communities/public';
+      let comment = 'comment';
+      let subscribe = 'subscribe';
+      let like = 'likes';
+      let del = 'delete';
+      let post = 'post';
+  </script>
 </head>
 <body>
   <header>
@@ -43,13 +51,14 @@ xmlns:th="http://www.thymeleaf.org">
     <div class="photo-block">
       <div style="background-color: white;">
         <div th:if="${currentUser != null && currentUser.id == community.admin.id}">
-          <form class="new-post" method="post">
-            <textarea id="content" name="content" placeholder="Новая запись" minlength="1"></textarea>
-            <input type="submit" value="Отправить">
+          <form class="new-post">
+            <textarea id="content" name="content" maxlength="255" minlength="1"></textarea>
+            <input th:onclick="'newPost(' + 'community, ' + ${community.id} + ')'" type="button" value="Отправить">
           </form>
         </div>
         <div th:each="post : ${posts}" style="margin-top: 20px; padding: 10px; border-top: 1px solid silver;" class="post">
-          <a th:href="'/communities/public/' + ${community.id}">Владислав Ефимчик</a>
+          <a th:if="${currentUser != null && community.admin.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(del, post, ' + ${post.post.id} + ')'">X</a>
+          <a th:href="'/communities/public/' + ${community.id}" th:text="${community.title}">Владислав Ефимчик</a>
           <p class="post-time" th:text="${post.post.postTime}">12-00</p>
           <div th:id="'post' + ${post.post.id}" class="post-content">
             <span th:each="word : ${post.post.content.split(' ')}">
@@ -63,10 +72,10 @@ xmlns:th="http://www.thymeleaf.org">
                 <img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/black_like.svg" alt="">
               </span>
               <span th:if="${currentUser != null && !post.likedByCurrentUser}">
-                <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+                <a th:onclick="'update(like, post, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
               </span>
               <span th:if="${currentUser != null && post.likedByCurrentUser}">
-                <a th:href="'/likes/post/' + ${post.post.id}"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+                <a th:onclick="'update(like, post, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
               </span>
               <span class="like-amount" th:text="${post.likesCount}">10</span>
             </span>
@@ -80,7 +89,7 @@ xmlns:th="http://www.thymeleaf.org">
               <summary class="show-comments-summary">Показать комментарии</summary>
               <div th:each="comment : ${post.comments}">
                 <div class="photo-comment">
-                  <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
+                  <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(del, comment, ' + ${comment.id} + ')'">X</a>
                   <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
                   <p th:id="'comment' + ${comment.id}" class="photo-comment-text">
                     <span th:each="word : ${comment.content.split(' ')}">
@@ -91,9 +100,9 @@ xmlns:th="http://www.thymeleaf.org">
                 </div>
               </div>
             </details>
-            <form style="height: 60px;" th:if="${currentUser != null}" th:action="'/comment/post/' + ${post.post.id}" method="post">
-              <textarea id="content" name="content" class="photo-comment-area" maxlength="255" minlength="1" placeholder="Оставьте комментарий"></textarea>
-              <input class="post-comment-input send-photo-comment" type="submit" value="Отправить">
+            <form style="height: 60px;" th:if="${currentUser != null}">
+              <textarea th:id="'commentContent' + ${post.post.id}" th:name="'commentContent' + ${post.post.id}" class="photo-comment-area" maxlength="255" minlength="1" required="required"></textarea>
+              <input th:onclick="'newComment(' + 'post, ' + ${post.post.id} + ')'" class="post-comment-input send-photo-comment" type="button" value="Отправить">
             </form>
           </div>
         </div>
@@ -104,8 +113,8 @@ xmlns:th="http://www.thymeleaf.org">
           <img th:if="${avatar != null}" style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}">
           <div th:if="${currentUser != null}" class="message">
             <div th:if="${community.admin.id != currentUser.id}">
-              <a th:if="${!isSubscribed}" th:href="'communities/public/' + ${community.id} + '/subscribe'">Подписаться</a>
-              <a th:if="${isSubscribed}" th:href="'communities/public/' + ${community.id} + '/subscribe'">Отписаться</a>
+              <a th:if="${!isSubscribed}" th:onclick="'update(community, ' + ${community.id} + ', subscribe)'">Подписаться</a>
+              <a th:if="${isSubscribed}" th:onclick="'update(community, ' + ${community.id} + ', subscribe)'">Отписаться</a>
             </div>
           </div>
           <div th:if="${currentUser == null}">
@@ -116,7 +125,7 @@ xmlns:th="http://www.thymeleaf.org">
           <a th:text="'Подписчики: ' + ${subscribers.size()}" class="amount">Подписчики: 10</a>
           <div th:if="${!subscribers.isEmpty()}">
             <div class="friends-block">
-              <div th:each="subscriber : ${subscribers}">
+              <div style="text-align: center;" th:each="subscriber : ${subscribers}">
                 <a th:href="'/users/' + ${subscriber.userId}" class="friend">
                   <img th:if="${subscriber.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
                   <img th:if="${subscriber.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${subscriber.avatar.title}" src="../static/img/no-avatar.png" alt="">
@@ -130,5 +139,8 @@ xmlns:th="http://www.thymeleaf.org">
       </div>
     </div>
   </main>
+  <script type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
+  <script type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
+  <script type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
 </body>
 </html>
