@@ -58,7 +58,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     private void setPhotoOwners(String album, User currentUser, Photo photo, boolean isAvatar, Community community) {
-        if(!album.isEmpty()) {
+        if(album != null) {
             photo.setPhotoAlbum(albumRepository.getByUserAndTitle(currentUser, album));
         }
         if (currentUser != null) {
