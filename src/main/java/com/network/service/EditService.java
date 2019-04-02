@@ -4,6 +4,5 @@ import com.network.model.User;
 
 public interface EditService {
 
-    void saveEdit(User currentUser, User user, String pass);
-    boolean ageConfirmed(String dateOfBirth);
+    String saveEdit(User currentUser, User user, String pass);
 }

@@ -16,7 +16,10 @@ public class EditServiceImpl implements EditService {
     @Autowired private PasswordEncoder passwordEncoder;
 
     @Override
-    public void saveEdit(User currentUser, User user, String pass) {
+    public String saveEdit(User currentUser, User user, String pass) {
+        if(wrongAge(user.getDateOfBirth())) {
+            return "Вы должны быть старше 14-и лет";
+        }
         if(pass != null && !pass.isEmpty()) {
             currentUser.setPassword(passwordEncoder.encode(pass));
         }
@@ -35,10 +38,10 @@ public class EditServiceImpl implements EditService {
         if(user.getPassword() != null && !user.getPassword().isEmpty())
             currentUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(currentUser);
+        return "Изменения успешно сохранены";
     }
 
-    @Override
-    public boolean ageConfirmed(String dateOfBirth) {
+    private boolean wrongAge(String dateOfBirth) {
         return dateOfBirth == null || System.currentTimeMillis() - Date.valueOf(dateOfBirth).getTime() < 441_504_000_000L;
     }
 }

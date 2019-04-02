@@ -34,19 +34,19 @@ xmlns:th="http://www.thymeleaf.org">
                         <label for="name">Имя*</label>
                     </div>
                     <div>
-                        <input type="text" id="name" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" name="name" minlength="2" maxlength="31" required="required">
+                        <input type="text" id="name" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" name="name" minlength="2" maxlength="31" required="required">
                     </div>
                     <div class="clue">
                         <label for="surname">Фамилия*</label>
                     </div>
                     <div>
-                        <input type="text" id="surname" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" name="surname" minlength="3" maxlength="31" required="required">
+                        <input type="text" id="surname" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" name="surname" minlength="3" maxlength="31" required="required">
                     </div>
                     <div class="clue">
                         <label for="city">Город</label>
                     </div>
                     <div>
-                        <input type="text" id="city" name="city" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31" required="required">
+                        <input type="text" id="city" name="city" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31" required="required">
                     </div>
                     <div class="clue">
                         <label for="pass">Пароль (не менее 6 символов)*</label>

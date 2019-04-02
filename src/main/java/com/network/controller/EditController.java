@@ -3,13 +3,11 @@ package com.network.controller;
 import com.network.model.User;
 import com.network.service.EditService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 
@@ -26,15 +24,10 @@ public class EditController {
     }
 
     @PostMapping("/edit")
-    public String saveEdit(@AuthenticationPrincipal User currentUser,
+    @ResponseStatus(HttpStatus.OK)
+    public @ResponseBody String saveEdit(@AuthenticationPrincipal User currentUser,
                            @ModelAttribute User user,
-                           @RequestParam String pass,
-                           Model model) {
-        if(!editService.ageConfirmed(user.getDateOfBirth())) {
-            model.addAttribute("error", "Вы должны быть старше 14-и лет");
-            return "edit";
-        }
-        editService.saveEdit(currentUser, user, pass);
-        return "redirect:/users/" + currentUser.getId();
+                           @RequestParam String pass) {
+        return editService.saveEdit(currentUser, user, pass);
     }
 }

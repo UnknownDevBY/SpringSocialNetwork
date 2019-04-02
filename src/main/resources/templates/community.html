@@ -69,7 +69,7 @@ xmlns:th="http://www.thymeleaf.org">
           <div class="like-comment-amount">
             <span>
               <span th:if="${currentUser == null}">
-                <img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/black_like.svg" alt="">
+                <img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt="">
               </span>
               <span th:if="${currentUser != null && !post.likedByCurrentUser}">
                 <a th:onclick="'update(like, post, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>

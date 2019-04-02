@@ -41,21 +41,21 @@ xmlns:th="http://www.thymeleaf.org">
     </div>
   </div>
   <main class="edit">
-    <form action="/edit" method="post" enctype="multipart/form-data">
+    <form>
       <div class="privacy-link">
        <a title="Перейти к настройкам" href="/privacy-settings">Настройки приватности</a>
      </div>
      <label for="name">Имя</label>
      <div>
-      <input th:value="${currentUser.name}" type="text" id="name" name="name" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="3" maxlength="31" required="required">
+      <input th:value="${currentUser.name}" type="text" id="name" name="name" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="3" maxlength="31" required="required">
     </div>
     <label for="surname">Фамилия</label>
     <div>
-      <input th:value="${currentUser.surname}" type="text" id="surname" name="surname" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31" required="required">
+      <input th:value="${currentUser.surname}" type="text" id="surname" name="surname" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31" required="required">
     </div>
     <label for="city">Город</label>
     <div>
-     <input th:value="${currentUser.city}" type="text" id="city" name="city" pattern="^[а-яА-Я\p{Cyrillic}a-zA-Z]+$" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31">
+     <input th:value="${currentUser.city}" type="text" id="city" name="city" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31">
    </div>
    <label for="pass">Сменить пароль (не менее 6 символов)</label>
    <div>
@@ -80,10 +80,11 @@ xmlns:th="http://www.thymeleaf.org">
   <div>
    <textarea th:text="${currentUser.interests == null} ? '' : ${currentUser.interests}" id="interests" name="interests"></textarea>
  </div>
- <p th:text="${error}" style="color: red" id="error"></p>
- <input type="submit" value="Подтвердить">  
+ <p style="color: red" id="response"></p>
+ <input type="button" onclick="saveUser()" value="Подтвердить">
 </form>
 </main>
   <script type="text/javascript" th:src="@{/js/validate-date.js}" src="../static/js/validate-date.js"></script>
+  <script type="text/javascript" th:src="@{/js/save-user.js}" src="../static/js/save-user.js"></script>
 </body>
 </html>
