@@ -1,4 +1,4 @@
-package com.network.service.impl;
+package com.network.security;
 
 import com.network.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -23,17 +23,17 @@ public class Photo {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "community_id")
     private Community community;
 
     @Column(length = 65535)
     private String likes;
 
-    @OneToMany(mappedBy = "photo")
+    @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "album_id")
     private PhotoAlbum photoAlbum;
 

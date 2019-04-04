@@ -71,12 +71,12 @@ xmlns:th="http://www.thymeleaf.org">
                             <div th:if="${privacySettings.canSendMessages}">
                                 <a th:href="'/conversations/' + ${pageUser.id}">Отправить сообщение</a>
                             </div>
-                            <a th:if="${is1friendTo2 == false && is2friendTo1 == false}" th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'">Добавить в друзья</a>
-                            <a onmouseenter='onMouse(this, "Удалить из друзей")'
+                            <a href="" th:if="${is1friendTo2 == false && is2friendTo1 == false}" th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'">Добавить в друзья</a>
+                            <a href="" onmouseenter='onMouse(this, "Удалить из друзей")'
                             onmouseleave='onMouse(this, "У Вас в друзьях")' th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == true && is2friendTo1 == true}" >У Вас в друзьях</a>
-                            <a onmouseenter='onMouse(this, "Отписаться")'
+                            <a href="" onmouseenter='onMouse(this, "Отписаться")'
                             onmouseleave='onMouse(this, "Вы подписаны")' th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == true && is2friendTo1 == false}">Вы подписаны</a>
-                            <a onmouseenter='onMouse(this, "Принять заявку")'
+                            <a href="" onmouseenter='onMouse(this, "Принять заявку")'
                             onmouseleave='onMouse(this, "Подписан на Вас")' th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == false && is2friendTo1 == true}">Подписан на Вас</a>
                         </div>
                     </div>
@@ -126,8 +126,8 @@ xmlns:th="http://www.thymeleaf.org">
             <div class="list-of-friends">
                 <a th:href="'/friends/' + ${pageUser.id}" th:text="'Друзья: ' + ${friends.size()}" class="amount">Друзья: 10</a>
                 <div th:if="${!friends.isEmpty() && (privacySettings.areFriendsAllowed)}">
-                    <div th:each="friend : ${friends.subList(0, displayFriends)}" class="friends-block">
-                        <a th:href="'/users/' + ${friend.userId}" class="friend">
+                    <div class="friends-block">
+                        <a th:each="friend : ${friends.subList(0, displayFriends)}" th:href="'/users/' + ${friend.userId}" class="friend">
                             <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../st atic/img/no-avatar.png" alt="">
                             <img th:if="${friend.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
                             <p th:text="${friend.userName}">Имя</p>

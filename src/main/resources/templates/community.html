@@ -113,8 +113,8 @@ xmlns:th="http://www.thymeleaf.org">
           <img th:if="${avatar != null}" style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${avatar.title}">
           <div th:if="${currentUser != null}" class="message">
             <div th:if="${community.admin.id != currentUser.id}">
-              <a th:if="${!isSubscribed}" th:onclick="'update(community, ' + ${community.id} + ', subscribe)'">Подписаться</a>
-              <a th:if="${isSubscribed}" th:onclick="'update(community, ' + ${community.id} + ', subscribe)'">Отписаться</a>
+              <a href="" th:if="${!isSubscribed}" th:onclick="'update(community, ' + ${community.id} + ', subscribe)'">Подписаться</a>
+              <a href="" th:if="${isSubscribed}" th:onclick="'update(community, ' + ${community.id} + ', subscribe)'">Отписаться</a>
             </div>
           </div>
           <div th:if="${currentUser == null}">

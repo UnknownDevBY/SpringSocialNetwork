@@ -95,7 +95,7 @@ xmlns:th="http://www.thymeleaf.org">
               <input th:onclick="'newComment(' + 'photo, ' + ${photo.photo.id} + ')'" class="post-comment-input send-photo-comment" type="button" value="Отправить">
           </form>
         </div>
-        <a th:if="${currentUser != null && photo.photo.user.id == currentUser.id}" style="font-size: 12px; float: left;" th:onclick="'update(del, photo, ' + ${photo.photo.id} + ')'">Удалить фото</a>
+        <a href="/news" th:if="${currentUser != null && photo.photo.user.id == currentUser.id}" style="font-size: 12px; float: left;" th:onclick="'update(del, photo, ' + ${photo.photo.id} + ')'">Удалить фото</a>
       </div>
     </div>
   </main>

@@ -7,6 +7,7 @@ import com.network.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageDto> getOpponents(int currentUserId) {
-        return messageRepository.getOpponentsId(currentUserId).stream()
+        List<Integer> opponentsId = messageRepository.getOpponentsId(currentUserId);
+        return opponentsId == null
+                ? new ArrayList<>()
+                : opponentsId.stream()
                 .map(opponentId -> messageDtoTransformer.toMessageDto(currentUserId, opponentId))
                 .collect(Collectors.toList());
     }
