@@ -32,19 +32,6 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-//    public String createToken(String email, String role) {
-//        Claims claims = Jwts.claims().setSubject(email);
-//        claims.put("role", role);
-//        Date now = new Date();
-//        Date validity = new Date(now.getTime() + validityInMilliseconds);
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setIssuedAt(now)
-//                .setExpiration(validity)
-//                .signWith(SignatureAlgorithm.HS256, secretKey)
-//                .compact();
-//    }
-
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());

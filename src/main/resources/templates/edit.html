@@ -6,6 +6,9 @@ xmlns:th="http://www.thymeleaf.org">
   <title>Редактировать</title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
   <script type="text/javascript" th:src="@{/js/regex.js}" src="../static/js/regex.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/validate-date.js}" src="../static/js/validate-date.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/save-user.js}" src="../static/js/save-user.js"></script>
 </head>
 <body>
   <header>
@@ -84,7 +87,5 @@ xmlns:th="http://www.thymeleaf.org">
  <input type="button" onclick="saveUser()" value="Подтвердить">
 </form>
 </main>
-  <script type="text/javascript" th:src="@{/js/validate-date.js}" src="../static/js/validate-date.js"></script>
-  <script type="text/javascript" th:src="@{/js/save-user.js}" src="../static/js/save-user.js"></script>
 </body>
 </html>
