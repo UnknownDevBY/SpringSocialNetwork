@@ -1,7 +1,7 @@
 package com.network.config;
 
-import com.network.security.jwt.JwtConfigurer;
-import com.network.security.jwt.JwtTokenProvider;
+import com.network.security.JwtConfigurer;
+import com.network.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

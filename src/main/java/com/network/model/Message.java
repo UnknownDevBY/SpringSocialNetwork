@@ -1,9 +1,14 @@
 package com.network.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Data
 @Entity
+@NoArgsConstructor
 public class Message {
 
     @Id
@@ -22,48 +27,4 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "to_id")
     private User to;
-
-    public Message() {
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Timestamp getSendingTime() {
-        return sendingTime;
-    }
-
-    public void setSendingTime(Timestamp sendingTime) {
-        this.sendingTime = sendingTime;
-    }
-
-    public User getFrom() {
-        return from;
-    }
-
-    public void setFrom(User from) {
-        this.from = from;
-    }
-
-    public User getTo() {
-        return to;
-    }
-
-    public void setTo(User to) {
-        this.to = to;
-    }
 }

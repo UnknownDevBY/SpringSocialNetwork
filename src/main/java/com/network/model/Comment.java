@@ -1,8 +1,13 @@
 package com.network.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
 @Entity
+@NoArgsConstructor
 public class Comment {
 
     @Id
@@ -22,48 +27,4 @@ public class Comment {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    public Comment() {
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Photo getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(Photo photo) {
-        this.photo = photo;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
 }

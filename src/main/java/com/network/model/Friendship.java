@@ -1,8 +1,13 @@
 package com.network.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
 @Entity
+@NoArgsConstructor
 public class Friendship {
 
     @Id
@@ -16,31 +21,4 @@ public class Friendship {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "to_id")
     private User to;
-
-    public Friendship() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public User getFrom() {
-        return from;
-    }
-
-    public void setFrom(User from) {
-        this.from = from;
-    }
-
-    public User getTo() {
-        return to;
-    }
-
-    public void setTo(User to) {
-        this.to = to;
-    }
 }

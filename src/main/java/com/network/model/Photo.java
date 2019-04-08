@@ -1,10 +1,15 @@
 package com.network.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
 
+@Data
 @Entity
+@NoArgsConstructor
 public class Photo {
 
     @Id
@@ -36,88 +41,4 @@ public class Photo {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "album_id")
     private PhotoAlbum photoAlbum;
-
-    public Photo() {
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public boolean isAvatar() {
-        return isAvatar;
-    }
-
-    public void setAvatar(boolean avatar) {
-        isAvatar = avatar;
-    }
-
-    public Timestamp getDateOfPost() {
-        return dateOfPost;
-    }
-
-    public void setDateOfPost(Timestamp dateOfPost) {
-        this.dateOfPost = dateOfPost;
-    }
-
-    public boolean isWasAvatar() {
-        return wasAvatar;
-    }
-
-    public void setWasAvatar(boolean wasAvatar) {
-        this.wasAvatar = wasAvatar;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Community getCommunity() {
-        return community;
-    }
-
-    public void setCommunity(Community community) {
-        this.community = community;
-    }
-
-    public String getLikes() {
-        return likes;
-    }
-
-    public void setLikes(String likes) {
-        this.likes = likes;
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public PhotoAlbum getPhotoAlbum() {
-        return photoAlbum;
-    }
-
-    public void setPhotoAlbum(PhotoAlbum photoAlbum) {
-        this.photoAlbum = photoAlbum;
-    }
 }
