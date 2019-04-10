@@ -8,12 +8,6 @@ xmlns:th="http://www.thymeleaf.org">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         let isDetailsClicked = false;
-        let post = 'post';
-        let comment = 'comment';
-        let friendship = 'friendship';
-        let users = 'users';
-        let like = 'likes';
-        let del = 'delete';
         function setDetails(details) {
             details.innerHTML = (isDetailsClicked) ? "Полная информация" : "Скрыть полную информацию";
             isDetailsClicked = !isDetailsClicked;
@@ -75,13 +69,13 @@ xmlns:th="http://www.thymeleaf.org">
                             <div th:if="${privacySettings.canSendMessages}">
                                 <a th:href="'/conversations/' + ${pageUser.id}">Отправить сообщение</a>
                             </div>
-                            <a href="" th:if="${is1friendTo2 == false && is2friendTo1 == false}" th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'">Добавить в друзья</a>
+                            <a href="" th:if="${is1friendTo2 == false && is2friendTo1 == false}" th:onclick="'update(`users`, `friendship`, ' + ${pageUser.id} + ')'">Добавить в друзья</a>
                             <a href="" onmouseenter='onMouse(this, "Удалить из друзей")'
-                            onmouseleave='onMouse(this, "У Вас в друзьях")' th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == true && is2friendTo1 == true}" >У Вас в друзьях</a>
+                            onmouseleave='onMouse(this, "У Вас в друзьях")' th:onclick="'update(`users`, `friendship`, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == true && is2friendTo1 == true}" >У Вас в друзьях</a>
                             <a href="" onmouseenter='onMouse(this, "Отписаться")'
-                            onmouseleave='onMouse(this, "Вы подписаны")' th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == true && is2friendTo1 == false}">Вы подписаны</a>
+                            onmouseleave='onMouse(this, "Вы подписаны")' th:onclick="'update(`users`, `friendship`, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == true && is2friendTo1 == false}">Вы подписаны</a>
                             <a href="" onmouseenter='onMouse(this, "Принять заявку")'
-                            onmouseleave='onMouse(this, "Подписан на Вас")' th:onclick="'update(users, friendship, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == false && is2friendTo1 == true}">Подписан на Вас</a>
+                            onmouseleave='onMouse(this, "Подписан на Вас")' th:onclick="'update(`users`, `friendship`, ' + ${pageUser.id} + ')'" th:if="${is1friendTo2 == false && is2friendTo1 == true}">Подписан на Вас</a>
                         </div>
                     </div>
                     <div th:if="${currentUser == null}">
@@ -132,7 +126,7 @@ xmlns:th="http://www.thymeleaf.org">
                 <div th:if="${!friends.isEmpty() && (privacySettings.areFriendsAllowed)}">
                     <div class="friends-block">
                         <a th:each="friend : ${friends.subList(0, displayFriends)}" th:href="'/users/' + ${friend.userId}" class="friend">
-                            <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../st atic/img/no-avatar.png" alt="">
+                            <img th:if="${friend.avatar == null}" class="friend-photo" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
                             <img th:if="${friend.avatar != null}" class="friend-photo" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${friend.avatar.title}" src="../static/img/no-avatar.png" alt="">
                             <p th:text="${friend.userName}">Имя</p>
                         </a>
@@ -144,12 +138,12 @@ xmlns:th="http://www.thymeleaf.org">
                     <p class="post-author">Новая запись</p>
                     <form class="new-post">
                         <textarea id="content" name="content" maxlength="255" minlength="1" required="required"></textarea>
-                        <input th:onclick="'newPost(' + 'users, ' + ${pageUser.id} + ')'" type="button" value="Отправить">
+                        <input th:onclick="'newPost(`users`, ' + ${pageUser.id} + ')'" type="button" value="Отправить">
                     </form>
                 </div>
                 <p th:text="'Записи: ' + ${posts.size()}" class="amount">Записи: 0</p>
                 <div th:each="post : ${posts}">
-                    <a th:if="${currentUser != null && post.post.author.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(del, post, ' + ${post.post.id} + ')'">X</a>
+                    <a href="" th:if="${currentUser != null && post.post.author.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(`del`, `post`, ' + ${post.post.id} + ')'">X</a>
                     <div class="post">
                         <a class="post-author" th:text="${post.post.author.name} + ' ' + ${post.post.author.surname}" th:href="'/users/' + ${post.post.author.id}">Владислав Ефимчик</a>
                         <p class="post-time" th:text="${post.post.postTime}"></p>
@@ -165,10 +159,10 @@ xmlns:th="http://www.thymeleaf.org">
                                   <img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt="">
                               </span>
                               <span th:if="${currentUser != null && !post.likedByCurrentUser}">
-                                  <a th:onclick="'update(like, post, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+                                  <a th:onclick="'update(`likes`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
                               </span>
                               <span th:if="${currentUser != null && post.likedByCurrentUser}">
-                                  <a th:onclick="'update(like, post, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+                                  <a th:onclick="'update(`likes`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
                               </span>
                               <span class="like-amount" th:text="${post.likesCount}">10</span>
                           </span>
@@ -182,7 +176,7 @@ xmlns:th="http://www.thymeleaf.org">
                             <summary class="show-comments-summary">Показать комментарии</summary>
                             <div th:each="comment : ${post.comments}">
                                 <div class="photo-comment">
-                                    <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(del, comment, ' + ${comment.id} + ')'">X</a>
+                                    <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(`del`, `comment`, ' + ${comment.id} + ')'">X</a>
                                     <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
                                     <p th:id="'comment' + ${comment.id}" class="photo-comment-text">
                                         <span th:each="word : ${comment.content.split(' ')}">
@@ -195,7 +189,7 @@ xmlns:th="http://www.thymeleaf.org">
                         </details>
                         <form style="height: 50px;" th:if="${currentUser != null && privacySettings.canLeaveComments}">
                             <textarea th:id="'commentContent' + ${post.post.id}" th:name="'commentContent' + ${post.post.id}" class="photo-comment-area" maxlength="255" minlength="1" required="required"></textarea>
-                            <input th:onclick="'newComment(' + 'post, ' + ${post.post.id} + ')'" class="post-comment-input send-photo-comment" type="button" value="Оставить комментарий">
+                            <input th:onclick="'newComment(`post`, ' + ${post.post.id} + ')'" class="post-comment-input send-photo-comment" type="button" value="Оставить комментарий">
                         </form>
                     </div>
                 </div>

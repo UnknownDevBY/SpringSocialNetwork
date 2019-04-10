@@ -5,12 +5,6 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title>Фото</title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
-    <script>
-        let photo = 'photo';
-        let comment = 'comment';
-        let likes = 'likes';
-        let del = 'delete';
-    </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
   <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
   <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
@@ -68,10 +62,10 @@ xmlns:th="http://www.thymeleaf.org">
               <img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt="">
             </span>
             <span th:if="${currentUser != null && !photo.likedByCurrentUser}">
-              <a th:onclick="'update(likes, photo, ' + ${photo.photo.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+              <a th:onclick="'update(`likes`, `photo`, ' + ${id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
             </span>
             <span th:if="${currentUser != null && photo.likedByCurrentUser}">
-              <a th:onclick="'update(likes, photo, ' + ${photo.photo.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+              <a th:onclick="'update(`likes`, `photo`, ' + ${id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
             </span>
             <span class="like-amount" th:text="${photo.likesCount}">10</span>
           </span>
@@ -82,7 +76,7 @@ xmlns:th="http://www.thymeleaf.org">
         </div>
         <div th:id="${comments != null}" th:each="comment : ${comments}">
           <div th:id="'comment' + ${comment.id}" class="photo-comment">
-            <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(del, comment, ' + ${comment.id} + ')'">X</a>
+            <a href="" th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(`del`, `comment`, ' + ${comment.id} + ')'">X</a>
             <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
             <p class="photo-comment-text">
               <span th:each="word : ${comment.content.split(' ')}">
@@ -93,12 +87,12 @@ xmlns:th="http://www.thymeleaf.org">
           </div>
         </div>
         <div th:if="${currentUser != null}">
-          <form th:action="'/comment/photo/' + ${id}" method="post">
-              <textarea th:id="'commentContent' + ${photo.photo.id}" th:name="'commentContent' + ${photo.photo.id}" class="photo-comment-area" maxlength="255" minlength="1" required="required"></textarea>
-              <input th:onclick="'newComment(' + 'photo, ' + ${photo.photo.id} + ')'" class="post-comment-input send-photo-comment" type="button" value="Отправить">
+          <form>
+              <textarea th:id="'commentContent' + ${id}" th:name="'commentContent' + ${photo.photo.id}" class="photo-comment-area" maxlength="255" minlength="1" required="required"></textarea>
+              <input th:onclick="'newComment(`photo`, ' + ${id} + ')'" class="post-comment-input send-photo-comment" type="button" value="Отправить">
           </form>
         </div>
-        <a href="/news" th:if="${currentUser != null && photo.photo.user.id == currentUser.id}" style="font-size: 12px; float: left;" th:onclick="'update(del, photo, ' + ${photo.photo.id} + ')'">Удалить фото</a>
+        <a href="/news" th:if="${currentUser != null && photo.photo.user.id == currentUser.id}" style="font-size: 12px; float: left;" th:onclick="'update(`delete`, `photo`, ' + ${photo.photo.id} + ')'">Удалить фото</a>
       </div>
     </div>
   </main>

@@ -5,10 +5,6 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title>Поиск</title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
-  <script>
-      let post = 'post';
-      let like = 'likes';
-  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
   <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
 </head>
@@ -84,10 +80,10 @@ xmlns:th="http://www.thymeleaf.org">
                 <img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt="">
               </span>
               <span th:if="${currentUser != null && !post.likedByCurrentUser}">
-                <a th:onclick="'update(like, post, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+                <a th:onclick="'update(`like`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
               </span>
               <span th:if="${currentUser != null && post.likedByCurrentUser}">
-                <a th:onclick="'update(like, post, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+                <a th:onclick="'update(`like`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
               </span>
               <span class="like-amount" th:text="${post.likesCount}">10</span>
             </span>

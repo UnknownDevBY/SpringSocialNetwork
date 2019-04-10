@@ -5,9 +5,6 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title>Переписка</title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
-  <script>
-    let conversations = 'conversations';
-  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
   <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
 </head>
@@ -48,7 +45,7 @@ xmlns:th="http://www.thymeleaf.org">
     <a th:href="'/users/' + ${opponentsId}" class="convers-opponent">Владислав Ефимчик</a>
     <form class="new-message new-post">
       <textarea id="content" name="content" maxlength="255" minlength="1" required="required"></textarea>
-      <input th:onclick="'newPost(' + 'conversations, ' + ${opponentsId} + ')'" type="button" value="Отправить">
+      <input th:onclick="'newPost(`conversations`, ' + ${opponentsId} + ')'" type="button" value="Отправить">
     </form>
     <div class="convers-content">
       <div th:each="message : ${messages}">

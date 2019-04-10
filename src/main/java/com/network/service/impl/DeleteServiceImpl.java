@@ -37,7 +37,7 @@ public class DeleteServiceImpl implements DeleteService {
 
     private void deletePhoto(int id, User currentUser) {
         Photo photo = photoRepository.getById(id);
-        if(photo.getUser().getId() == currentUser.getId()) {
+        if(photo.getUser().equals(currentUser)) {
             s3Service.deleteFile(photo.getTitle());
             photoRepository.delete(photo);
             if(photo.isAvatar())
