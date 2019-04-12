@@ -12,16 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-@Controller
+@RestController
 public class CommunityController {
 
     @Autowired private CommunityService communityService;
@@ -34,35 +33,35 @@ public class CommunityController {
     private String bucketName;
 
     @GetMapping("/communities")
-    public String show(@RequestParam(required = false) String value,
-                       @AuthenticationPrincipal User currentUser,
-                       Model model) {
+    public Map<String, Object> show(@RequestParam(required = false) String value,
+                                    @AuthenticationPrincipal User currentUser) {
         List<Community> myCommunities = communityService.findCommunitiesByValueAndCurrentUser(value, currentUser);
         List<Community> allCommunities = communityService.findCommunitiesByValue(value, currentUser);
         allCommunities.removeAll(myCommunities);
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("myCommunities", myCommunities);
-        model.addAttribute("allCommunities", allCommunities);
-        return "myGroups";
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("currentUserId", currentUser.getId());
+        map.put("myCommunities", myCommunities);
+        map.put("allCommunities", allCommunities);
+        return map;
     }
 
     @GetMapping("/communities/public/{id}")
-    public String showPublic(@PathVariable int id,
-                             @AuthenticationPrincipal User currentUser,
-                             HttpServletRequest request,
-                             Model model) {
+    public Map<String, Object> showPublic(@PathVariable int id,
+                             @AuthenticationPrincipal User currentUser) {
         if(!communityRepository.existsById(id))
-            return "redirect:" + request.getHeader("Referer");
+            return null;
         Community community = communityRepository.getById(id);
         List<UserDto> subscribers = communityService.getSubscribers(community);
-        model.addAttribute("community", community);
-        model.addAttribute("posts", communityService.getPosts(community, currentUser));
-        model.addAttribute("avatar", photoRepository.getAllByCommunityAndWasAvatarTrue(community));
-        model.addAttribute("subscribers", subscribers.size() <= 6 ? subscribers : subscribers.subList(0, 6));
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("isSubscribed", community.getSubscribers().contains(currentUser));
-        model.addAttribute("bucketName", bucketName);
-        return "community";
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("community", community);
+        map.put("posts", communityService.getPosts(community, currentUser));
+        map.put("avatar", photoRepository.getAllByCommunityAndWasAvatarTrue(community));
+        map.put("subscribers", subscribers.size() <= 6 ? subscribers : subscribers.subList(0, 6));
+        map.put("currentUserId", currentUser != null ? currentUser.getId() : 0);
+        map.put("isSubscribed", community.getSubscribers().contains(currentUser));
+        map.put("bucketName", bucketName);
+        map.put("admin", community.getAdmin());
+        return map;
     }
 
     @GetMapping("/communities/create")
@@ -71,20 +70,18 @@ public class CommunityController {
     }
 
     @GetMapping("/communities/public/{communityId}/subscribe")
-    public String subscribe(@AuthenticationPrincipal User currentUser,
-                            @PathVariable int communityId,
-                            HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.OK)
+    public void subscribe(@AuthenticationPrincipal User currentUser,
+                            @PathVariable int communityId) {
         communityService.updateSubscription(communityId, currentUser);
-        return "redirect:" + request.getHeader("Referer");
     }
 
     @PostMapping("/communities/create")
-    public String createCommunity(@ModelAttribute Community community,
+    public void createCommunity(@ModelAttribute Community community,
                        @RequestParam MultipartFile avatar,
                        @AuthenticationPrincipal User currentUser) throws IOException {
         photoService.savePhoto(true, avatar, null, community, null);
         communityService.createCommunity(community, currentUser);
-        return "redirect:/communities";
     }
 
     @PostMapping("/communities/public/{id}")

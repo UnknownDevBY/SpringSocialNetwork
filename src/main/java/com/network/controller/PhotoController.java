@@ -9,17 +9,15 @@ import com.network.repository.PhotoRepository;
 import com.network.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Controller
 public class PhotoController {
@@ -33,40 +31,39 @@ public class PhotoController {
     private String bucketName;
 
     @GetMapping("/photos/{id}")
-    public String showPhoto(@PathVariable int id,
-                            @AuthenticationPrincipal User currentUser,
-                            HttpServletRequest request,
-                            Model model) {
+    public Map<String, Object> showPhoto(@PathVariable int id,
+                            @AuthenticationPrincipal User currentUser) {
         Photo photo = photoRepository.getById(id);
         if(photo == null)
-            return "redirect:" + request.getHeader("Referer");
+            return null;
+        Map<String, Object> map = new LinkedHashMap<>();
         User owner = photo.getUser();
         PhotoDto photoDto = photoService.getPhoto(id, currentUser);
-        model.addAttribute("photo", photoDto);
-        model.addAttribute("id", id);
-        model.addAttribute("bucketName", bucketName);
-        model.addAttribute("nextPhoto", photoRepository.getPreviousPhotoId(id, owner.getId()));
-        model.addAttribute("prevPhoto", photoRepository.getNextPhotoId(id, owner.getId()));
-        model.addAttribute("owner", owner);
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("comments", commentRepository.getAllByPhoto(photoDto.getPhoto()));
-        return "photo";
+        map.put("photo", photoDto);
+        map.put("id", id);
+        map.put("bucketName", bucketName);
+        map.put("nextPhoto", photoRepository.getPreviousPhotoId(id, owner.getId()));
+        map.put("prevPhoto", photoRepository.getNextPhotoId(id, owner.getId()));
+        map.put("owner", owner);
+        map.put("currentUserId", currentUser != null ? currentUser.getId() : 0);
+        map.put("comments", commentRepository.getAllByPhoto(photoDto.getPhoto()));
+        return map;
     }
 
     @GetMapping("/photos/add")
-    public String openAddPhoto(@AuthenticationPrincipal User currentUser,
-                               Model model) {
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("albums", albumRepository.getAllTitlesByUserId(currentUser.getId()));
-        return "addPhoto";
+    public Map<String, Object> openAddPhoto(@AuthenticationPrincipal User currentUser) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("currentUserId", currentUser.getId());
+        map.put("albums", albumRepository.getAllTitlesByUserId(currentUser.getId()));
+        return map;
     }
 
     @PostMapping("/photos/add")
-    public String addPhoto(@RequestParam(required = false) Boolean makeAvatar,
+    @ResponseStatus(HttpStatus.OK)
+    public void addPhoto(@RequestParam(required = false) Boolean makeAvatar,
                            @RequestParam MultipartFile newPhoto,
                            @RequestParam(required = false) String album,
                            @AuthenticationPrincipal User currentUser) throws IOException {
         photoService.savePhoto(makeAvatar, newPhoto, currentUser, null, album);
-        return "redirect:/users/" + currentUser.getId();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,29 +27,29 @@ public class UserController {
     private String bucketName;
 
     @GetMapping("/users/{id}")
-    public String showUser(@PathVariable int id,
-                           @AuthenticationPrincipal User currentUser,
-                           Map<String, Object> model) {
+    public Map<String, Object> showUser(@PathVariable int id,
+                           @AuthenticationPrincipal User currentUser) {
         User pageUser = userRepository.getById(id);
         if(!userRepository.existsById(id)) {
-            return "redirect:/";
+            return null;
         }
+        Map<String, Object> map = new LinkedHashMap<>();
         boolean is1friendTo2 = currentUser != null && userService.isFirstFriendToSecond(currentUser.getId(), id);
         boolean is2friendTo1 = currentUser != null && userService.isFirstFriendToSecond(id, currentUser.getId());
         boolean areFriends = is1friendTo2 && is2friendTo1;
         List<UserDto> friends = userService.getFriends(pageUser);
-        model.put("friends", friends);
-        model.put("displayFriends", friends.size() < 6 ? friends.size() % 6 : 6);
-        model.put("is1friendTo2", is1friendTo2);
-        model.put("is2friendTo1", is2friendTo1);
-        model.put("currentUser", currentUser);
-        model.put("pageUser", pageUser);
-        model.put("avatar", photoRepository.getAvatarByUserId(id));
-        model.put("allPhotos", userService.getPhotos(pageUser, currentUser));
-        model.put("posts", userService.getPosts(pageUser, currentUser));
-        model.put("privacySettings", userService.getPrivacySettings(currentUser, pageUser, areFriends));
-        model.put("bucketName", bucketName);
-        return "user";
+        map.put("friends", friends);
+        map.put("displayFriends", friends.size() < 6 ? friends.size() % 6 : 6);
+        map.put("is1friendTo2", is1friendTo2);
+        map.put("is2friendTo1", is2friendTo1);
+        map.put("currentUserId", currentUser != null ? currentUser.getId() : 0);
+        map.put("pageUser", pageUser);
+        map.put("avatar", photoRepository.getAvatarByUserId(id));
+        map.put("allPhotos", userService.getPhotos(pageUser, currentUser));
+        map.put("posts", userService.getPosts(pageUser, currentUser));
+        map.put("privacySettings", userService.getPrivacySettings(currentUser, pageUser, areFriends));
+        map.put("bucketName", bucketName);
+        return map;
     }
 
     @GetMapping("/users/friendship/{id}")

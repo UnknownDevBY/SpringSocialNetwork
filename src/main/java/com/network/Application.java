@@ -23,6 +23,6 @@ public class Application {
 
     @Bean
     public Path pathToLog() {
-        return Paths.get("log.txt");
+        return Paths.get("src\\main\\resources\\log.txt");
     }
 }

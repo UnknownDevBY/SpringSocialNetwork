@@ -1,24 +1,17 @@
 package com.network.controller;
 
-import com.network.dto.PrivacySettingsDto;
 import com.network.model.User;
-import com.network.repository.UserRepository;
 import com.network.service.AlbumService;
-import com.network.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-@Controller
+@RestController
 public class AlbumController {
 
     @Autowired private AlbumService albumService;
@@ -27,46 +20,41 @@ public class AlbumController {
     private String bucketName;
 
     @GetMapping("/albums/{ownerId}")
-    public String showAlbum(@PathVariable int ownerId,
-                            @AuthenticationPrincipal User currentUser,
-                            HttpServletRequest request,
-                            Model model) {
+    public Map<String, Object> showAlbum(@PathVariable int ownerId,
+                                         @AuthenticationPrincipal User currentUser) {
         if(!albumService.allowAccessToAlbums(ownerId, currentUser))
-            return "redirect:" + request.getHeader("Referer");
-        model.addAttribute("id", ownerId);
-        model.addAttribute("bucketName", bucketName);
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("defaultAlbum", albumService.getDefaultAlbum(ownerId));
-        model.addAttribute("albums", albumService.getUserAlbums(ownerId));
-        return "albums";
+            return null;
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", ownerId);
+        map.put("bucketName", bucketName);
+        map.put("currentUserId", currentUser != null ? currentUser.getId() : 0);
+        map.put("defaultAlbum", albumService.getDefaultAlbum(ownerId));
+        map.put("albums", albumService.getUserAlbums(ownerId));
+        return map;
     }
 
 
     @GetMapping("/albums/add")
-    public String openAlbumCreator(@AuthenticationPrincipal User currentUser,
-                               Model model) {
-        model.addAttribute("currentUser", currentUser);
-        return "addAlbum";
+    public Map<String, Object> openAlbumCreator(@AuthenticationPrincipal User currentUser) {
+        return Map.of("currentUserId", currentUser != null ? currentUser.getId() : 0);
     }
 
     @GetMapping("/albums/{userId}/{albumId}")
-    public String showAlbum(@PathVariable int userId,
-                            @PathVariable int albumId,
-                            @AuthenticationPrincipal User currentUser,
-                            HttpServletRequest request,
-                            Model model) {
+    public Map<String, Object> showAlbum(@PathVariable int userId,
+                               @PathVariable int albumId,
+                               @AuthenticationPrincipal User currentUser) {
         if(!albumService.allowAccessToAlbumContent(userId, albumId, currentUser))
-            return "redirect:" + request.getHeader("Referer");
-        model.addAttribute("bucketName", bucketName);
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("photos", albumService.getPhotos(userId, albumId));
-        return "albumsPhotos";
+            return null;
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("bucketName", bucketName);
+        map.put("currentUserId", currentUser != null ? currentUser.getId() : 0);
+        map.put("photos", albumService.getPhotos(userId, albumId));
+        return map;
     }
 
     @PostMapping("/albums/add")
-    public String saveNewAlbum(@NotBlank @RequestParam String title,
-                               @AuthenticationPrincipal User currentUser) {
+    public void saveNewAlbum(@NotBlank @RequestParam String title,
+                             @AuthenticationPrincipal User currentUser) {
         albumService.addAlbum(title, currentUser);
-        return "redirect:/albums/" + currentUser.getId();
     }
 }
