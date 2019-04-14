@@ -1,0 +1,2 @@
+Mon Apr 15 01:30:10 MSK 2019 Successfully authorized user with username 'first_user'
+Mon Apr 15 01:35:25 MSK 2019 Successfully authorized user with username 'first_user'

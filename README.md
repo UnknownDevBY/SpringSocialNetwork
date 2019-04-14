@@ -2,7 +2,7 @@
 
 ### Where can i find it?
 
-Dillinger uses a number of open source projects to work properly:
+Application is available on different platforms:
 
 * [Heroku] - deploy on Heroku
 * [AWS] - deploy on AWS Elastic Beanstalk

@@ -1,34 +1,18 @@
 package com.network.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
 public class MessageDto {
 
+    @Setter
     private UserDto friend;
+
+    @Setter
     private int authorId;
+
     private String lastMessage;
-
-    public MessageDto() {
-
-    }
-
-    public UserDto getFriend() {
-        return friend;
-    }
-
-    public void setFriend(UserDto friend) {
-        this.friend = friend;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getLastMessage() {
-        return lastMessage;
-    }
 
     public void setLastMessage(String lastMessage) {
         StringBuilder builder = new StringBuilder();

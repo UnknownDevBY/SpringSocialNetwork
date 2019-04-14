@@ -12,5 +12,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User getById(int id);
     List<User> getAllByNameStartsWith(String value);
     List<User> getAllBySurnameStartsWith(String value);
-    Optional<User> findByEmail(String email);
 }
