@@ -1,12 +1,10 @@
 package com.network.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -14,14 +12,12 @@ import java.util.Set;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Photo implements Serializable {
+public class Photo {
 
     @Id
-    @JsonView
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JsonView
     private String title;
 
     private boolean isAvatar;

@@ -10,13 +10,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-@RestController
+@Controller
 public class FriendController {
 
     @Autowired private UserRepository userRepository;
@@ -27,18 +25,19 @@ public class FriendController {
     private String bucketName;
 
     @GetMapping("/friends/{id}")
-    public Map<String, Object> showFriends(@PathVariable int id,
-                              @AuthenticationPrincipal User currentUser) {
+    public String showFriends(@PathVariable int id,
+                              @AuthenticationPrincipal User currentUser,
+                              HttpServletRequest request,
+                              Map<String, Object> model) {
         User pageUser = userRepository.getById(id);
         if(pageUser == null || !friendService.areFriendsAllowed(pageUser, currentUser))
-            return null;
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("currentUserId", currentUser != null ? currentUser.getId() : 0);
-        map.put("id", id);
-        map.put("bucketName", bucketName);
-        map.put("friends", userService.getFriends(pageUser));
-        map.put("subscribers", friendService.setRelation(friendService.getAllSubscribers(pageUser)));
-        map.put("subscriptions", friendService.setRelation(friendService.getAllSubscriptions(pageUser)));
-        return map;
+            return "redirect:" + request.getHeader("Referer");
+        model.put("currentUser", currentUser);
+        model.put("id", id);
+        model.put("bucketName", bucketName);
+        model.put("friends", userService.getFriends(pageUser));
+        model.put("subscribers", friendService.setRelation(friendService.getAllSubscribers(pageUser)));
+        model.put("subscriptions", friendService.setRelation(friendService.getAllSubscriptions(pageUser)));
+        return "friends";
     }
 }

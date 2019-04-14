@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/registration", "/swagger-ui.**/**", "/img/**", "/css/**", "/js/**");
+                .antMatchers("/registration", "/swagger-ui.**", "/img/**", "/css/**", "/js/**");
     }
 
     @Override
@@ -52,11 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
                 .permitAll()
-                .and()
-
-                .rememberMe()
-                .rememberMeParameter("itech_remember")
-                .tokenValiditySeconds(86400)
                 .and()
 
                 .apply(new JwtConfigurer(jwtTokenProvider));

@@ -1,21 +1,17 @@
 package com.network.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-@JsonView
-public class Message implements Serializable {
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +20,6 @@ public class Message implements Serializable {
     @Column(length = 511)
     private String content;
 
-    @JsonIgnore
     private Timestamp sendingTime;
 
     @ManyToOne

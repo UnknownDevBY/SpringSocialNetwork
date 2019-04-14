@@ -8,7 +8,7 @@ xmlns:th="http://www.thymeleaf.org">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css" type="text/css" media="all">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
 </head>
-<body> 
+<body style="background-color: white">
     <main class="sign fadeIn">
         <div>
             <h1 id="hello">Hello</h1>
@@ -17,16 +17,9 @@ xmlns:th="http://www.thymeleaf.org">
                 <br>
                 <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
                 <br>
-                <div>
-                    <label for="itech_remember">Запомнить меня?</label>
-                    <input type="checkbox" id="itech_remember" name="itech_remember">
-                </div>
                 <input type="submit" value="Войти">  
             </form>
             <p id="registration">Нет аккаунта? <a href="/registration">Регистрация</a></p>
-            <div th:if="${error != null}">
-                <p th:text="${error}" style="color: red;">Error</p>
-            </div>
         </div>
     </main> 
 </body>

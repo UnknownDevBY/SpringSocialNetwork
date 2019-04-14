@@ -1,12 +1,10 @@
 package com.network.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -14,18 +12,15 @@ import java.util.Set;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Post implements Serializable {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView
     private int id;
 
-    @JsonView
     private Timestamp postTime;
 
     @Column(length = 511)
-    @JsonView
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER)

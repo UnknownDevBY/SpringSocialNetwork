@@ -80,10 +80,10 @@ xmlns:th="http://www.thymeleaf.org">
                 <img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt="">
               </span>
               <span th:if="${currentUser != null && !post.likedByCurrentUser}">
-                <a th:onclick="'update(`like`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
+                <a th:onclick="'update(`likes`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
               </span>
               <span th:if="${currentUser != null && post.likedByCurrentUser}">
-                <a th:onclick="'update(`like`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
+                <a th:onclick="'update(`likes`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
               </span>
               <span class="like-amount" th:text="${post.likesCount}">10</span>
             </span>
@@ -97,7 +97,7 @@ xmlns:th="http://www.thymeleaf.org">
               <summary class="show-comments-summary">Показать комментарии</summary>
               <div th:each="comment : ${post.comments}">
                 <div class="photo-comment">
-                  <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:href="'/delete/comment/' + ${comment.id}">X</a>
+                  <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(`delete`, `comment`, ' + ${comment.id} + ')'">X</a>
                   <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
                   <p class="photo-comment-text" th:text="${comment.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis atque sequi eius eligendi, consectetur tempore obcaecati earum placeat, harum labore officia facere veniam deleniti ipsa fuga eveniet vitae, libero, repudiandae. Minima quis, et nobis recusandae impedit quia dolore, necessitatibus cum debitis quaerat alias provident minus. Sequi culpa, possimus nam voluptatum?</p>
                 </div>
@@ -110,7 +110,7 @@ xmlns:th="http://www.thymeleaf.org">
         <div th:each="comment : ${comments}">
           <div class="photo-comment">
             <div th:if="${comment.post != null}">
-              <div th:if="${comment.post.author != null}">
+              <div th:if="${comment.post.owner != null}">
                 <p th:text="'Комментарий на стене пользователя ' + ${comment.post.owner.name} + ' ' + ${comment.post.owner.surname}" style="font-size: 12px;">Комментарий на стене пользователя Владислав Ефимчик</p>
                 <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id} + '#comment' + ${comment.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
               </div>

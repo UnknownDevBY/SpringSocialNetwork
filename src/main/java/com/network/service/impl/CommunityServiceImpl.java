@@ -40,7 +40,7 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public List<PostDto> getPosts(Community community, User currentUser) {
-        int currentUserId = currentUser.getId();
+        int currentUserId = currentUser != null ? currentUser.getId() : 0;
         return postRepository.getByCommunityOrderByPostTimeDesc(community).stream()
                 .map(post -> postDtoTransformer.toPostDto(post, currentUserId))
                 .collect(Collectors.toList());

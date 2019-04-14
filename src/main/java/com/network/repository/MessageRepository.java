@@ -16,6 +16,4 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
     @Query(value = "SELECT * FROM Message WHERE (from_id = ?1 AND to_id = ?2) OR (from_id = ?2 AND to_id = ?1) ORDER BY id DESC", nativeQuery = true)
     List<Message> getAllMessages(int id1, int id2);
-
-    boolean existsByFrom_IdAndTo_Id(int id1, int id2);
 }

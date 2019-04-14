@@ -25,10 +25,4 @@ public class ConversationServiceImpl implements ConversationService {
         message.setSendingTime(new Timestamp(System.currentTimeMillis()));
         messageRepository.save(message);
     }
-
-    @Override
-    public boolean isValid(int currentUserId, int opponentsId) {
-        return messageRepository.existsByFrom_IdAndTo_Id(currentUserId, opponentsId) &&
-                messageRepository.existsByFrom_IdAndTo_Id(opponentsId, currentUserId);
-    }
 }

@@ -1,12 +1,10 @@
 package com.network.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -15,19 +13,16 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Community implements Serializable {
+public class Community {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView
     private int id;
 
     @Column(length = 63)
-    @JsonView
     private String title;
 
     @Column(length = 127)
-    @JsonView
     private String description;
 
     @ManyToOne

@@ -6,14 +6,12 @@ import com.network.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-@RestController
+@Controller
 public class NewsController {
 
     @Autowired private NewsService newsService;
@@ -22,17 +20,18 @@ public class NewsController {
     private String bucketName;
 
     @GetMapping("/news")
-    public Map<String, Object> showNews(@AuthenticationPrincipal User currentUser) {
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("currentUserId", currentUser.getId());
-        map.put("allNews", newsService.getNews(currentUser));
-        map.put("bucketName", bucketName);
-        return map;
+    public String showNews(@AuthenticationPrincipal User currentUser,
+                           Model model) {
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("allNews", newsService.getNews(currentUser));
+        model.addAttribute("bucketName", bucketName);
+        return "news";
     }
 
     @Authorization
     @PostMapping("/news")
-    public Map<String, Object> showNewsPost(@AuthenticationPrincipal User currentUser) {
-        return showNews(currentUser);
+    public String showNewsPost(@AuthenticationPrincipal User currentUser,
+                           Model model) {
+        return showNews(currentUser, model);
     }
 }

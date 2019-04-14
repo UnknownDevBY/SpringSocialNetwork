@@ -2,7 +2,6 @@ package com.network.controller;
 
 import com.network.aspect.annotation.Registration;
 import com.network.model.User;
-import com.network.repository.UserRepository;
 import com.network.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.sql.Date;
 
 @Controller
 public class RegistrationController {

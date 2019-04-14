@@ -1,10 +1,5 @@
 package com.network.dto;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Getter;
-
-@Getter
-@JsonView
 public class PrivacySettingsDto {
 
     private boolean canSendMessages = true;
@@ -48,5 +43,64 @@ public class PrivacySettingsDto {
         if(comments != null && ((!areFriends && comments == 'f') || comments == 'm')) {
             canLeaveComments = false;
         }
+    }
+
+    public void setCanSendMessages(boolean canSendMessages) {
+        this.canSendMessages = canSendMessages;
+    }
+
+    public void setFullInfoAllowed(boolean fullInfoAllowed) {
+        isFullInfoAllowed = fullInfoAllowed;
+    }
+
+    public void setArePhotosAllowed(boolean arePhotosAllowed) {
+        this.arePhotosAllowed = arePhotosAllowed;
+    }
+
+    public void setAreFriendsAllowed(boolean areFriendsAllowed) {
+        this.areFriendsAllowed = areFriendsAllowed;
+    }
+
+    public void setCanLeavePosts(boolean canLeavePosts) {
+        this.canLeavePosts = canLeavePosts;
+    }
+
+    public void setCanLeaveComments(boolean canLeaveComments) {
+        this.canLeaveComments = canLeaveComments;
+    }
+
+    public boolean isCanSendMessages() {
+        return canSendMessages;
+    }
+
+    public boolean isFullInfoAllowed() {
+        return isFullInfoAllowed;
+    }
+
+    public boolean isArePhotosAllowed() {
+        return arePhotosAllowed;
+    }
+
+    public boolean isAreFriendsAllowed() {
+        return areFriendsAllowed;
+    }
+
+    public boolean isCanLeavePosts() {
+        return canLeavePosts;
+    }
+
+    public boolean isCanLeaveComments() {
+        return canLeaveComments;
+    }
+
+    @Override
+    public String toString() {
+        return "PrivacySettingsDto{" +
+                "canSendMessages=" + canSendMessages +
+                ", isFullInfoAllowed=" + isFullInfoAllowed +
+                ", arePhotosAllowed=" + arePhotosAllowed +
+                ", areFriendsAllowed=" + areFriendsAllowed +
+                ", canLeavePosts=" + canLeavePosts +
+                '}';
     }
 }

@@ -1,29 +1,35 @@
 package com.network.dto;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.network.model.Photo;
 import com.network.model.Post;
-import lombok.Getter;
-import lombok.Setter;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-@JsonView
 public class NewsDto implements Comparable<NewsDto> {
 
-    @Getter
-    @Setter
     private Photo photo;
-
-    @Getter
-    @Setter
     private Post post;
-
     private DateTime publicationTime;
 
     private DateTimeFormatter dateTimeFormatter =
             DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
     public String getPublicationTime() {
         return dateTimeFormatter.print(publicationTime);
