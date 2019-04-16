@@ -46,7 +46,7 @@ public class PhotoServiceImpl implements PhotoService {
         if(!newPhoto.isEmpty()) {
             boolean isAvatar = makeAvatar != null;
             Photo photo = new Photo();
-            String title = generateRandomString() + "." + Files.getFileExtension(newPhoto.getOriginalFilename());
+            String title = RandomString.make() + "." + Files.getFileExtension(newPhoto.getOriginalFilename());
             photo.setTitle(title);
             photo.setAvatar(isAvatar);
             photo.setWasAvatar(isAvatar);
@@ -68,9 +68,5 @@ public class PhotoServiceImpl implements PhotoService {
         }
         if (community != null)
             photo.setCommunity(community);
-    }
-
-    private String generateRandomString() {
-        return RandomString.make();
     }
 }

@@ -4,5 +4,5 @@ import com.network.model.User;
 
 public interface EditService {
 
-    String saveEdit(User currentUser, User user, String pass);
+    boolean saveEdit(User currentUser, User user, String pass);
 }

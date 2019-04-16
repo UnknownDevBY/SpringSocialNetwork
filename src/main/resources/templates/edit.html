@@ -44,7 +44,7 @@ xmlns:th="http://www.thymeleaf.org">
     </div>
   </div>
   <main class="edit">
-    <form>
+    <form action="/edit" method="post">
       <div class="privacy-link">
        <a title="Перейти к настройкам" href="/privacy-settings">Настройки приватности</a>
      </div>
@@ -83,8 +83,8 @@ xmlns:th="http://www.thymeleaf.org">
   <div>
    <textarea th:text="${currentUser.interests == null} ? '' : ${currentUser.interests}" id="interests" name="interests"></textarea>
  </div>
- <p style="color: red" id="response"></p>
- <input type="button" onclick="saveUser()" value="Подтвердить">
+ <p style="color: red" th:if="${error != null}" th:text="${error}"></p>
+ <input type="submit" value="Подтвердить">
 </form>
 </main>
 </body>

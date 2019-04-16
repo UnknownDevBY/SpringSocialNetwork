@@ -22,10 +22,15 @@ public class EditController {
     }
 
     @PostMapping("/edit")
-    @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody String saveEdit(@AuthenticationPrincipal User currentUser,
+    public String saveEdit(@AuthenticationPrincipal User currentUser,
                            @ModelAttribute User user,
-                           @RequestParam String pass) {
-        return editService.saveEdit(currentUser, user, pass);
+                           @RequestParam String pass,
+                           Model model) {
+        if(editService.saveEdit(currentUser, user, pass))
+            return "redirect:/users/" + currentUser.getId();
+        else {
+            model.addAttribute("error", "Вы должны быть старше 14-и лет");
+            return openEdit(currentUser, model);
+        }
     }
 }

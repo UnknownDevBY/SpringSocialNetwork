@@ -19,19 +19,31 @@ import java.util.List;
 @Slf4j
 @Aspect
 @Component
-public class AuthorizationAspect {
+public class LoggingAspect {
 
     @Autowired private Path path;
 
-    @SneakyThrows
     @After("authorizationPointcut()")
     private void aroundAuthorization(JoinPoint joinPoint) {
-        User currentUser = (User) joinPoint.getArgs()[0];
-        String info = String.format("Successfully authorized user with username '%s'", currentUser.getEmail());
+        action(joinPoint, "authorized");
+    }
+
+    @After("registrationPointcut()")
+    private void aroundRegistration(JoinPoint joinPoint) {
+        action(joinPoint, "registered");
+    }
+
+    @SneakyThrows
+    private void action(JoinPoint joinPoint, String action) {
+        User user = (User) joinPoint.getArgs()[0];
+        String info = String.format("Successfully %s user with username '%s'", action, user.getEmail());
         log.info(info);
         Files.write(path, List.of(new Date().toString() + " " + info), StandardOpenOption.APPEND);
     }
 
     @Pointcut("@annotation(com.network.aspect.annotation.Authorization)")
     private void authorizationPointcut() {}
+
+    @Pointcut("@annotation(com.network.aspect.annotation.Registration)")
+    private void registrationPointcut() {}
 }

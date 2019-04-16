@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login")
                 .usernameParameter("itech_login")
                 .passwordParameter("itech_pass")
-                .successForwardUrl("/news")
+                .successForwardUrl("/users")
                 .permitAll()
                 .and()
 

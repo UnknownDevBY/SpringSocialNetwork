@@ -1,5 +1,6 @@
 package com.network.controller;
 
+import com.network.aspect.annotation.Authorization;
 import com.network.dto.UserDto;
 import com.network.model.User;
 import com.network.repository.PhotoRepository;
@@ -24,6 +25,12 @@ public class UserController {
 
     @Value("${s3.bucket}")
     private String bucketName;
+
+    @Authorization
+    @PostMapping("/users")
+    public String showNewsPost(@AuthenticationPrincipal User currentUser) {
+        return "redirect:/users/" + currentUser.getId();
+    }
 
     @GetMapping("/users/{id}")
     public String showUser(@PathVariable int id,

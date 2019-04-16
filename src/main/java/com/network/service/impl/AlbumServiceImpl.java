@@ -60,18 +60,6 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public boolean allowAccessToAlbumContent(int userId, int albumId, User currentUser) {
-        User albumOwner = userRepository.getById(userId);
-        if(albumOwner == null || (!albumRepository.existsById(albumId) && albumId != 0))
-            return false;
-        PrivacySettingsDto privacySettings =
-                privacySettingsDtoTransformer
-                        .toPrivacySettingsDto(currentUser, albumOwner,
-                                userService.areFriends(userId, currentUser != null ? currentUser.getId() : 0));
-        return privacySettings.isArePhotosAllowed();
-    }
-
-    @Override
     public List<Photo> getPhotos(int userId, int albumId) {
         return (albumId == 0)
                 ? photoRepository.getAllByUser_IdOrderByIdDesc(userId)

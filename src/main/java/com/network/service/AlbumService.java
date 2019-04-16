@@ -12,6 +12,5 @@ public interface AlbumService {
     PhotoAlbum getDefaultAlbum(int id);
     void addAlbum(String title, User currentUser);
     boolean allowAccessToAlbums(int ownerId, User currentUser);
-    boolean allowAccessToAlbumContent(int userId, int albumId, User currentUser);
     List<Photo> getPhotos(int userId, int albumId);
 }

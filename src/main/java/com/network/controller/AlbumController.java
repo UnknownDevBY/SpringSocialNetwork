@@ -52,12 +52,13 @@ public class AlbumController {
                             @AuthenticationPrincipal User currentUser,
                             HttpServletRequest request,
                             Model model) {
-        if(!albumService.allowAccessToAlbumContent(userId, albumId, currentUser))
-            return "redirect:" + request.getHeader("Referer");
-        model.addAttribute("bucketName", bucketName);
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("photos", albumService.getPhotos(userId, albumId));
-        return "albumsPhotos";
+        if(albumService.allowAccessToAlbums(userId, currentUser)) {
+            model.addAttribute("bucketName", bucketName);
+            model.addAttribute("currentUser", currentUser);
+            model.addAttribute("photos", albumService.getPhotos(userId, albumId));
+            return "albumsPhotos";
+        }
+        else return "redirect:" + request.getHeader("Referer");
     }
 
     @PostMapping("/albums/add")
