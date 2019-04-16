@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
 @Getter
@@ -18,6 +19,7 @@ public class Message {
     private int id;
 
     @Column(length = 511)
+    @NotBlank
     private String content;
 
     private Timestamp sendingTime;

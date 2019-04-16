@@ -2,6 +2,7 @@ package com.network.controller;
 
 import com.network.model.User;
 import com.network.repository.MessageRepository;
+import com.network.repository.UserRepository;
 import com.network.service.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,12 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 @Controller
 public class ConversationController {
 
     @Autowired private MessageRepository messageRepository;
+    @Autowired private UserRepository userRepository;
     @Autowired private ConversationService conversationService;
 
     @GetMapping("/conversations/{id}")
@@ -24,7 +27,7 @@ public class ConversationController {
                                    @AuthenticationPrincipal User currentUser,
                                    Model model) {
         model.addAttribute("currentUser", currentUser);
-        model.addAttribute("opponentsId", id);
+        model.addAttribute("opponent", userRepository.getById(id));
         model.addAttribute("messages", messageRepository.getAllMessages(currentUser.getId(), id));
         return "conversation";
     }
@@ -32,8 +35,8 @@ public class ConversationController {
     @PostMapping("/conversations/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void sendMessage(@PathVariable int id,
-                              @NotBlank @RequestParam String content,
-                              @AuthenticationPrincipal User currentUser) {
+                            @Valid @RequestParam @NotBlank String content,
+                            @AuthenticationPrincipal User currentUser) {
         conversationService.saveMessage(id, currentUser, content);
     }
 }

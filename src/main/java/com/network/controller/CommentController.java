@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 @Controller
 public class CommentController {
 
@@ -19,9 +22,9 @@ public class CommentController {
     @PostMapping("/comment/{type}/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void like(@PathVariable String type,
-                       @PathVariable int id,
-                       @RequestParam String content,
-                       @AuthenticationPrincipal User currentUser) {
+                     @PathVariable int id,
+                     @Valid @RequestParam @NotBlank String content,
+                     @AuthenticationPrincipal User currentUser) {
         commentService.addComment(type, content, id, currentUser);
     }
 }

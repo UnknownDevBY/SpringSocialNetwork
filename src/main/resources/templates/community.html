@@ -5,14 +5,6 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title th:text="${community.title}"></title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
-  <script>
-      let community = 'communities/public';
-      let comment = 'comment';
-      let subscribe = 'subscribe';
-      let like = 'likes';
-      let del = 'delete';
-      let post = 'post';
-  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
   <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
   <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>

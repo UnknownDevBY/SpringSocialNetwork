@@ -13,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +72,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void addPost(@PathVariable int id,
                         @AuthenticationPrincipal User currentUser,
-                        @RequestParam String content) {
+                        @Valid @RequestParam @NotBlank String content) {
         userService.savePost(id, content, currentUser, null);
     }
 }

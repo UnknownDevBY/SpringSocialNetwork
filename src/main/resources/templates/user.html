@@ -96,7 +96,7 @@ xmlns:th="http://www.thymeleaf.org">
                     <div>Пол:</div>
                     <div th:text="${T(java.lang.Character).compare(pageUser.sex, 'm') == 0} ? 'мужской' : 'женский'">Мужской</div>
                     <div th:if="${pageUser.city != null}">Город:</div>
-                    <div th:if="${pageUser.city != null}">Минск</div>
+                    <div th:if="${pageUser.city != null}" th:text="${pageUser.city}">Минск</div>
                 </div>
                 <div th:if="${(pageUser.bio != null || pageUser.interests != null) && privacySettings.fullInfoAllowed}">
                     <details>

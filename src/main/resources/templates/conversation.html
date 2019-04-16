@@ -11,14 +11,14 @@ xmlns:th="http://www.thymeleaf.org">
 <body>
   <header>
     <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div th:if="${currentUser != null}" class="logout">
+    <div class="logout">
       <form action="/logout" method="get">
         <input type="submit" value="Выход">
       </form>
     </div>
   </header>
   <div class="menu">
-    <ul th:if="${currentUser != null}">
+    <ul>
       <li><a class="active" href="/search">Поиск</a></li>
       <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
       <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
@@ -27,25 +27,12 @@ xmlns:th="http://www.thymeleaf.org">
       <li><a href="/messages">Сообщения</a></li>
       <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
     </ul>
-    <div>
-      <form th:if="${currentUser == null}" action="/login" method="post">
-        <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-        <br>
-        <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-        <br>
-        <div>
-          <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-          <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
-        </div>
-        <input type="submit" value="Войти">
-      </form>
-    </div>
   </div>
   <main class="messages-block">
-    <a th:href="'/users/' + ${opponentsId}" class="convers-opponent">Владислав Ефимчик</a>
+    <a th:href="'/users/' + ${opponent.id}" class="convers-opponent" th:text="${opponent.name} + ' ' + ${opponent.surname}">Владислав Ефимчик</a>
     <form class="new-message new-post">
       <textarea id="content" name="content" maxlength="255" minlength="1" required="required"></textarea>
-      <input th:onclick="'newPost(`conversations`, ' + ${opponentsId} + ')'" type="button" value="Отправить">
+      <input th:onclick="'newPost(`conversations`, ' + ${opponent.id} + ')'" type="button" value="Отправить">
     </form>
     <div class="convers-content">
       <div th:each="message : ${messages}">

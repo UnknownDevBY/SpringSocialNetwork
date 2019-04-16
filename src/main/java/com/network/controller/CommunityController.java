@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.List;
 
@@ -91,7 +93,7 @@ public class CommunityController {
     @ResponseStatus(HttpStatus.OK)
     public void createPost(@PathVariable int id,
                            @AuthenticationPrincipal User currentUser,
-                           @RequestParam String content) {
+                           @Valid @RequestParam @NotBlank String content) {
         userService.savePost(id, content, currentUser, communityRepository.getById(id));
     }
 }

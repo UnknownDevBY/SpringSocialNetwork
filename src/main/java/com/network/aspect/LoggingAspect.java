@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Aspect
@@ -38,7 +38,7 @@ public class LoggingAspect {
         User user = (User) joinPoint.getArgs()[0];
         String info = String.format("Successfully %s user with username '%s'", action, user.getEmail());
         log.info(info);
-        Files.write(path, List.of(new Date().toString() + " " + info), StandardOpenOption.APPEND);
+        Files.write(path, Collections.singletonList(new Date().toString() + " " + info), StandardOpenOption.APPEND);
     }
 
     @Pointcut("@annotation(com.network.aspect.annotation.Authorization)")
