@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+    <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+    <title>Активация</title>
+    <style>
+        body {
+            background-color: #1b1b47;
+        }
+    </style>
+</head>
+<body>
+
+    <div th:if="${name != null}" class="row justify-content-center mt-10">
+        <div class="animated pulse col-md-6 mb-4 white-text text-center text-md-left mt-5">
+
+            <h1 class="display-6 font-weight-bold" th:text="'Добро пожаловать, ' + ${name} + '.'">Добро пожаловать, Владислав.</h1>
+
+            <hr class="hr-light">
+
+            <p>
+                <strong>Ваш аккаунт был успешно активирован!</strong>
+            </p>
+
+            <p class="mb-4 d-none d-md-block">
+                <strong>Теперь вы можете найти своих друзей, написать им, а можете найти новых или присоединиться к группам по интересам</strong>
+            </p>
+
+            <div class="w-100 container-fluid text-center">
+                <a target="_blank" href="/" class="btn btn-indigo btn-lg">На главную
+                    <i class="fas fa-home ml-2"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script th:if="${name == null}">
+        window.history.back()
+    </script>
+</body>
+</html>

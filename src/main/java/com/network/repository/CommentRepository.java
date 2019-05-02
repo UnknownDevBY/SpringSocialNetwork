@@ -12,5 +12,4 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     Comment getById(int id);
     List<Comment> getAllByPost(Post post);
     List<Comment> getAllByPhoto(Photo photo);
-    List<Comment> getByContentContains(String content);
 }

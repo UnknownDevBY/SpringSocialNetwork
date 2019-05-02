@@ -5,17 +5,53 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title>Новости</title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+  <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+  <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+  <script>
+    function like(obj, type, id) {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let child = obj.children[1];
+          let likesAmount = parseInt(child.innerHTML);
+          if(obj.className.includes('red-text')) {
+            obj.className = '';
+            child.innerHTML = --likesAmount;
+          } else {
+            obj.className = 'red-text';
+            child.innerHTML = ++likesAmount;
+          }
+        }
+      };
+      request.open('GET', '/likes/' + type + '/' + id, true);
+      request.send();
+    }
+  </script>
 </head>
 <body>
-  <header>
-    <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div th:if="${currentUser != null}" class="logout">
-      <form action="/logout" method="get">
-        <input type="submit" value="Выход">
-      </form>
+<header>
+  <div class="row">
+    <div class="col-6">
+      <p><a href="/"><em class="logo">Social network</em></a></p>
     </div>
-  </header>
+    <div class="col-6">
+      <div th:if="${currentUser != null}" class="float-right">
+        <form action="/logout" method="get">
+          <input class="btn white-text" type="submit" value="Выход">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
   <div class="menu">
     <ul th:if="${currentUser != null}">
       <li><a class="active" href="/search">Поиск</a></li>
@@ -31,39 +67,58 @@ xmlns:th="http://www.thymeleaf.org">
     <div th:each="news : ${allNews}" class="news-block">
       <div th:if="${news.post != null}">
         <div class="news-photo-block">
-          <div th:if="${news.post.community != null}">
-            <a th:href="'/communities/public/' + ${news.post.community.id}" style="text-decoration: none;" href="">
-              <h3 class="photo-owner-name" th:text="${news.post.community.title}">Владислав Ефимчик</h3>
-              <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
+          <div th:if="${news.post.post.community != null}">
+            <a th:href="'/communities/public/' + ${news.post.post.community.id}" style="text-decoration: none;" href="">
+              <h3 class="photo-owner-name" th:text="${news.post.post.community.title}">Владислав Ефимчик</h3>
+              <p class="photo-post-time font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(news.post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
             </a>
             <div class="post-content">
-              <p style="margin-bottom: 10px;" th:text="${news.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+              <p style="margin-bottom: 10px;">
+                <span th:each="word : ${news.post.post.content.split(' ')}">
+                    <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
+                    <a class="blue-text" th:href="'/search?value=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
+                  </span>
+              </p>
             </div>
           </div>
-          <div th:if="${news.post.community == null}">
-            <span th:if="${news.post.author.id != news.post.owner.id}">
-              <p class="photo-post-time"><a th:href="'/users/' + ${news.post.author.id}" th:text="${news.post.author.name} + ' ' + ${news.post.author.surname}">Иван</a> на стене <a
-                th:href="'/users/' + ${news.post.owner.id}" th:text="${news.post.owner.name} + ' ' + ${news.post.owner.surname}">Олега</a></p>
-              </span>
-              <a th:href="'/users/' + ${news.post.author.id}" style="text-decoration: none;" href="">
-                <h3 class="photo-owner-name" th:text="${news.post.author.name} + ' ' + ${news.post.author.surname}">Владислав Ефимчик</h3>
-                <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
+          <div th:if="${news.post.post.community == null}">
+            <code th:if="${news.post.post.author.id != news.post.post.owner.id}">
+              <p class="photo-post-time"><a th:href="'/users/' + ${news.post.post.author.id}" th:text="${news.post.post.author.name} + ' ' + ${news.post.post.author.surname}">Иван</a> на стене <a
+                th:href="'/users/' + ${news.post.post.owner.id}" th:text="${news.post.post.owner.name} + ' ' + ${news.post.post.owner.surname}">Олега</a></p>
+              </code>
+              <a th:href="'/users/' + ${news.post.post.author.id}" style="text-decoration: none;" href="">
+                <h3 class="photo-owner-name" th:text="${news.post.post.author.name} + ' ' + ${news.post.post.author.surname}">Владислав Ефимчик</h3>
+                <p class="photo-post-time font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(news.post.post.dateOfPost, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
               </a>
               <div class="post-content">
-                <p style="margin-bottom: 10px;" th:text="${news.post.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi nemo corporis accusantium obcaecati velit nulla qui eos, iusto soluta temporibus ipsam non expedita doloribus quas iste unde quae quaerat cumque facere aut debitis eligendi quia mollitia cum? Libero officiis a, eos excepturi molestias numquam eum tempore magni laboriosam, vero atque?</p>
+                <p style="margin-bottom: 10px;">
+                  <span th:each="word : ${news.post.post.content.split(' ')}">
+                    <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
+                    <a class="blue-text" th:href="'/search?value=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
+                  </span>
+                </p>
               </div>
+            </div>
+            <div>
+              <a href="javascript:void(0)" th:onclick="'like(this, `post`, ' + ${news.post.post.id} + ')'" th:class="${news.post.likedByCurrentUser} ? 'red-text' : ''"><i class="fas fa-thumbs-up mr-2"></i><span th:text="${news.post.likesCount}">12</span></a>
+              <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${news.post.comments != null}" th:text="${news.post.comments.size()}">12</span><span th:if="${news.post.comments == null}">0</span></a>
             </div>
           </div>
         </div>
         <div th:if="${news.photo != null}">
           <div class="news-photo-block">
             <a style="text-decoration: none;" href="">
-              <h3 class="photo-owner-name" th:text="${news.photo.user.name} + ' ' + ${news.photo.user.surname}">Владислав Ефимчик</h3>
-              <p class="photo-post-time" th:text="${news.publicationTime}">12:30</p>
+              <h3 class="photo-owner-name" th:text="${news.photo.photo.user.name} + ' ' + ${news.photo.photo.user.surname}">Владислав Ефимчик</h3>
+              <p class="photo-post-time font-small" th:text="${news.photo.photo.dateOfPost}"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(news.photo.photo.dateOfPost, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
             </a>
-            <a th:href="'/photos/' + ${news.photo.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${news.photo.title}" alt=""></a>
+            <a th:href="'/photos/' + ${news.photo.photo.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${news.photo.photo.title}" alt=""></a>
+            <div>
+              <a href="javascript:void(0)" th:onclick="'like(this, `photo`, ' + ${news.photo.photo.id} + ')'" th:class="${news.photo.likedByCurrentUser} ? 'red-text' : ''"><i class="fas fa-thumbs-up mr-2"></i><span th:text="${news.photo.likesCount}">12</span></a>
+              <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${news.photo.comments != null}" th:text="${news.photo.comments.size()}">12</span><span th:if="${news.photo.comments == null}">0</span></a>
+            </div>
           </div>
         </div>
+      <hr class="my-4">
       </div>
     </main>
   </body>

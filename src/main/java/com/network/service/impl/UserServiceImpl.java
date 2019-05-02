@@ -98,4 +98,15 @@ public class UserServiceImpl implements UserService {
         }
         else friendshipRepository.delete(relation);
     }
+
+    @Override
+    public void updateBlacklist(User currentUser, int id) {
+        if(currentUser.getId() != id) {
+            List<Integer> blacklist = currentUser.getBlacklist();
+            if(blacklist.contains(id))
+                blacklist.remove((Object) id);
+            else blacklist.add(id);
+        }
+        userRepository.save(currentUser);
+    }
 }

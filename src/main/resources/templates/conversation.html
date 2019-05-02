@@ -4,19 +4,67 @@ xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Переписка</title>
+  <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+  <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+  <link th:href="@{/css/lib/style.css}"  href="../static/css/lib/style.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
-  <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+  <script>
+    function sendMessage(id) {
+      var request = new XMLHttpRequest();
+      var textareaContent = document.querySelector('textarea[name=content]').value;
+      textareaContent = textareaContent.trim();
+      if(textareaContent !== "") {
+        var params = 'content=' + textareaContent;
+        request.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            let inner = document.getElementById('messagesBlock').innerHTML;
+            document.getElementById('messagesBlock').innerHTML =
+                            `<div class="w-100">
+                                <div class="w-75 mt-3 p-2 light-blue accent-1 float-right">
+                                <p class="font-small mb-1"><i class="far fa-clock pr-1"></i><span>Только что</span></p>
+                                <p>` + textareaContent + `</p>
+                              </div>
+                            </div>` + inner;
+          }
+        };
+        request.open('POST', '/conversations/' + id);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        request.send(params);
+      }
+    }
+    function deleteMessage(obj, id) {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          obj.parentNode.parentNode.hidden = true;
+        }
+      };
+      request.open('GET', '/delete/message/' + id, true);
+      request.send();
+    }
+  </script>
 </head>
 <body>
-  <header>
-    <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div class="logout">
-      <form action="/logout" method="get">
-        <input type="submit" value="Выход">
-      </form>
+<header>
+    <div class="row">
+        <div class="col-6">
+            <p><a href="/"><em class="logo">Social network</em></a></p>
+        </div>
+        <div class="col-6">
+            <div th:if="${currentUser != null}" class="float-right">
+                <form action="/logout" method="get">
+                    <input class="btn white-text" type="submit" value="Выход">
+                </form>
+            </div>
+        </div>
     </div>
-  </header>
+</header>
   <div class="menu">
     <ul>
       <li><a class="active" href="/search">Поиск</a></li>
@@ -29,18 +77,43 @@ xmlns:th="http://www.thymeleaf.org">
     </ul>
   </div>
   <main class="messages-block">
-    <a th:href="'/users/' + ${opponent.id}" class="convers-opponent" th:text="${opponent.name} + ' ' + ${opponent.surname}">Владислав Ефимчик</a>
-    <form class="new-message new-post">
-      <textarea id="content" name="content" maxlength="255" minlength="1" required="required"></textarea>
-      <input th:onclick="'newPost(`conversations`, ' + ${opponent.id} + ')'" type="button" value="Отправить">
-    </form>
-    <div class="convers-content">
-      <div th:each="message : ${messages}">
-        <div th:if="${message.from.id == currentUser.id}" class="my-message">
-          <p th:text="${message.content}"></p>
+    <div class="row justify-content-center">
+      <div class="col-10 col-sm-9 col-md-8 col-lg-6">
+        <div class="row">
+          <div class="col-2">
+            <div th:if="${opponent.avatar != null}" class="square rounded-circle" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${opponent.avatar.title} + ')'"></div>
+            <div th:if="${opponent.avatar == null}" class="square rounded-circle" style="background-image: url(/img/no-avatar.png)"></div>
+          </div>
+          <div class="col-10">
+            <a class="h3-responsive" href="" th:href="'/users/' + ${opponent.userId}"><strong th:text="${opponent.userName} + ' ' + ${opponent.userSurname}">Владислав Ефимчик</strong></a>
+          </div>
         </div>
-        <div th:if="${message.to.id == currentUser.id}" class="opponents-message">
-          <p th:text="${message.content}"></p>
+        <hr>
+        <div>
+          <form class="row" th:action="'javascript:sendMessage(' + ${opponent.userId} + ')'">
+            <div class="col-8 pt-2 form-group blue-border-focus">
+              <textarea class="form-control" id="content" name="content" maxlength="255" minlength="1" required="required" rows="2"></textarea>
+            </div>
+            <div class="col-4 pt-2">
+              <input class="btn btn-rounded btn-primary" type="submit" value="Отправить">
+            </div>
+          </form>
+        </div>
+        <hr>
+        <div class="row text-justify font-small" id="messagesBlock">
+          <div th:each="message : ${messages}" class="w-100">
+            <div th:if="${message.to.id == currentUser.id}" class="w-75 mt-3 p-2 blue-grey lighten-5">
+              <p class="font-small mb-1"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(message.sendingTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+              <p th:text="${message.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id, rem.</p>
+            </div>
+            <div th:if="${message.from.id == currentUser.id}" class="w-75 mt-3 p-2 light-blue accent-1 float-right">
+              <button type="button" class="close float-right ml-3" th:onclick="'deleteMessage(this, ' + ${message.id} + ')'">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <p class="font-small mb-1"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(message.sendingTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+              <p th:text="${message.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo, modi!</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

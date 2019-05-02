@@ -18,6 +18,7 @@ public class UserDtoTransformer {
         userDto.setAvatar(photoRepository.getAvatarByUserId(userId));
         userDto.setUserId(userId);
         userDto.setUserSurname(user.getSurname());
+        userDto.setAge((int)((System.currentTimeMillis() - user.getDateOfBirth().getTime()) / 31_556_952_000L));
         return userDto;
     }
 }

@@ -21,9 +21,6 @@ public class FriendController {
     @Autowired private UserService userService;
     @Autowired private FriendService friendService;
 
-    @Value("${s3.bucket}")
-    private String bucketName;
-
     @GetMapping("/friends/{id}")
     public String showFriends(@PathVariable int id,
                               @AuthenticationPrincipal User currentUser,
@@ -34,10 +31,9 @@ public class FriendController {
             return "redirect:" + request.getHeader("Referer");
         model.put("currentUser", currentUser);
         model.put("id", id);
-        model.put("bucketName", bucketName);
         model.put("friends", userService.getFriends(pageUser));
         model.put("subscribers", friendService.setRelation(friendService.getAllSubscribers(pageUser)));
         model.put("subscriptions", friendService.setRelation(friendService.getAllSubscriptions(pageUser)));
-        return "friends";
+        return "friends-list";
     }
 }

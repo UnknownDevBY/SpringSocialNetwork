@@ -3,22 +3,33 @@
 xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Редактировать</title>
-  <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
-  <script type="text/javascript" th:src="@{/js/regex.js}" src="../static/js/regex.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
-  <script defer type="text/javascript" th:src="@{/js/validate-date.js}" src="../static/js/validate-date.js"></script>
-  <script defer type="text/javascript" th:src="@{/js/save-user.js}" src="../static/js/save-user.js"></script>
+  <title>Редактирование</title>
+    <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+    <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/style.css}"  href="../static/css/lib/style.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
 </head>
 <body>
-  <header>
-    <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div th:if="${currentUser != null}" class="logout">
-      <form action="/logout" method="get">
-        <input type="submit" value="Выход">
-      </form>
+<header>
+    <div class="row">
+        <div class="col-6">
+            <p><a href="/"><em class="logo">Social network</em></a></p>
+        </div>
+        <div class="col-6">
+            <div th:if="${currentUser != null}" class="float-right">
+                <form action="/logout" method="get">
+                    <input class="btn white-text" type="submit" value="Выход">
+                </form>
+            </div>
+        </div>
     </div>
-  </header>
+</header>
   <div class="menu">
     <ul th:if="${currentUser != null}">
       <li><a class="active" href="/search">Поиск</a></li>
@@ -30,49 +41,125 @@ xmlns:th="http://www.thymeleaf.org">
       <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
     </ul>
   </div>
-  <main class="edit">
-    <form action="/edit" method="post">
-      <div class="privacy-link">
-       <a title="Перейти к настройкам" href="/privacy-settings">Настройки приватности</a>
-     </div>
-     <label for="name">Имя</label>
-     <div>
-      <input th:value="${currentUser.name}" type="text" id="name" name="name" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="3" maxlength="31" required="required">
-    </div>
-    <label for="surname">Фамилия</label>
-    <div>
-      <input th:value="${currentUser.surname}" type="text" id="surname" name="surname" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31" required="required">
-    </div>
-    <label for="city">Город</label>
-    <div>
-     <input th:value="${currentUser.city}" type="text" id="city" name="city" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31">
-   </div>
-   <label for="pass">Сменить пароль (не менее 6 символов)</label>
-   <div>
-    <input type="password" id="pass" name="pass" minlength="6">  
-  </div>
-  <div>
-    <p>Пол</p>
-    <label for="male">Мужчина</label>
-    <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'm') == 0}" type="radio" name="sex" id="male" value="m" required="required">
-    <label for="female">Женщина</label>
-    <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'f') == 0}" type="radio" name="sex" id="female" value="f">
-  </div>
-  <label for="dateOfBirth">Дата рождения</label>
-  <div>
-    <input th:value="${currentUser.dateOfBirth}" type="date" id="dateOfBirth" name="dateOfBirth" required="required">
-  </div>
-  <label for="bio">О себе</label>
-  <div>
-    <textarea th:text="${currentUser.bio == null} ? '' : ${currentUser.bio}" id="bio" name="bio"></textarea>
-  </div>
-  <label for="interests">Увлечения</label>
-  <div>
-   <textarea th:text="${currentUser.interests == null} ? '' : ${currentUser.interests}" id="interests" name="interests"></textarea>
- </div>
- <p style="color: red" th:if="${error != null}" th:text="${error}"></p>
- <input type="submit" value="Подтвердить">
-</form>
+  <main class="messages-block">
+      <div class="row justify-content-center">
+          <div class="col-7 justify-content-start">
+              <div class="row justify-content-center">
+                  <ul class="nav nav-tabs bg-light" id="myTab" role="tablist">
+                      <li class="nav-item">
+                          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                             aria-selected="true">Личная информация</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+                             aria-selected="false">Настройки приватности</a>
+                      </li>
+                  </ul>
+              </div>
+              <hr>
+              <div>
+                  <div class="tab-content">
+                      <div class="tab-pane fade show active"  id="home" role="tabpanel" aria-labelledby="home-tab">
+                          <form action="/edit" method="post">
+                              <label for="name">Имя</label>
+                              <div>
+                                  <input th:value="${currentUser.name}" type="text" id="name" name="name" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="3" maxlength="31" required="required">
+                              </div>
+                              <label for="surname">Фамилия</label>
+                              <div>
+                                  <input th:value="${currentUser.surname}" type="text" id="surname" name="surname" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31" required="required">
+                              </div>
+                              <label for="city">Город</label>
+                              <div>
+                                  <input th:value="${currentUser.city}" type="text" id="city" name="city" onkeypress="reg(/^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$/)" minlength="2" maxlength="31">
+                              </div>
+                              <label for="pass">Сменить пароль (не менее 6 символов)</label>
+                              <div>
+                                  <input type="password" id="pass" name="pass" minlength="6">
+                              </div>
+                              <div>
+                                  <p>Пол</p>
+                                  <label for="male">Мужчина</label>
+                                  <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'm') == 0}" type="radio" name="sex" id="male" value="m" required="required">
+                                  <label for="female">Женщина</label>
+                                  <input th:checked="${T(java.lang.Character).compare(currentUser.sex, 'f') == 0}" type="radio" name="sex" id="female" value="f">
+                              </div>
+                              <label for="dateOfBirth">Дата рождения</label>
+                              <div>
+                                  <input th:value="${currentUser.dateOfBirth}" type="date" id="dateOfBirth" name="dateOfBirth" required="required">
+                              </div>
+                              <label for="bio">О себе</label>
+                              <div>
+                                  <textarea th:text="${currentUser.bio == null} ? '' : ${currentUser.bio}" id="bio" name="bio"></textarea>
+                              </div>
+                              <label for="interests">Увлечения</label>
+                              <div>
+                                  <textarea th:text="${currentUser.interests == null} ? '' : ${currentUser.interests}" id="interests" name="interests"></textarea>
+                              </div>
+                              <p style="color: red" th:if="${error != null}" th:text="${error}"></p>
+                              <input class="btn btn-outline-dark btn-rounded" type="submit" value="Подтвердить">
+                          </form>
+                      </div>
+                      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                          <form action="/privacy-settings" method="post">
+                              <div class="privacy-option">
+                                  <label for="fullInfo">Кто может писать мне сообщения?</label>
+                                  <select name="messages" id="messages" required="required">
+                                      <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.messages, 'a') == 0}">Все</option>
+                                      <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.messages, 'f') == 0}">Только друзья</option>
+                                      <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.messages, 'm') == 0}">Только я</option>
+                                  </select>
+                              </div>
+                              <div class="privacy-option">
+                                  <label for="fullInfo">Кто может просматривать информацию обо мне?</label>
+                                  <select name="fullInfo" id="fullInfo" required="required">
+                                      <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.fullInfo, 'a') == 0}">Все</option>
+                                      <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.fullInfo, 'f') == 0}">Только друзья</option>
+                                      <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.fullInfo, 'm') == 0}">Только я</option>
+                                  </select>
+                              </div>
+                              <div class="privacy-option">
+                                  <label for="photos">Кто может просматривать мои фото?</label>
+                                  <select name="photos" id="photos" required="required">
+                                      <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.photos, 'a') == 0}">Все</option>
+                                      <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'f') == 0}">Только друзья</option>
+                                      <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'm') == 0}">Только я</option>
+                                  </select>
+                              </div>
+                              <div class="privacy-option">
+                                  <label for="friends">Кто может просматривать моих друзей?</label>
+                                  <select name="friends" id="friends" required="required">
+                                      <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.photos, 'a') == 0}">Все</option>
+                                      <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'f') == 0}">Только друзья</option>
+                                      <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.photos, 'm') == 0}">Только я</option>
+                                  </select>
+                              </div>
+                              <div class="privacy-option">
+                                  <label for="postAuthors">Кто может оставлять посты на моей странице?</label>
+                                  <select name="postAuthors" id="postAuthors" required="required">
+                                      <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.postAuthors, 'a') == 0}">Все</option>
+                                      <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.postAuthors, 'f') == 0}">Только друзья</option>
+                                      <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.postAuthors, 'm') == 0}">Только я</option>
+                                  </select>
+                              </div>
+                              <div class="privacy-option">
+                                  <label for="fullInfo">Кто может комментировать мои записи?</label>
+                                  <select name="comments" id="comments" required="required">
+                                      <option value="a" th:selected="${curPrivSet == null || T(java.lang.Character).compare(curPrivSet.comments, 'a') == 0}">Все</option>
+                                      <option value="f" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.comments, 'f') == 0}">Только друзья</option>
+                                      <option value="m" th:selected="${curPrivSet != null && T(java.lang.Character).compare(curPrivSet.comments, 'm') == 0}">Только я</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <input class="btn btn-outline-dark btn-rounded" type="submit" value="Сохранить">
+                                  <input class="btn btn-outline-danger btn-rounded" type="reset" value="Сбросить">
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
 </main>
 </body>
 </html>

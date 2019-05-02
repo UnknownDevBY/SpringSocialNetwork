@@ -3,6 +3,7 @@ package com.network.controller;
 import com.network.aspect.annotation.Authorization;
 import com.network.dto.UserDto;
 import com.network.model.User;
+import com.network.repository.PhotoAlbumRepository;
 import com.network.repository.PhotoRepository;
 import com.network.repository.UserRepository;
 import com.network.service.UserService;
@@ -24,9 +25,7 @@ public class UserController {
     @Autowired private UserRepository userRepository;
     @Autowired private PhotoRepository photoRepository;
     @Autowired private UserService userService;
-
-    @Value("${s3.bucket}")
-    private String bucketName;
+    @Autowired private PhotoAlbumRepository albumRepository;
 
     @Authorization
     @PostMapping("/users")
@@ -45,7 +44,11 @@ public class UserController {
         boolean is1friendTo2 = currentUser != null && userService.isFirstFriendToSecond(currentUser.getId(), id);
         boolean is2friendTo1 = currentUser != null && userService.isFirstFriendToSecond(id, currentUser.getId());
         boolean areFriends = is1friendTo2 && is2friendTo1;
+        boolean isInBlackList = currentUser != null && currentUser.getBlacklist().contains(pageUser.getId());
+        boolean amIInBlackList = currentUser != null && pageUser.getBlacklist().contains(currentUser.getId());
         List<UserDto> friends = userService.getFriends(pageUser);
+        model.put("isInBlacklist", isInBlackList);
+        model.put("amIInBlacklist", amIInBlackList);
         model.put("friends", friends);
         model.put("displayFriends", friends.size() < 6 ? friends.size() % 6 : 6);
         model.put("is1friendTo2", is1friendTo2);
@@ -56,7 +59,8 @@ public class UserController {
         model.put("allPhotos", userService.getPhotos(pageUser, currentUser));
         model.put("posts", userService.getPosts(pageUser, currentUser));
         model.put("privacySettings", userService.getPrivacySettings(currentUser, pageUser, areFriends));
-        model.put("bucketName", bucketName);
+        if(currentUser != null)
+            model.put("albums", albumRepository.getAllTitlesByUserId(currentUser.getId()));
         return "user";
     }
 
@@ -66,6 +70,13 @@ public class UserController {
                           @AuthenticationPrincipal User currentUser) {
         User pageUser = userRepository.getById(id);
         userService.modifyRelation(currentUser, pageUser);
+    }
+
+    @GetMapping("/users/blacklist/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addPost(@PathVariable int id,
+                        @AuthenticationPrincipal User currentUser) {
+        userService.updateBlacklist(currentUser, id);
     }
 
     @PostMapping("/users/{id}")

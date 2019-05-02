@@ -9,6 +9,8 @@ import com.network.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -29,6 +31,7 @@ public class CommentServiceImpl implements CommentService {
             default:
                 return;
         }
+        comment.setPostTime(new Timestamp(System.currentTimeMillis()));
         comment.setContent(content);
         comment.setUser(currentUser);
         commentRepository.save(comment);

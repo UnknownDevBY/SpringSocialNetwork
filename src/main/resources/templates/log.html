@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Войдите</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/style.css}"  href="../static/css/lib/style.css" rel="stylesheet">
+    <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+    <script>
+        function goBack() {
+            window.history.back()
+        }
+    </script>
+</head>
+
+<body class="bg-dark">
+    <div class="row">
+        <div class="container-fluid text-center justify-content-center">
+            <button type="button" onclick="goBack()" class="btn btn-primary">Вернуться назад!</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="table table-hover table-dark text-center">
+            <thead>
+                <tr>
+                    <th><strong>Платформа</strong></th>
+                    <th><strong>Время</strong></th>
+                    <th><strong>Пользователь</strong></th>
+                    <th><strong>Действие</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="log : ${logs}">
+                    <td th:text="${log.platform}">Heroku</td>
+                    <td th:text="${#dates.format(log.at, 'dd/MM/yyyy HH:mm')}">Lorem ipsum.</td>
+                    <td th:text="${log.email}">Lorem ipsum.</td>
+                    <span th:switch="${log.userAction}">
+                        <td th:case="'a'">Авторизация</td>
+                        <td th:case="'r'">Регистрация</td>
+                    </span>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -1,23 +1,30 @@
 package com.network.controller;
 
+import com.network.model.PrivacySettings;
 import com.network.model.User;
+import com.network.repository.PrivacySettingsRepository;
 import com.network.service.EditService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class EditController {
 
     @Autowired private EditService editService;
+    @Autowired private PrivacySettingsRepository privacySettingsRepository;
 
     @GetMapping("/edit")
     public String openEdit(@AuthenticationPrincipal User currentUser,
                            Model model) {
+        PrivacySettings privacySettings = privacySettingsRepository.getByUser(currentUser);
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("curPrivSet", privacySettings);
         return "edit";
     }
 

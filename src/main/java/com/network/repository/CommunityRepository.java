@@ -9,8 +9,6 @@ import java.util.List;
 public interface CommunityRepository extends JpaRepository<Community, Integer> {
 
     Community getById(int id);
-    List<Community> getAllBySubscribersNotContains(User user);
-    List<Community> getAllBySubscribersContains(User user);
-    List<Community> getAllByTitleStartsWithAndSubscribersNotContains(String value, User user);
-    List<Community> getAllByTitleStartsWithAndSubscribersContains(String value, User user);
+    List<Community> getAllByAdmin(User user);
+    List<Community> getAllByAdminAndTitle(User user, String title);
 }

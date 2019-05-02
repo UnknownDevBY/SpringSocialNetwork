@@ -41,7 +41,7 @@ public class EditServiceImpl implements EditService {
         return true;
     }
 
-    private boolean wrongAge(String dateOfBirth) {
-        return dateOfBirth == null || System.currentTimeMillis() - Date.valueOf(dateOfBirth).getTime() < 441_504_000_000L;
+    private boolean wrongAge(Date dateOfBirth) {
+        return dateOfBirth == null || System.currentTimeMillis() - dateOfBirth.getTime() < 441_504_000_000L;
     }
 }

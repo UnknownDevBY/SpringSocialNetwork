@@ -1,6 +1,0 @@
-Mon Apr 15 01:30:10 MSK 2019 Successfully authorized user with username 'first_user'
-Mon Apr 15 01:35:25 MSK 2019 Successfully authorized user with username 'first_user'
-Tue Apr 16 12:59:47 MSK 2019 Successfully authorized user with username 'test_user'
-Tue Apr 16 13:05:12 MSK 2019 Successfully authorized user with username 'test_user'
-Tue Apr 16 13:10:03 MSK 2019 Successfully authorized user with username 'test_user'
-Tue Apr 16 13:30:29 MSK 2019 Successfully authorized user with username 'test_user'

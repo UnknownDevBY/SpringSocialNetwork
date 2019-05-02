@@ -5,7 +5,6 @@
 body {
     overflow: auto;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #ECE9E9;
 }
 header {
     position: fixed;
@@ -17,6 +16,7 @@ header {
     overflow: hidden;
     height: 50px;
     border-bottom: 1px solid white;
+    z-index: 100000;
 }
 main {
     z-index: 0;
@@ -546,7 +546,6 @@ em.logo {
     width: 60%;
     margin-left: 20%;
     padding-top: 30px;
-    border-bottom: 1px solid silver;
 }
 .albums {
     display: grid;
@@ -559,6 +558,12 @@ em.logo {
     margin-right: 15%;
     text-align: center;
     align-items: center;
+}
+.square {
+    width: 100%;
+    padding-bottom: 100%;
+    background-size: cover;
+    background-position: top;
 }
 @media screen and (max-width: 1024px) {
     .privacy-settings {

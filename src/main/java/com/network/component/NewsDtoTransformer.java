@@ -3,23 +3,19 @@ package com.network.component;
 import com.network.dto.NewsDto;
 import com.network.model.Photo;
 import com.network.model.Post;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
 
 @Component
 public class NewsDtoTransformer {
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    @Autowired private PhotoDtoTransformer photoDtoTransformer;
+    @Autowired private PostDtoTransformer postDtoTransformer;
 
-    public NewsDto toNewsDto(Photo photo, Post post) {
+    public NewsDto toNewsDto(Photo photo, Post post, int currentUserId) {
         NewsDto newsDto = new NewsDto();
-        newsDto.setPhoto(photo);
-        newsDto.setPost(post);
-        if(photo != null)
-            newsDto.setPublicationTime(simpleDateFormat.format(photo.getDateOfPost()));
-        if(post != null)
-            newsDto.setPublicationTime(simpleDateFormat.format(post.getPostTime()));
+        newsDto.setPhoto(photoDtoTransformer.toPhotoDto(photo, currentUserId));
+        newsDto.setPost(postDtoTransformer.toPostDto(post, currentUserId));
         return newsDto;
     }
 }

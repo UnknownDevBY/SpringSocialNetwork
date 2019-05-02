@@ -14,15 +14,11 @@ public class NewsController {
 
     @Autowired private NewsService newsService;
 
-    @Value("${s3.bucket}")
-    private String bucketName;
-
     @GetMapping("/news")
     public String showNews(@AuthenticationPrincipal User currentUser,
                            Model model) {
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("allNews", newsService.getNews(currentUser));
-        model.addAttribute("bucketName", bucketName);
         return "news";
     }
 }

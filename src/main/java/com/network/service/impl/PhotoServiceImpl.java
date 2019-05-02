@@ -66,7 +66,10 @@ public class PhotoServiceImpl implements PhotoService {
             if(isAvatar)
                 photoRepository.updateAvatars(currentUser.getId());
         }
-        if (community != null)
+        if (community != null) {
             photo.setCommunity(community);
+            if(isAvatar)
+                photoRepository.updateCommunityAvatars(community.getId());
+        }
     }
 }

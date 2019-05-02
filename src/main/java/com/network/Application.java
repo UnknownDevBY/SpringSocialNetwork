@@ -18,11 +18,6 @@ public class Application {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public Path pathToLog() {
-        return Paths.get("log.txt");
+        return new BCryptPasswordEncoder(8);
     }
 }

@@ -1,10 +1,8 @@
 package com.network.service.impl;
 
-import com.network.model.Comment;
-import com.network.model.Photo;
-import com.network.model.Post;
-import com.network.model.User;
+import com.network.model.*;
 import com.network.repository.CommentRepository;
+import com.network.repository.MessageRepository;
 import com.network.repository.PhotoRepository;
 import com.network.repository.PostRepository;
 import com.network.service.DeleteService;
@@ -18,6 +16,7 @@ public class DeleteServiceImpl implements DeleteService {
     @Autowired private PhotoRepository photoRepository;
     @Autowired private PostRepository postRepository;
     @Autowired private CommentRepository commentRepository;
+    @Autowired private MessageRepository messageRepository;
     @Autowired private S3Service s3Service;
 
     @Override
@@ -32,16 +31,32 @@ public class DeleteServiceImpl implements DeleteService {
             case "comment":
                 deleteComment(id, currentUser);
                 break;
+            case "message":
+                deleteMessage(id, currentUser);
+                break;
         }
+    }
+
+    private void deleteMessage(int id, User currentUser) {
+        Message message = messageRepository.getOne(id);
+        if(message.getFrom().equals(currentUser))
+            messageRepository.delete(message);
     }
 
     private void deletePhoto(int id, User currentUser) {
         Photo photo = photoRepository.getById(id);
-        if(photo.getUser().getId() == currentUser.getId()) {
+        if(photo.getUser() != null && photo.getUser().getId() == currentUser.getId()) {
             s3Service.deleteFile(photo.getTitle());
             photoRepository.delete(photo);
-            if(photo.isAvatar())
+            if(photo.isAvatar()) {
                 photoRepository.setPreviousAvatar(currentUser.getId());
+            }
+        } else if(photo.getCommunity() != null && photo.getCommunity().getAdmin().getId() == currentUser.getId()) {
+            s3Service.deleteFile(photo.getTitle());
+            photoRepository.delete(photo);
+            if(photo.isAvatar()) {
+                photoRepository.setPreviousCommunityAvatar(currentUser.getId());
+            }
         }
     }
 

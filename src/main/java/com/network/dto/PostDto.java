@@ -1,6 +1,5 @@
 package com.network.dto;
 
-import com.network.model.Comment;
 import com.network.model.Post;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,8 @@ import java.util.List;
 public class PostDto {
 
     private Post post;
+    private String avatarTitle;
     private Integer likesCount;
-    private boolean isLikedByCurrentUser;
-    private List<Comment> comments;
+    private boolean likedByCurrentUser;
+    private List<CommentDto> comments;
 }

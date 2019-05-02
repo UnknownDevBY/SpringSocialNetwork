@@ -1,26 +1,203 @@
 <!DOCTYPE html>
 <html lang="en"
-xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="description" content="My social network using Spring Boot and Thymeleaf">
-    <title>Social network</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css" type="text/css" media="all">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Войдите</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/style.css}"  href="../static/css/lib/style.css" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/registration1.js}"></script>
 </head>
-<body style="background-color: white">
-    <main class="sign fadeIn">
-        <div>
-            <h1 id="hello">Hello</h1>
-            <form action="/login" method="post">
-                <input type="text" id="itech_login" name="itech_login" placeholder="Логин">
-                <br>
-                <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-                <br>
-                <input type="submit" value="Войти">  
-            </form>
-            <p id="registration">Нет аккаунта? <a href="/registration">Регистрация</a></p>
+
+<body>
+
+<div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <form action="javascript:register1()" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="alert">
+
+            </div>
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Регистрация</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                <div class="form-row">
+                    <div class="col">
+                        <div class="md-form">
+                            <input type="text" name="name" id="name" class="form-control" required="required">
+                            <label for="name">Имя</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="md-form">
+                            <input type="text" name="surname" id="surname" class="form-control" required="required">
+                            <label for="surname">Фамилия</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="md-form mb-5">
+                    <i class="fa fa-user prefix grey-text"></i>
+                    <input type="email" name="email" id="email" class="form-control validate" required="required">
+                    <label data-error="wrong" data-success="right" for="email">Ваш e-mail</label>
+                </div>
+
+                <div class="md-form mb-4">
+                    <i class="fa fa-key prefix grey-text"></i>
+                    <input type="password" name="password" id="password" class="form-control validate" required="required">
+                    <label data-error="wrong" data-success="right" for="password">Пароль</label>
+                </div>
+
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <input type="submit" class="btn btn-primary" value="Подтвердить" />
+            </div>
         </div>
-    </main> 
+    </form>
+</div>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark primary-color">
+
+        <!-- Navbar brand -->
+        <a class="navbar-brand" href="#">Social Network</a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+                aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="basicExampleNav">
+
+            <!-- Links -->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Главная
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.itechart.by/">О нас</a>
+                </li>
+
+            </ul>
+            <!-- Links -->
+
+            <form onsubmit="return false" class="form-inline">
+                <div class="md-form my-0">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Поиск" minlength="1" aria-label="Search" id="search">
+                </div>
+            </form>
+        </div>
+        <!-- Collapsible content -->
+
+    </nav>
+</header>
+
+<main class="mt-5">
+    <div class="container">
+
+        <section id="contact">
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <div id="map" class="row text-center">
+                        <div class="col-lg-4 col-md-12 mb-3">
+                            <p><i class="fa fa-map-marker fa-1x mr-2 grey-text"></i>Минск</p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <p><i class="fa fa-building fa-1x mr-2 grey-text"></i>Пн - Пт</p>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <p><i class="fa fa-phone fa-1x mr-2 grey-text"></i>+375 29 777 77 77</p>
+                        </div>
+                    </div>
+
+                    <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 400px">
+                        <iframe src="https://maps.google.com/maps?q=minsk+Толстого+10&t=&z=15&ie=UTF8&iwloc=&output=embed" frameborder="0"
+                                style="border:0" allowfullscreen></iframe>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6 col-md-12">
+                    <form class="p-5" action="/login" method="post">
+                        <div class="md-form form-sm">
+                            <i class="fa fa-user prefix grey-text"></i>
+                            <input type="text"  id="itech_login" name="itech_login" class="form-control form-control-sm">
+                            <label for="itech_login">Ваш e-mail</label>
+                        </div>
+                        <div class="md-form form-sm">
+                            <i class="fa fa-key prefix grey-text"></i>
+                            <input type="password" id="itech_pass" name="itech_pass" class="form-control form-control-sm">
+                            <label for="itech_pass">Пароль</label>
+                        </div>
+                        <div class="text-center mt-4">
+                            <div class="row text-center">
+                                <a href="" class="btn btn-outline-primary waves-effect waves-light" data-toggle="modal" data-target="#modalRegisterForm">Регистрация</a>
+                                <input type="submit" class="btn btn-primary waves-effect waves-light" value="Войти"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<hr class="mb-3">
+
+<footer class="page-footer font-small unique-color-dark pt-0">
+    <div class="primary-color">
+        <div class="container">
+            <div class="row py-4 d-flex align-items-center">
+                <div class="col-md-6 col-lg-5 text-center text-md-left mb-4 mb-md-0">
+                    <h6 class="mb-0 white-text">Свяжитесь с автором в социальных сетях!</h6>
+                </div>
+                <div class="col-md-6 col-lg-7 text-center text-md-right">
+                    <a href="#" class="fb-ic ml-0">
+                        <i class="fa fa-facebook white-text mr-4"></i>
+                    </a>
+                    <a href="#" class="fb-ic ml-0">
+                        <i class="fa fa-google white-text mr-4"></i>
+                    </a>
+                    <a href="#" class="fb-ic ml-0">
+                        <i class="fa fa-vk white-text mr-4"></i>
+                    </a>
+                    <a href="#" class="fb-ic ml-0">
+                        <i class="fa fa-instagram white-text mr-4"></i>
+                    </a>
+                    <a href="#" class="fb-ic ml-0">
+                        <i class="fa fa-telegram white-text mr-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+    $('#search').on('keyup', (event)=> {
+        if(event.which === 13){
+            let val = document.getElementById('search').value;
+            if(val !== '')
+                window.location.replace('/search?value=' + val);
+        }
+    });
+</script>
 </body>
+
 </html>

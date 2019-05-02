@@ -15,9 +15,19 @@ public interface PhotoRepository extends JpaRepository<Photo, Integer> {
     @Query(value = "SELECT * FROM Photo WHERE user_id = ?1 AND is_avatar = TRUE", nativeQuery = true)
     Photo getAvatarByUserId(int id);
 
-    Photo getById(int id);
+    @Query("SELECT p FROM Photo p WHERE p.community = ?1 AND p.isAvatar = true")
+    Photo getCommunityAvatar(Community community);
 
-    Photo getAllByCommunityAndWasAvatarTrue(Community community);
+    @Query("SELECT p.title FROM Photo p WHERE p.community = ?1 AND p.isAvatar = true")
+    String getCommunityAvatarTitle(Community community);
+
+    @Query("SELECT p FROM Photo p WHERE p.user = ?1 AND p.isAvatar = true")
+    Photo getUserAvatar(User user);
+
+    @Query("SELECT p.title FROM Photo p WHERE p.user = ?1 AND p.isAvatar = true")
+    String getUserAvatarTitle(User user);
+
+    Photo getById(int id);
 
     List<Photo> getByUserOrderByDateOfPostDesc(User user);
 
@@ -38,6 +48,16 @@ public interface PhotoRepository extends JpaRepository<Photo, Integer> {
 
     @Modifying
     @Transactional
+    @Query(value = "UPDATE Photo SET is_avatar = FALSE WHERE community_id = ?1", nativeQuery = true)
+    void updateCommunityAvatars(int id);
+
+    @Modifying
+    @Transactional
     @Query(value = "WITH cte AS (SELECT id FROM photo WHERE was_avatar = TRUE AND user_id = ?1 ORDER BY date_of_post DESC LIMIT 1) UPDATE photo p SET is_avatar = TRUE FROM cte WHERE p.id = cte.id", nativeQuery = true)
     void setPreviousAvatar(int id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "WITH cte AS (SELECT id FROM photo WHERE was_avatar = TRUE AND community_id = ?1 ORDER BY date_of_post DESC LIMIT 1) UPDATE photo p SET is_avatar = TRUE FROM cte WHERE p.id = cte.id", nativeQuery = true)
+    void setPreviousCommunityAvatar(int id);
 }

@@ -9,6 +9,7 @@ import lombok.Setter;
 public class UserDto {
 
     private int userId;
+    private int age;
     private String userName;
     private String userSurname;
     private Photo avatar;

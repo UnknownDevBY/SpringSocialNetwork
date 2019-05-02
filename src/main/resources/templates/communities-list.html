@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои группы</title>
+    <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+    <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/style.css}"  href="../static/css/lib/style.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#av')
+                        .attr('src', e.target.result)
+                        .width(180)
+                };
+                reader.readAsDataURL(input.files[0]);
+                document.getElementById("av").removeAttribute("style");
+            }
+        }
+        function resetForm() {
+            document.getElementById("inputGroupFile01").value = "";
+            document.getElementById("av").setAttribute("style", "display: none;");
+        }
+        function onSearch() {
+            let text = document.getElementById('inputLGEx').value.toLowerCase();
+            let groupBlocks = document.getElementsByClassName('div');
+            let item;
+            for(let i = 0; i !== groupBlocks.length; ++i) {
+                item = groupBlocks.item(i);
+                item.hidden = !item.getAttribute('name').toLowerCase().startsWith(text);
+            }
+        }
+    </script>
+</head>
+<body>
+<header>
+    <div class="row">
+        <div class="col-6">
+            <p><a href="/"><em class="logo">Social network</em></a></p>
+        </div>
+        <div class="col-6">
+            <div th:if="${currentUser != null}" class="float-right">
+                <form action="/logout" method="get">
+                    <input class="btn white-text" type="submit" value="Выход">
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="menu">
+    <ul th:if="${currentUser != null}">
+        <li><a class="active" href="/search">Поиск</a></li>
+        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+        <li><a href="/communities">Группы</a></li>
+        <li><a href="/news">Новости</a></li>
+        <li><a href="/messages">Сообщения</a></li>
+        <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+    </ul>
+</div>
+
+<div class="modal fade" id="modalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <form method="post" action="/communities/create" class="modal-dialog" role="document"  enctype="multipart/form-data">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Создать группу</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetForm()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="text-center mt-1">
+                <img style="display: none;" id="av" src="" class="rounded" alt="">
+            </div>
+            <div class="input-group justify-content-center pt-4 px-4">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroupFileAddon01"><i class="fa fa-file"></i></span>
+                </div>
+                <div class="custom-file">
+                    <input onchange="readURL(this)" type="file" class="custom-file-input" id="inputGroupFile01" name="avatar" accept=".jpg, .jpeg, .png" aria-describedby="inputGroupFileAddon01">
+                    <label class="custom-file-label" for="inputGroupFile01">Выберите аватар</label>
+                </div>
+            </div>
+            <div class="modal-body mx-3">
+                <div class="md-form mb-5">
+                    <i class="fas fa-user prefix grey-text"></i>
+                    <input type="text" id="form34" name="title" minlength="2" maxlength="63" required="required" class="form-control validate">
+                    <label data-error="wrong" data-success="right" for="form34">Название</label>
+                </div>
+
+                <div class="md-form">
+                    <i class="fas fa-info prefix grey-text"></i>
+                    <textarea type="text" id="form8" name="description" class="md-textarea form-control" rows="4"></textarea>
+                    <label data-error="wrong" data-success="right" for="form8">Описание</label>
+                </div>
+
+                <div class="text-center w-100">
+                    <div title="Доступна всем" class="custom-control custom-radio custom-control-inline">
+                        <input checked required="required" type="radio" class="custom-control-input" id="defaultInline2" name="closed" value="false">
+                        <label class="custom-control-label" for="defaultInline2">Открытая</label>
+                    </div>
+
+                    <div title="Доступна только после подписки, подтвержденной админом" class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" class="custom-control-input" id="defaultInline1" name="closed" value="true">
+                        <label class="custom-control-label" for="defaultInline1">Закрытая</label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary">Создать <i class="fas fa-plus ml-1"></i></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<main class="messages-block">
+    
+    <div class="row justify-content-center">
+        <div class="col-7 justify-content-start">
+            <div class="row">
+                <ul class="nav nav-tabs bg-light" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                           aria-selected="true" th:text="'Мои сообщества (' + ${myCommunities.size()} + ')'">Мои сообщества (0)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+                           aria-selected="false" th:text="'Управление (' + ${adminCommunities.size()} + ')'">Управление (0)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link bg-dark" id="contact-tab" data-toggle="modal" data-target="#modalContactForm">Создать группу</a>
+                    </li>
+                </ul>
+                <div class="col-9 md-form">
+                    <input type="text" id="inputLGEx" class="form-control form-control-lg" onkeyup="onSearch()">
+                    <label for="inputLGEx">Поиск</label>
+                </div>
+                <div class="col-3 mt-3">
+                    <button type="submit" class="btn btn-light">
+                        <i class="fa fa-search" aria-hidden="true" onclick="onSearch()"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active"  id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div th:each="community : ${myCommunities}" class="row mb-4 div" th:name="${community.community.title}">
+                            <div class="col-2 zoom">
+                                <img th:if="${community.avatar == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${community.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${community.avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <h2><a th:href="'/communities/public/' + ${community.community.id}" th:text="${community.community.title}"></a></h2>
+                                <p class="font-weight-light font-small text-justify" th:text="${community.community.description}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum, quae!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div th:each="community : ${adminCommunities}" class="row mb-4 div" th:name="${community.community.title}">
+                            <div class="col-2 zoom">
+                                <img th:if="${community.avatar == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${community.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${community.avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <h2><a th:href="'/communities/public/' + ${community.community.id}" th:text="${community.community.title}"></a></h2>
+                                <p class="font-weight-light font-small text-justify" th:text="${community.community.description}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum, quae!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

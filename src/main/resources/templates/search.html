@@ -1,125 +1,156 @@
 <!DOCTYPE html>
 <html lang="en"
-xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Поиск</title>
-  <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
-  <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
+    <meta charset="UTF-8">
+    <title>Мои группы</title>
+    <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+    <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
+    <script>
+        function setSearchValue(value) {
+            let item = document.getElementById('inputLGEx');
+            item.focus();
+            item.value = value.substring(1).trim();
+            document.getElementById('searchButton').click();
+        }
+        function onSearch() {
+            let text = document.getElementById('inputLGEx').value.toLowerCase();
+            let groupBlocks = document.getElementsByClassName('div');
+            let item;
+            let itemText;
+            for(let i = 0; i !== groupBlocks.length; ++i) {
+                item = groupBlocks.item(i);
+                itemText = item.getAttribute('name');
+                if(itemText != null) {
+                    item.hidden = !(itemText.toLowerCase().includes(text));
+                } else {
+                    console.log(item.innerHTML);
+                    item.hidden = !(item.getAttribute('content').toLowerCase().includes('#' + text));
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-  <header>
-    <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div th:if="${currentUser != null}" class="logout">
-      <form action="/logout" method="get">
-        <input type="submit" value="Выход">
-      </form>
+<header>
+    <div class="row">
+        <div class="col-6">
+            <p><a href="/"><em class="logo">Social network</em></a></p>
+        </div>
+        <div class="col-6">
+            <div th:if="${currentUser != null}" class="float-right">
+                <form action="/logout" method="get">
+                    <input class="btn white-text" type="submit" value="Выход">
+                </form>
+            </div>
+        </div>
     </div>
-  </header>
-  <div class="menu">
+</header>
+<div class="menu">
     <ul th:if="${currentUser != null}">
-      <li><a class="active" href="/search">Поиск</a></li>
-      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-      <li><a href="/communities">Группы</a></li>
-      <li><a href="/news">Новости</a></li>
-      <li><a href="/messages">Сообщения</a></li>
-      <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+        <li><a class="active" href="/search">Поиск</a></li>
+        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+        <li><a href="/communities">Группы</a></li>
+        <li><a href="/news">Новости</a></li>
+        <li><a href="/messages">Сообщения</a></li>
+        <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
     </ul>
-  </div>
-  <main class="messages-block">
-    <form class="new-message" method="get">
-      <span th:if="${param.value != null}">
-        <input th:value="${param.value}" type="text" id="value" name="value" placeholder="Введите имя пользователя или его часть" />
-      </span>
-      <span th:if="${param.value == null}">
-        <input type="text" id="value" name="value" placeholder="Введите имя пользователя или его часть" />
-      </span>
-      <input type="submit" value="Отправить">
-    </form>
-    <div class="convers-content">
-      <div th:if="${users != null}" th:each="user : ${users}" class="global-user">
-        <img th:if="${user.avatar == null}" class="friends-list-person-av" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
-        <img th:if="${user.avatar != null}" class="friends-list-person-av" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${user.avatar.title}" src="../static/img/no-avatar.png" alt="">
-        <a th:text="${user.userName} + ' ' + ${user.userSurname}" th:href="'/users/' + ${user.userId}" class="friends-name">Владислав Ефимчик</a>
-      </div>
-      <div th:if="${posts != null}">
-        <div style="text-decoration: none;" th:each="post : ${posts}" class="post">
-          <div th:if="${post.post.owner != null}">
-            <p style="font-size: 12px;" th:text="'Стена пользователя ' + ${post.post.owner.name} + ' ' + ${post.post.owner.surname}">Стена пользователя Владислав Ефимчик</p>
-            <a class="post-author" th:href="'/users/' + ${post.post.owner.id} + '#post' + ${post.post.id}" th:text="${post.post.author.name} + ' ' + ${post.post.author.surname}">Владислав Ефимчик</a>
-          </div>
-          <div th:if="${post.post.owner == null}">
-            <p style="font-size: 12px;" th:text="'Группа ' + ${post.post.community.title}">Стена пользователя Владислав Ефимчик</p>
-            <a class="post-author" th:href="'/communities/public/' + ${post.post.community.id} + '#post' + ${post.post.id}" th:text="${post.post.community.title}">Владислав Ефимчик</a>
-          </div>
-          <p class="post-time" th:text="${post.post.postTime}"></p>
-          <div style="margin-bottom: 10px;" class="post-content">
-            <span  th:each="word : ${post.post.content.split(' ')}">
-              <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
-              <a th:href="'/search/?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
-            </span>
-          </div>
-          <a class="like-comment-amount">
-            <span>
-              <span th:if="${currentUser == null}">
-                <img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt="">
-              </span>
-              <span th:if="${currentUser != null && !post.likedByCurrentUser}">
-                <a th:onclick="'update(`likes`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/black_like.svg}" src="../static/img/black_like.svg" alt=""></a>
-              </span>
-              <span th:if="${currentUser != null && post.likedByCurrentUser}">
-                <a th:onclick="'update(`likes`, `post`, ' + ${post.post.id} + ')'"><img class="like-img" th:src="@{/img/red_like.svg}" src="../static/img/red_like.svg" alt=""></a>
-              </span>
-              <span class="like-amount" th:text="${post.likesCount}">10</span>
-            </span>
-            <span>
-              <img class="like-img" th:src="@{/img/comment.svg}" src="../static/img/comment.svg" alt="">
-              <span class="like-amount" th:text="${post.comments == null ? 0 : post.comments.size()}">10</span>
-            </span>
-          </a>
-          <div>
-            <details th:if="${post.comments != null && post.comments.size() != 0}">
-              <summary class="show-comments-summary">Показать комментарии</summary>
-              <div th:each="comment : ${post.comments}">
-                <div class="photo-comment">
-                  <a th:if="${currentUser != null && comment.user.id == currentUser.id}" style="float: right; padding-top: 5px; text-decoration: none;" th:onclick="'update(`delete`, `comment`, ' + ${comment.id} + ')'">X</a>
-                  <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
-                  <p class="photo-comment-text" th:text="${comment.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis atque sequi eius eligendi, consectetur tempore obcaecati earum placeat, harum labore officia facere veniam deleniti ipsa fuga eveniet vitae, libero, repudiandae. Minima quis, et nobis recusandae impedit quia dolore, necessitatibus cum debitis quaerat alias provident minus. Sequi culpa, possimus nam voluptatum?</p>
+</div>
+<main class="messages-block">
+
+    <div class="row justify-content-center">
+        <div class="col-7 justify-content-start">
+            <div class="row">
+                <ul class="nav nav-tabs bg-dark rounded" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                           aria-selected="true">Люди <span class="badge badge-pill badge-primary" th:text="${users.size()}">1</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="subscribers-tab" data-toggle="tab" href="#subscribers" role="tab" aria-controls="subscribers"
+                           aria-selected="false">Группы <span class="badge badge-pill badge-primary" th:text="${communities.size()}">1</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="subscriptions-tab" data-toggle="tab" href="#subscriptions" role="tab" aria-controls="subscriptions"
+                           aria-selected="false">Хэштеги <span class="badge badge-pill badge-primary" th:text="${posts.size()}">1</span></a>
+                    </li>
+                </ul>
+                <div class="col-9 md-form">
+                    <input type="text" id="inputLGEx" class="form-control form-control-lg" onkeyup="onSearch()" th:value="${value}">
+                    <label for="inputLGEx">Поиск</label>
                 </div>
-              </div>
-            </details>
-          </div>
-        </div>
-      </div>
-      <div th:if="${comments != null}">
-        <div th:each="comment : ${comments}">
-          <div class="photo-comment">
-            <div th:if="${comment.post != null}">
-              <div th:if="${comment.post.owner != null}">
-                <p th:text="'Комментарий на стене пользователя ' + ${comment.post.owner.name} + ' ' + ${comment.post.owner.surname}" style="font-size: 12px;">Комментарий на стене пользователя Владислав Ефимчик</p>
-                <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id} + '#comment' + ${comment.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
-              </div>
-              <div th:if="${comment.post.community != null}">
-                <p th:text="'Комментарий в группе ' + ${comment.post.community.title}" style="font-size: 12px;">Комментарий в группе Владислав Ефимчик</p>
-                <a class="photo-owner-name" th:href="'/communities/public/' + ${comment.post.community.id} + '#comment' + ${comment.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
-              </div>
+                <div class="col-3 mt-3">
+                    <button type="submit" class="btn btn-light" id="searchButton" onclick="onSearch()">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
-            <div th:if="${comment.photo != null}">
-              <p style="font-size: 12px;">Комментарий под фото пользователя Владислав Ефимчик</p>
-              <a class="photo-owner-name" th:href="'/photo/' + ${comment.photo.id} + '#' + ${comment.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
+            <div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active justify-content-center" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div th:each="friend : ${users}" class="row mb-4 div" th:name="${friend.userName} + '' + ${friend.userSurname}">
+                            <div class="col-2 zoom">
+                                <img th:if="${friend.avatar == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${friend.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${friend.avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <h2><a th:href="'/users/' + ${friend.userId}" th:text="${friend.userName} + ' ' + ${friend.userSurname}">Владислав Ефимчик</a></h2>
+                                <code th:text="${friend.age} + ' лет'">18 лет</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="subscribers" role="tabpanel" aria-labelledby="subscribers-tab">
+                        <div th:each="community : ${communities}" class="row mb-4 div" th:name="${community.community.title}">
+                            <div class="col-2 zoom">
+                                <img th:if="${community.avatar == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${community.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${community.avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <h2><a th:href="'/communities/public/' + ${community.community.id}" th:text="${community.community.title}"></a></h2>
+                                <p class="font-weight-light font-small text-justify" th:text="${community.community.description}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum, quae!</p>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">
+                        <div th:each="post : ${posts}" class="row mb-4 div" th:content="${post.post.content}">
+                            <div class="col-2 zoom">
+                                <img th:if="${post.avatarTitle == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${post.avatarTitle != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${post.avatarTitle} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <code th:if="${post.post.community != null}" th:text="'Группа ' + ${post.post.community.title}">Hello</code>
+                                <code th:if="${post.post.author.id != post.post.owner.id}" th:text="'Стена пользователя ' + ${post.post.owner.name} + ' ' + ${post.post.owner.surname}">Hello</code>
+                                <h4>
+                                    <a th:if="${post.post.author != null}" th:href="'/users/' + ${post.post.author.id}" th:text="${post.post.author.name} + ' ' + ${post.post.author.surname}">Владислав Ефимчик</a>
+                                    <a th:if="${post.post.community != null}" th:href="'/communities/public/' + ${post.post.community.id}" th:text="${post.post.community.title}">Slayer</a>
+                                </h4>
+                                <p class="text-justify font-small black-text">
+                                    <span th:each="word : ${post.post.content.split(' ')}">
+                                      <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '">Я</span>
+                                      <a class="blue-text" onclick="setSearchValue(this.innerHTML)" th:if="${word.startsWith('#')}" th:text="${word} + ' '">#ефимчик</a>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p class="photo-comment-text">
-              <span  th:each="word : ${comment.content.split(' ')}">
-                <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
-                <a th:href="'/search/?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
-              </span>
-            </p>
-          </div>
         </div>
-      </div>
     </div>
-  </main>
+</main>
+<script th:if="${value != null}">
+    document.getElementById('inputLGEx').focus();
+    document.getElementById('searchButton').click();
+</script>
 </body>
 </html>

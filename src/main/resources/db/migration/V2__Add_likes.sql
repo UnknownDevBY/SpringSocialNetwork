@@ -4,6 +4,6 @@ create table likes(
     post_id int,
     photo_id int,
     foreign key (user_id) references users(id),
-	  foreign key (post_id) references post(id),
+	foreign key (post_id) references post(id),
     foreign key (photo_id) references photo(id)
 );

@@ -1,64 +1,122 @@
 <!DOCTYPE html>
 <html lang="en"
-xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Мои альбомы</title>
+  <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+  <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
 </head>
 <body>
-  <header>
-    <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div th:if="${currentUser != null}" class="logout">
-      <form action="/logout" method="get">
-        <input type="submit" value="Выход">
-      </form>
-    </div>
-  </header>
-  <div class="menu">
-    <ul th:if="${currentUser != null}">
-      <li><a class="active" href="/search">Поиск</a></li>
-      <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
-      <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
-      <li><a href="/communities">Группы</a></li>
-      <li><a href="/news">Новости</a></li>
-      <li><a href="/messages">Сообщения</a></li>
-      <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
-    </ul>
-    <div>
-      <form th:if="${currentUser == null}" action="/login" method="post">
-        <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
-        <br>
-        <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
-        <br>
-        <div>
-          <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
-          <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+<div th:if="${currentUser != null && currentUser.id == id}" class="modal fade" id="modalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+  <form action="/albums/add" method="post" class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Создать альбом</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="md-form mb-5">
+          <i class="fas fa-user prefix grey-text"></i>
+          <input type="text" id="title" name="title" minlength="2" maxlength="63" required="required" class="form-control validate">
+          <label data-error="wrong" data-success="right" for="title">Название</label>
         </div>
-        <input type="submit" value="Войти">
-      </form>
-    </div>
-  </div>
-  <main>
-    <div class="convers-content">
-      <div class="albums">
-        <a th:href="'/albums/' + ${id} + '/0'" class="album-cover">
-          <img th:if="${!defaultAlbum.photos.isEmpty()}" style="width: 80%;" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${defaultAlbum.photos.get(0).title}" alt="">
-          <img th:if="${defaultAlbum.photos.isEmpty()}" style="width: 80%;" th:src="@{/img/no-avatar.png}" alt="">
-          <p th:text="${defaultAlbum.title} + ' (' + ${defaultAlbum.photos.size() + ')'}">Lorem ipsum.</p>
-        </a>
-          <a th:each="album : ${albums}" th:href="'/albums/' + ${id} + '/' + ${album.id}" class="album-cover">
-            <img th:if="${!album.photos.isEmpty()}" style="width: 80%;" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${album.photos.get(0).title}" alt="">
-            <img th:if="${album.photos.isEmpty()}" style="width: 80%;" th:src="@{/img/no-avatar.png}" alt="">
-            <p th:text="${album.title} + ' (' + ${album.photos.size() + ')'}">Lorem ipsum.</p>
-          </a>
-        <a th:if="${currentUser != null && currentUser.id == id}" href="/albums/add" class="album-cover">
-          <img class="avatar" th:src="@{/img/plus.svg}" src="../static/img/plus.svg" alt="">
-          <p>Добавить альбом</p>
-        </a>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary">Создать <i class="fas fa-plus ml-1"></i></button>
       </div>
     </div>
-  </main>
+  </form>
+</div>
+<header>
+  <div class="row">
+    <div class="col-6">
+      <p><a href="/"><em class="logo">Social network</em></a></p>
+    </div>
+    <div class="col-6">
+      <div th:if="${currentUser != null}" class="float-right">
+        <form action="/logout" method="get">
+          <input class="btn white-text" type="submit" value="Выход">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="menu">
+  <ul th:if="${currentUser != null}">
+    <li><a class="active" href="/search">Поиск</a></li>
+    <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+    <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+    <li><a href="/communities">Группы</a></li>
+    <li><a href="/news">Новости</a></li>
+    <li><a href="/messages">Сообщения</a></li>
+    <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+    <li th:if="${currentUser.authorities[0].name().equals('ADMIN')}"><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+  </ul>
+  <div>
+    <form th:if="${currentUser == null}" action="/login" method="post">
+      <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+      <br>
+      <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+      <br>
+      <div>
+        <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+        <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+      </div>
+      <input type="submit" value="Войти">
+    </form>
+  </div>
+</div>
+<main>
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <div class="row text-center">
+        <div class="col-4">
+          <a th:href="'/albums/' + ${id} + '/0'">
+            <div class="view">
+              <div th:if="${!defaultAlbum.photos.isEmpty()}"  class="square img-fluid" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${defaultAlbum.photos.get(0).title} + ')'"></div>
+              <div th:if="${defaultAlbum.photos.isEmpty()}"  class="square img-fluid" style="background-image: url(/img/no-avatar.png)"></div>
+              <div class="mask flex-center waves-effect waves-light rgba-black-light">
+                <p class="white-text" th:text="${defaultAlbum.title} + ' (' + ${defaultAlbum.photos.size() + ')'}">Название альбома</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-4" th:each="album : ${albums}">
+          <a th:href="'/albums/' + ${id} + '/' + ${album.id}">
+            <div class="view">
+              <div th:if="${!album.photos.isEmpty()}"  class="square img-fluid" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${album.photos.get(0).title} + ')'"></div>
+              <div th:if="${album.photos.isEmpty()}"  class="square img-fluid" style="background-image: url(/img/no-avatar.png)"></div>
+              <div class="mask flex-center waves-effect waves-light rgba-black-light">
+                <p class="white-text" th:text="${album.title} + ' (' + ${album.photos.size() + ')'}">Название альбома</p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-4" th:if="${currentUser != null && currentUser.id == id}">
+          <a id="contact-tab" data-toggle="modal" data-target="#modalContactForm">
+            <div class="view">
+              <div class="square img-fluid" style="background-image: url(/img/plus.svg)"></div>
+              <div class="mask flex-center waves-effect waves-light rgba-black-light">
+                <p class="white-text">Создать альбом</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
 </body>
 </html>

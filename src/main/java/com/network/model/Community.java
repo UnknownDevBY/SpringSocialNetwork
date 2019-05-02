@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
@@ -20,28 +22,27 @@ public class Community {
     private int id;
 
     @Column(length = 63)
+    @NotBlank
     private String title;
 
     @Column(length = 127)
+    @NotBlank
     private String description;
+
+    private boolean closed;
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
     private User admin;
-
-    @ManyToMany
-    @JoinTable(
-            name = "community_subscribers",
-            joinColumns = {@JoinColumn(name = "community_id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id")}
-    )
-    private List<User> subscribers;
 
     @OneToMany(mappedBy = "community")
     private Set<Photo> photos;
 
     @OneToMany(mappedBy = "community", fetch = FetchType.EAGER)
     private Set<Post> posts;
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
+    private List<CommunitySubscriber> subscribers;
 
     @Override
     public boolean equals(Object obj) {

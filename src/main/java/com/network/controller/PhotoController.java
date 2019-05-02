@@ -55,14 +55,6 @@ public class PhotoController {
         return "photo";
     }
 
-    @GetMapping("/photos/add")
-    public String openAddPhoto(@AuthenticationPrincipal User currentUser,
-                               Model model) {
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("albums", albumRepository.getAllTitlesByUserId(currentUser.getId()));
-        return "addPhoto";
-    }
-
     @PostMapping("/photos/add")
     public String addPhoto(@RequestParam(required = false) Boolean makeAvatar,
                            @RequestParam MultipartFile newPhoto,

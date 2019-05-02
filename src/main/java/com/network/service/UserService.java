@@ -19,4 +19,5 @@ public interface UserService {
     List<PostDto> getPosts(User pageUser, User currentUser);
     List<PhotoDto> getPhotos(User pageUser, User currentUser);
     void modifyRelation(User currentUser, User pageUser);
+    void updateBlacklist(User currentUser, int id);
 }

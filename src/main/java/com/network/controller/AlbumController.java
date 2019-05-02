@@ -20,9 +20,6 @@ public class AlbumController {
 
     @Autowired private AlbumService albumService;
 
-    @Value("${s3.bucket}")
-    private String bucketName;
-
     @GetMapping("/albums/{ownerId}")
     public String showAlbum(@PathVariable int ownerId,
                             @AuthenticationPrincipal User currentUser,
@@ -31,19 +28,10 @@ public class AlbumController {
         if(!albumService.allowAccessToAlbums(ownerId, currentUser))
             return "redirect:" + request.getHeader("Referer");
         model.addAttribute("id", ownerId);
-        model.addAttribute("bucketName", bucketName);
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("defaultAlbum", albumService.getDefaultAlbum(ownerId));
         model.addAttribute("albums", albumService.getUserAlbums(ownerId));
         return "albums";
-    }
-
-
-    @GetMapping("/albums/add")
-    public String openAlbumCreator(@AuthenticationPrincipal User currentUser,
-                               Model model) {
-        model.addAttribute("currentUser", currentUser);
-        return "addAlbum";
     }
 
     @GetMapping("/albums/{userId}/{albumId}")
@@ -53,7 +41,6 @@ public class AlbumController {
                             HttpServletRequest request,
                             Model model) {
         if(albumService.allowAccessToAlbums(userId, currentUser)) {
-            model.addAttribute("bucketName", bucketName);
             model.addAttribute("currentUser", currentUser);
             model.addAttribute("photos", albumService.getPhotos(userId, albumId));
             return "albumsPhotos";

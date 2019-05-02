@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/registration", "/swagger-ui.**", "/img/**", "/css/**", "/js/**");
+                .antMatchers("/swagger-ui.**", "/img/**", "/css/**", "/js/**");
     }
 
     @Override
@@ -35,13 +35,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
 
                 .authorizeRequests()
-                .antMatchers( "/", "/login", "/communities/public/**", "/users/**", "/photos/**", "/albums/**", "/friends/**").permitAll()
+                .antMatchers( "/registration/1", "/registration/2", "/login", "/communities/public/**", "/users/**", "/photos/**", "/activation/**", "/albums/**", "/friends/**", "/search/**").permitAll()
+                .antMatchers("/log").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
 
                 .formLogin()
-                .loginPage("/")
-                .loginProcessingUrl("/login")
+                .loginPage("/login")
                 .usernameParameter("itech_login")
                 .passwordParameter("itech_pass")
                 .successForwardUrl("/users")
@@ -49,8 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("/login")
                 .permitAll()
                 .and()
 

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои группы</title>
+    <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+    <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+    <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
+    <script>
+        function onSearch() {
+            let text = document.getElementById('inputLGEx').value.toLowerCase();
+            let groupBlocks = document.getElementsByClassName('div');
+            let item;
+            for(let i = 0; i !== groupBlocks.length; ++i) {
+                item = groupBlocks.item(i);
+                item.hidden = !(item.getAttribute('name').toLowerCase().startsWith(text) || item.getAttribute('surname').toLowerCase().startsWith(text));
+            }
+        }
+    </script>
+</head>
+<body>
+<header>
+    <div class="row">
+        <div class="col-6">
+            <p><a href="/"><em class="logo">Social network</em></a></p>
+        </div>
+        <div class="col-6">
+            <div th:if="${currentUser != null}" class="float-right">
+                <form action="/logout" method="get">
+                    <input class="btn white-text" type="submit" value="Выход">
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="menu">
+    <ul th:if="${currentUser != null}">
+        <li><a class="active" href="/search">Поиск</a></li>
+        <li><a class="active" th:href="'/users/' + ${currentUser.id}" href="/">Моя страница</a></li>
+        <li><a th:href="'/friends/' + ${currentUser.id}" href="/">Друзья</a></li>
+        <li><a href="/communities">Группы</a></li>
+        <li><a href="/news">Новости</a></li>
+        <li><a href="/messages">Сообщения</a></li>
+        <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+    </ul>
+</div>
+<main class="messages-block">
+
+    <div class="row justify-content-center">
+        <div class="col-7 justify-content-start">
+            <div class="row">
+                <ul class="nav nav-tabs bg-dark rounded" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                           aria-selected="true">Мои друзья <span class="badge badge-pill badge-primary" th:text="${friends.size()}">1</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="subscribers-tab" data-toggle="tab" href="#subscribers" role="tab" aria-controls="subscribers"
+                           aria-selected="false">Подписчики <span class="badge badge-pill badge-primary" th:text="${subscribers.size()}">1</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="subscriptions-tab" data-toggle="tab" href="#subscriptions" role="tab" aria-controls="subscriptions"
+                           aria-selected="false">Подписки <span class="badge badge-pill badge-primary" th:text="${subscriptions.size()}">1</span></a>
+                    </li>
+                </ul>
+                <div class="col-9 md-form">
+                    <input type="text" id="inputLGEx" class="form-control form-control-lg" onkeyup="onSearch()">
+                    <label for="inputLGEx">Поиск</label>
+                </div>
+                <div class="col-3 mt-3">
+                    <button type="submit" class="btn btn-light">
+                        <i class="fa fa-search" aria-hidden="true" onclick="onSearch()"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active justify-content-center" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <div th:each="friend : ${friends}" class="row mb-4 div" th:name="${friend.userName}" th:data-surname="${friend.userSurname}">
+                            <div class="col-2 zoom">
+                                <img th:if="${friend.avatar == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${friend.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${friend.avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <h2><a th:href="'/users/' + ${friend.userId}" th:text="${friend.userName} + ' ' + ${friend.userSurname}">Владислав Ефимчик</a></h2>
+                                <a th:href="'/convesations/' + ${friend.userId}" class="btn btn-sm btn-primary">Отправить сообщение</a>
+                                <a th:onclick="'update(`users`, `friendship`, ' + ${friend.userId} + ')'" class="btn btn-sm btn-primary">Удалить из друзей</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="subscribers" role="tabpanel" aria-labelledby="subscribers-tab">
+                        <div th:each="friend : ${subscribers}" class="row mb-4 div" th:name="${friend.userName}" th:data-surname="${friend.userSurname}">
+                            <div class="col-2 zoom">
+                                <img th:if="${friend.avatar == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${friend.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${friend.avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <h2><a th:href="'/users/' + ${friend.userId}" th:text="${friend.userName} + ' ' + ${friend.userSurname}">Владислав Ефимчик</a></h2>
+                                <a th:onclick="'update(`users`, `friendship`, ' + ${friend.userId} + ')'" class="btn btn-sm btn-primary">Добавить в друзья</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">
+                        <div th:each="friend : ${subscriptions}" class="row mb-4 div" th:name="${friend.userName}" th:data-surname="${friend.userSurname}">
+                            <div class="col-2 zoom">
+                                <img th:if="${friend.avatar == null}" th:src="@{/img/no-avatar.png}" class="img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${friend.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${friend.avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <h2><a th:href="'/users/' + ${friend.userId}" th:text="${friend.userName} + ' ' + ${friend.userSurname}">Владислав Ефимчик</a></h2>
+                                <a th:onclick="'update(`users`, `friendship`, ' + ${friend.userId} + ')'" class="btn btn-sm btn-primary">Отписаться</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

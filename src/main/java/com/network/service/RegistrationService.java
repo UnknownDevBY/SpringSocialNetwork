@@ -1,12 +1,10 @@
 package com.network.service;
 
 import com.network.model.User;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 public interface RegistrationService {
 
-    void saveUser(User user, String pass, MultipartFile avatar) throws IOException;
-    String getError(User user);
+    User setUserStep1(User modelUser);
+    void setUserStep2(User modelUser, User thisUser);
+    String activateUser(String activationCode);
 }

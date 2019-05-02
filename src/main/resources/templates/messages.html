@@ -5,17 +5,44 @@ xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
   <title>Сообщения</title>
   <link rel="stylesheet" th:href="@{/css/user.css}" href="../static/css/user.css">
+  <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+  <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
+  <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
+  <style>
+    .message-content {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      line-height: 1.5em;
+      max-height: 4.5em;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <p><a href="/"><em class="logo">Social network</em></a></p>
-    <div th:if="${currentUser != null}" class="logout">
-      <form action="/logout" method="get">
-        <input type="submit" value="Выход">
-      </form>
+<header>
+  <div class="row">
+    <div class="col-6">
+      <p><a href="/"><em class="logo">Social network</em></a></p>
     </div>
-  </header>
+    <div class="col-6">
+      <div th:if="${currentUser != null}" class="float-right">
+        <form action="/logout" method="get">
+          <input class="btn white-text" type="submit" value="Выход">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
   <div class="menu">
     <ul th:if="${currentUser != null}">
       <li><a class="active" href="/search">Поиск</a></li>
@@ -28,24 +55,26 @@ xmlns:th="http://www.thymeleaf.org">
     </ul>
   </div>
   <main th:with="dialogsCount=${messageWindows.size()}">
-    <div class="messages-header">
+    <div class="messages-header mb-4">
       <h2 th:text="'Мои диалоги: ' + ${dialogsCount}">Мои диалоги: 0</h2>
       <div>
         <a th:if="${dialogsCount == 0}" th:href="'/friends/' + ${currentUser.id}">Напишите кому-либо</a>
       </div>
     </div>
-    <div th:each="messageWindow : ${messageWindows}">
-      <div class="message-cover">
-        <div th:if="${messageWindow.friend.avatar != null}">
-          <img style="width: 100px; height: 100px; overflow: hidden;" class="message-avatar" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${messageWindow.friend.avatar.title}" src="" alt="no-photo">
-        </div>
-        <div th:if="${messageWindow.friend.avatar == null}">
-          <img style="width: 100px; height: 100px; overflow: hidden;" class="message-avatar" th:src="@{/img/no-avatar.png}" src="" alt="no-photo">
-        </div>
-        <div>
-          <a th:text="${messageWindow.friend.userName} + ' ' + ${messageWindow.friend.userSurname}" class="message-author" th:href="'/conversations/' + ${messageWindow.friend.userId}">Владислав Ефимчик</a>
-          <p th:if="${messageWindow.authorId == currentUser.id}" th:text="'(Я) ' + ${messageWindow.lastMessage}" class="part-of-message">Some message</p>
-          <p th:if="${messageWindow.authorId != currentUser.id}" th:text="${messageWindow.lastMessage}" class="part-of-message">Some message</p>
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <div th:each="messageWindow : ${messageWindows}" class="row">
+          <div class="col-3">
+            <div th:if="${messageWindow.friend.avatar == null}" class="square rounded" style="background-image: url(/img/no-avatar.png)"></div>
+            <div th:if="${messageWindow.friend.avatar != null}" class="square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${messageWindow.friend.avatar.title} + ')'"></div>
+          </div>
+          <div class="col-9 text-center" th:href="'/conversations/' + ${messageWindow.friend.userId}">
+            <h3><a th:href="'/conversations/' + ${messageWindow.friend.userId}" th:text="${messageWindow.friend.userName} + ' ' + ${messageWindow.friend.userSurname}">Владислав Ефимчик</a></h3>
+            <p class="message-content grey-text text-justify"><span class="blue-text" th:if="${messageWindow.authorId == currentUser.id}">(Я) </span><span th:text="${messageWindow.lastMessage}"></span></p>
+          </div>
+          <div class="col-12">
+            <hr class="mx-3">
+          </div>
         </div>
       </div>
     </div>

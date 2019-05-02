@@ -4,26 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Setter
 public class MessageDto {
 
-    @Setter
     private UserDto friend;
-
-    @Setter
     private int authorId;
-
     private String lastMessage;
-
-    public void setLastMessage(String lastMessage) {
-        StringBuilder builder = new StringBuilder();
-        String[] firstWords = lastMessage.split(" ", 5);
-        int length = firstWords.length;
-        for(String i: firstWords) {
-            builder.append(i);
-            builder.append(" ");
-        }
-        if(length > 5)
-            builder.append("...");
-        this.lastMessage = builder.toString();
-    }
 }

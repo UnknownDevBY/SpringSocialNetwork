@@ -7,14 +7,14 @@ create table friendship (
 create table message (
   id serial primary key,
   content varchar(511) not null,
-  sending_time timestamp not null,
+  sending_time timestamp(0) not null,
   from_id integer not null,
   to_id integer not null
 );
 
 create table photo (
   id serial primary key,
-  date_of_post timestamp,
+  date_of_post timestamp(0),
   title varchar(31),
   is_avatar boolean not null,
   was_avatar boolean not null,
@@ -24,7 +24,7 @@ create table photo (
 create table post (
   id serial primary key,
   content varchar(511) not null,
-  post_time timestamp not null,
+  post_time timestamp(0) not null,
   author_id integer,
   owner_id integer
 );
@@ -43,7 +43,7 @@ create table users (
   id serial primary key,
   bio varchar(255),
   city varchar(255),
-  date_of_birth varchar(255),
+  date_of_birth date,
   email varchar(255) not null,
   interests varchar(255),
   name varchar(255),
