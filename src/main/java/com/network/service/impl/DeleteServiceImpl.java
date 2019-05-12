@@ -46,17 +46,17 @@ public class DeleteServiceImpl implements DeleteService {
     private void deletePhoto(int id, User currentUser) {
         Photo photo = photoRepository.getById(id);
         if(photo.getUser() != null && photo.getUser().getId() == currentUser.getId()) {
-            s3Service.deleteFile(photo.getTitle());
             photoRepository.delete(photo);
             if(photo.isAvatar()) {
                 photoRepository.setPreviousAvatar(currentUser.getId());
             }
+            new Thread(() -> s3Service.deleteFile(photo.getTitle())).start();
         } else if(photo.getCommunity() != null && photo.getCommunity().getAdmin().getId() == currentUser.getId()) {
-            s3Service.deleteFile(photo.getTitle());
             photoRepository.delete(photo);
             if(photo.isAvatar()) {
-                photoRepository.setPreviousCommunityAvatar(currentUser.getId());
+                photoRepository.setPreviousCommunityAvatar(photo.getCommunity().getId());
             }
+            new Thread(() -> s3Service.deleteFile(photo.getTitle())).start();
         }
     }
 

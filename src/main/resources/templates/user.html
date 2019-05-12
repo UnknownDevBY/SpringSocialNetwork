@@ -8,7 +8,22 @@
     <link href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
     <link th:href="@{/css/lib/bootstrap.min.css}" href="../static/css/lib/bootstrap.min.css" rel="stylesheet">
     <link th:href="@{/css/lib/mdb.min.css}" href="../static/css/lib/mdb.min.css" rel="stylesheet">
+    <script th:if="${currentUser != null}">
+        const unused = 1
+    </script>
     <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#av')
+                        .attr('src', e.target.result)
+                        .width(400)
+                };
+                reader.readAsDataURL(input.files[0]);
+                document.getElementById("av").removeAttribute("style");
+            }
+        }
         let isDetailsClicked = false;
         function setDetails(details) {
             details.innerHTML = (isDetailsClicked) ? "Полная информация" : "Скрыть полную информацию";
@@ -32,12 +47,14 @@
             request.send();
         }
         function likePost(obj, id) {
+            if(!unused)
+                return
             var request = new XMLHttpRequest();
-            request.onreadystatechange = function() {
+            request.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     let child = obj.children[1];
                     let likesAmount = parseInt(child.innerHTML);
-                    if(obj.className.includes('red-text')) {
+                    if (obj.className.includes('red-text')) {
                         obj.className = '';
                         child.innerHTML = --likesAmount;
                     } else {
@@ -147,11 +164,10 @@
         <div class="avatar-block">
             <img th:if="${avatar == null}" class="avatar" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" alt="">
             <span th:if="${avatar != null}">
-                    <a th:if="${currentUser != null && pageUser.id == currentUser.id}" href="/photos/add"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${avatar.title}" alt=""></a>
-                    <a th:if="${currentUser == null || pageUser.id != currentUser.id}" th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${avatar.title}" alt=""></a>
-                </span>
+                    <a th:href="'/photos/' + ${avatar.id}"><img style="width: 100%" th:src="'https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${avatar.title}" alt=""></a>
+            </span>
             <div class="message">
-                <div th:if="${currentUser != null}">
+                <div th:if="${currentUser != null && !isInBlacklist}">
                     <a th:if="${currentUser.id == pageUser.id}" href="/edit">Редактировать</a>
                     <div th:if="${currentUser.id != pageUser.id}">
                         <div th:if="${privacySettings.canSendMessages}">
@@ -211,12 +227,12 @@
                 </div>
             </div>
         </div>
-        <div class="list-of-friends">
+        <div class="list-of-friends mb-2">
             <a th:href="'/friends/' + ${pageUser.id}" th:text="'Друзья: ' + ${friends.size()}" class="amount">Друзья: 10</a>
             <div th:if="${!friends.isEmpty() && (privacySettings.areFriendsAllowed)}">
                 <div class="friends-block">
                     <a th:each="friend : ${friends.subList(0, displayFriends)}" th:href="'/users/' + ${friend.userId}" class="friend">
-                        <div th:if="${friend.avatar  != null}" class="square rounded-circle" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${avatar.title} + ')'" style="background-image: url(../static/img/no-avatar.png)"></div>
+                        <div th:if="${friend.avatar  != null}" class="square rounded-circle" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${friend.avatar.title} + ')'" style="background-image: url(../static/img/no-avatar.png)"></div>
                         <div th:if="${friend.avatar  == null}" class="square rounded-circle" style="background-image: url(/img/no-avatar.png)"></div>
                         <p th:text="${friend.userName}">Имя</p>
                     </a>

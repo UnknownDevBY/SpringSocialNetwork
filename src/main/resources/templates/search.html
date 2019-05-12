@@ -30,7 +30,7 @@
                 item = groupBlocks.item(i);
                 itemText = item.getAttribute('name');
                 if(itemText != null) {
-                    item.hidden = !(itemText.toLowerCase().includes(text));
+                    item.hidden = !(itemText.toLowerCase().startsWith(text));
                 } else {
                     console.log(item.innerHTML);
                     item.hidden = !(item.getAttribute('content').toLowerCase().includes('#' + text));
@@ -63,7 +63,21 @@
         <li><a href="/news">Новости</a></li>
         <li><a href="/messages">Сообщения</a></li>
         <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+        <li th:if="${currentUser.authorities[0].name().equals('ADMIN')}"><a href="/log">Логи</a></li>
     </ul>
+    <div>
+        <form th:if="${currentUser == null}" action="/login" method="post">
+            <input type="text" id="itech_login" name="itech_login" placeholder="E-mail">
+            <br>
+            <input type="password" id="itech_pass" name="itech_pass" placeholder="Пароль">
+            <br>
+            <div>
+                <label style="font-size: 11px; color: white; max-width: 100px;" for="itech_remember">Запомнить меня?</label>
+                <input style="max-width: 40px;" type="checkbox" id="itech_remember" name="itech_remember">
+            </div>
+            <input type="submit" value="Войти">
+        </form>
+    </div>
 </div>
 <main class="messages-block">
 

@@ -105,7 +105,13 @@ public class UserServiceImpl implements UserService {
             List<Integer> blacklist = currentUser.getBlacklist();
             if(blacklist.contains(id))
                 blacklist.remove((Object) id);
-            else blacklist.add(id);
+            else {
+                blacklist.add(id);
+                Friendship friendship =
+                        friendshipRepository.getByFrom_IdAndTo_Id(currentUser.getId(), id);
+                if(friendship != null)
+                    friendshipRepository.delete(friendship);
+            }
         }
         userRepository.save(currentUser);
     }

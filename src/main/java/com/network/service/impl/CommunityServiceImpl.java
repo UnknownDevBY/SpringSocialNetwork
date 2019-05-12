@@ -17,6 +17,7 @@ import com.network.service.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class CommunityServiceImpl implements CommunityService {
         communitySubscriber.setCommunity(community);
         communitySubscriber.setConfirmed(true);
         community.setAdmin(currentUser);
-        community.setSubscribers(List.of(communitySubscriber));
+        community.setSubscribers(Collections.singletonList(communitySubscriber));
         communityRepository.save(community);
     }
 

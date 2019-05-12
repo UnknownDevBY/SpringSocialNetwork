@@ -61,6 +61,7 @@ xmlns:th="http://www.thymeleaf.org">
       <li><a href="/news">Новости</a></li>
       <li><a href="/messages">Сообщения</a></li>
       <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+      <li th:if="${currentUser.authorities[0].name().equals('ADMIN')}"><a href="/log">Логи</a></li>
     </ul>
   </div>
   <main>

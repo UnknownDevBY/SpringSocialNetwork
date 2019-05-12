@@ -15,8 +15,13 @@ xmlns:th="http://www.thymeleaf.org">
   <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
   <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
   <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
+  <script th:if="${currentUser != null}">
+    const unused = 1
+  </script>
   <script>
     function likePhoto(obj, id) {
+      if(!unused)
+        return
       var request = new XMLHttpRequest();
       request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -44,11 +49,13 @@ xmlns:th="http://www.thymeleaf.org">
       request.open('GET', '/delete/' + type + '/' + id, true);
       request.send();
     }
-    function deletePhoto(id, userId) {
+    function deletePhoto(id, userId, isUsersPhoto) {
       var request = new XMLHttpRequest();
       request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          window.location.replace('/users/' + userId);
+          if(isUsersPhoto)
+            window.location.replace('/users/' + userId);
+          else window.location.replace('/communities/public/' + userId);
         }
       };
       request.open('GET', '/delete/photo/' + id, true);
@@ -80,6 +87,7 @@ xmlns:th="http://www.thymeleaf.org">
       <li><a href="/news">Новости</a></li>
       <li><a href="/messages">Сообщения</a></li>
       <li><a th:href="'/albums/' + ${currentUser.id}">Фотографии</a></li>
+      <li th:if="${currentUser.authorities[0].name().equals('ADMIN')}"><a href="/log">Логи</a></li>
     </ul>
     <div>
       <form th:if="${currentUser == null}" action="/login" method="post">
@@ -107,7 +115,7 @@ xmlns:th="http://www.thymeleaf.org">
         <img class="photo-window" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${photo.photo.title}" alt="no-photo">
       </div>
       <div class="photo-comment-block">
-        <button th:if="${currentUser != null && photo.photo.user != null && photo.photo.user.id == currentUser.id}" title="Удалить фото" type="button" class="close float-right ml-3 font-small" aria-label="Close" th:onclick="'deletePhoto(' + ${photo.photo.id} + ', ' + ${photo.photo.user.id} + ')'">
+        <button th:if="${canDelete}" title="Удалить фото" type="button" class="close d-inline float-right ml-3 font-small" aria-label="Close" th:onclick="'deletePhoto(' + ${photo.photo.id} + ', ' + ${photo.photo.user != null ? photo.photo.user.id : photo.photo.community.id} + ', ' + ${photo.photo.user != null} + ')'">
           <i class="fa fa-trash mt-2" aria-hidden="true"></i>
         </button>
         <a class="photo-owner-name" th:if="${owner != null}" th:href="'/users/' + ${owner.id}" th:text="${owner.name} + ' ' + ${owner.surname}">Владислав Ефимчик</a>

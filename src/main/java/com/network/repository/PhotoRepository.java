@@ -21,9 +21,6 @@ public interface PhotoRepository extends JpaRepository<Photo, Integer> {
     @Query("SELECT p.title FROM Photo p WHERE p.community = ?1 AND p.isAvatar = true")
     String getCommunityAvatarTitle(Community community);
 
-    @Query("SELECT p FROM Photo p WHERE p.user = ?1 AND p.isAvatar = true")
-    Photo getUserAvatar(User user);
-
     @Query("SELECT p.title FROM Photo p WHERE p.user = ?1 AND p.isAvatar = true")
     String getUserAvatarTitle(User user);
 
@@ -40,6 +37,12 @@ public interface PhotoRepository extends JpaRepository<Photo, Integer> {
 
     @Query(value = "SELECT MIN(id) FROM photo WHERE id > ?1 AND user_id = ?2", nativeQuery = true)
     Integer getNextPhotoId(int id, int userId);
+
+    @Query(value = "SELECT MAX(id) FROM photo WHERE id < ?1 AND community_id = ?2", nativeQuery = true)
+    Integer getPreviousCommunityPhotoId(int id, int communityId);
+
+    @Query(value = "SELECT MIN(id) FROM photo WHERE id > ?1 AND community_id = ?2", nativeQuery = true)
+    Integer getNextCommunityPhotoId(int id, int communityId);
 
     @Modifying
     @Transactional

@@ -4,7 +4,6 @@ import com.network.dto.PhotoDto;
 import com.network.model.Photo;
 import com.network.model.User;
 import com.network.repository.CommentRepository;
-import com.network.repository.PhotoAlbumRepository;
 import com.network.repository.PhotoRepository;
 import com.network.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ public class PhotoController {
     @Autowired private PhotoService photoService;
     @Autowired private PhotoRepository photoRepository;
     @Autowired private CommentRepository commentRepository;
-    @Autowired private PhotoAlbumRepository albumRepository;
 
     @Value("${s3.bucket}")
     private String bucketName;
@@ -45,9 +43,10 @@ public class PhotoController {
         model.addAttribute("photo", photoDto);
         model.addAttribute("id", id);
         model.addAttribute("bucketName", bucketName);
+        model.addAttribute("canDelete", photoService.canDelete(currentUser, photo));
+        model.addAttribute("nextPhoto", photoService.getNextPhoto(photo));
+        model.addAttribute("prevPhoto", photoService.getPrevPhoto(photo));
         if(owner != null) {
-            model.addAttribute("nextPhoto", photoRepository.getPreviousPhotoId(id, owner.getId()));
-            model.addAttribute("prevPhoto", photoRepository.getNextPhotoId(id, owner.getId()));
             model.addAttribute("owner", owner);
         }
         model.addAttribute("currentUser", currentUser);

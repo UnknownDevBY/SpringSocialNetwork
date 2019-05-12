@@ -26,7 +26,6 @@ public class Community {
     private String title;
 
     @Column(length = 127)
-    @NotBlank
     private String description;
 
     private boolean closed;

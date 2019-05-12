@@ -57,6 +57,29 @@ public class PhotoServiceImpl implements PhotoService {
         }
     }
 
+    @Override
+    public Integer getNextPhoto(Photo photo) {
+        return photo.getUser() != null
+            ? photoRepository.getPreviousPhotoId(photo.getId(), photo.getUser().getId())
+            : photoRepository.getPreviousCommunityPhotoId(photo.getId(), photo.getCommunity().getId());
+    }
+
+    @Override
+    public Integer getPrevPhoto(Photo photo) {
+        return photo.getUser() != null
+                ? photoRepository.getNextPhotoId(photo.getId(), photo.getUser().getId())
+                : photoRepository.getNextCommunityPhotoId(photo.getId(), photo.getCommunity().getId());
+    }
+
+    @Override
+    public boolean canDelete(User currentUser, Photo photo) {
+        if(currentUser == null)
+            return false;
+        if(photo.getUser() != null)
+            return photo.getUser().getId() == currentUser.getId();
+        return photo.getCommunity().getAdmin().getId() == currentUser.getId();
+    }
+
     private void setPhotoOwners(String album, User currentUser, Photo photo, boolean isAvatar, Community community) {
         if(album != null) {
             photo.setPhotoAlbum(albumRepository.getByUserAndTitle(currentUser, album));
