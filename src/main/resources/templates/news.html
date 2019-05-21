@@ -89,7 +89,7 @@ xmlns:th="http://www.thymeleaf.org">
               </code>
               <a th:href="'/users/' + ${news.post.post.author.id}" style="text-decoration: none;" href="">
                 <h3 class="photo-owner-name" th:text="${news.post.post.author.name} + ' ' + ${news.post.post.author.surname}">Владислав Ефимчик</h3>
-                <p class="photo-post-time font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(news.post.post.dateOfPost, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+                <p class="photo-post-time font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(news.post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
               </a>
               <div class="post-content">
                 <p style="margin-bottom: 10px;">

@@ -17,6 +17,21 @@
     <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/registration1.js}"></script>
+    <style>
+        .map-container{
+            overflow:hidden;
+            padding-bottom:56.25%;
+            position:relative;
+            height:0;
+        }
+        .map-container iframe{
+            left:0;
+            top:0;
+            height:100%;
+            width:100%;
+            position:absolute;
+        }
+    </style>
 </head>
 
 <body>
@@ -109,7 +124,7 @@
     </nav>
 </header>
 
-<div class="mt-5">
+<div style="margin-top: 56px">
     <div class="container">
 
         <section id="contact">
