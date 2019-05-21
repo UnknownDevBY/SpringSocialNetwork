@@ -1,5 +1,6 @@
 package com.network.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,12 +35,15 @@ public class Community {
     @JoinColumn(name = "admin_id")
     private User admin;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "community")
     private Set<Photo> photos;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "community", fetch = FetchType.EAGER)
     private Set<Post> posts;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
     private List<CommunitySubscriber> subscribers;
 

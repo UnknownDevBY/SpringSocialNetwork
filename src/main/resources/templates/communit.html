@@ -14,17 +14,31 @@
     <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
-    <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
+<!--    <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>-->
     <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
     <script th:if="${currentUser != null}">
         const unused = 1
     </script>
+    <script th:inline="javascript">
+        let avatar = /*[[${avatar}]]*/ ""
+        let bucket = /*[[#{s3.bucket}]]*/ ""
+        let community = /*[[${community}]]*/ ""
+    </script>
     <script>
-        function del(obj, type, id) {
+        function del(obj, type, id, postId) {
             var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
+                if (this.readyState === 4 && this.status === 200) {
                     obj.parentNode.parentNode.parentNode.parentNode.hidden = true;
+                    if(type === 'post') {
+                        let postsAmount = document.getElementById('postsAmount')
+                        postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
+                    } else {
+                        let postsAmount = document.getElementById(`commentAmount${postId}`)
+                        postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
+                        if(parseInt(postsAmount.innerHTML) === 0)
+                            obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.hidden = true;
+                    }
                 }
             };
             request.open('GET', '/delete/' + type + '/' + id, true);
@@ -60,6 +74,77 @@
             request.open('GET', '/likes/post/' + id, true);
             request.send();
         }
+        function newPost(ref, id) {
+            let request = new XMLHttpRequest();
+            let textarea = document.getElementById('form7');
+            let textareaContent = textarea.value.trim()
+            if(textareaContent !== "") {
+                let params = 'content=' + textareaContent;
+                request.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                        const post = JSON.parse(request.response)
+                        let content = ''
+                        textarea.value = ''
+                        let postsAmount = document.getElementById('postsAmount')
+                        postsAmount.innerHTML = parseInt(postsAmount.innerHTML) + 1
+                        post.post.content.split(' ').forEach(txt => {
+                            if(!txt.startsWith('#'))
+                                content += `<span>${txt}</span>`
+                            else content += `<a class="blue-text" href="/search?value=${txt.substring(1)}">${txt}</a>`
+                        })
+                        let posts = document.getElementById('posts')
+                        const avatarItem = avatar
+                            ? `<div class="mt-3 ml-3 square rounded" style="background-image: url(https://s3.amazonaws.com/${bucket}/${avatar.title})"></div>`
+                            : `<img src="/img/no-avatar.png" class="mt-3 ml-3 img-fluid z-depth-1 rounded" alt="Responsive image">`
+                        posts.innerHTML =
+                            `
+                                <div class="card my-3">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            ${avatarItem}
+                                        </div>
+                                        <div class="col-10 text-left">
+                                            <div class="align-bottom mr-3">
+                                                <button type="button" class="close float-right ml-3" aria-label="Close" onclick="del(this, 'post', ${post.post.id})">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="mt-4 card-title"><a href="/communities/public/${community.id}">${community.title}</a></h4>
+                                                <p class="font-small"><i class="far fa-clock pr-1"></i><span>Только что</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pb-2 card-body ">
+                                        <p class="card-text text-justify">
+                                            ${content}
+                                        </p>
+                                    </div>
+                                    <div class="text-left pl-4 mt-1">
+                                        <a href="javascript:void(0)" onclick="likePost(this, ${post.post.id})"><i class="fas fa-thumbs-up mr-2"></i><span>0</span></a>
+                                        <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span>0</span></a>
+                                    </div>
+                                    <div class="justify-content-center px-5">
+                                        <form class="row pb-0 pl-3" action="javascript:newComment('post', ${post.post.id})">
+                                            <div class="col-9 form-sm md-form">
+                                                <textarea id="form8" name="commentContent${post.post.id}" class="md-textarea form-control" rows="1" minlength="1" maxlength="255"></textarea>
+                                                <label for="form8" class="text-left ml-3">Оставьте комментарий</label>
+                                            </div>
+                                            <div class="col-3 mt-3">
+                                                <button type="submit" class="btn btn-light" id="newComment">
+                                                    <i class="fas fa-pencil-alt prefix" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                    ${posts.innerHTML}
+                            `
+                    }
+                };
+                request.open('POST', '/' + ref + '/' + id);
+                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                request.send(params);
+            }
+        }
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -79,11 +164,6 @@
             }, 200);
         }
     </script>
-    <style>
-        /** {*/
-        /*    overflow: visible;*/
-        /*}*/
-    </style>
 </head>
 <body>
 <header>
@@ -202,106 +282,107 @@
 
                     <div class="card-body py-0">
 
-                        <h5 class="float-left blue-text pb-2"><i class="fa fa-bullhorn" aria-hidden="true"></i><span class="ml-2" th:text="${posts.size()}">2</span></h5>
+                        <h5 class="float-left blue-text pb-2"><i class="fa fa-bullhorn" aria-hidden="true"></i><span class="ml-2" th:text="${posts.size()}" id="postsAmount">2</span></h5>
 
                     </div>
 
                 </div>
+                <div id="posts">
+                    <div class="card my-3" th:each="post : ${posts}">
 
-                <div class="card my-3" th:each="post : ${posts}">
-
-                    <div class="row">
-                        <div class="col-2">
-                            <img th:if="${avatar == null}" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" class="mt-3 ml-3 img-fluid z-depth-1 rounded" alt="Responsive image">
-                            <div th:if="${avatar != null}" class="mt-3 ml-3 square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${avatar.title} + ')'"></div>
-                        </div>
-                        <div class="col-10 text-left">
-                            <div class="align-bottom mr-3">
-                                <button th:if="${currentUser != null && community.admin.id == currentUser.id}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `post`, ' + ${post.post.id} + ')'">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <h4 class="mt-4 card-title"><a th:href="'/communities/public/' + ${community.id}" th:text="${community.title}">Card title</a></h4>
-                                <p class="font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+                        <div class="row">
+                            <div class="col-2">
+                                <img th:if="${avatar == null}" th:src="@{/img/no-avatar.png}" src="../static/img/no-avatar.png" class="mt-3 ml-3 img-fluid z-depth-1 rounded" alt="Responsive image">
+                                <div th:if="${avatar != null}" class="mt-3 ml-3 square rounded" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${avatar.title} + ')'"></div>
+                            </div>
+                            <div class="col-10 text-left">
+                                <div class="align-bottom mr-3">
+                                    <button th:if="${currentUser != null && community.admin.id == currentUser.id}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `post`, ' + ${post.post.id} + ')'">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="mt-4 card-title"><a th:href="'/communities/public/' + ${community.id}" th:text="${community.title}">Card title</a></h4>
+                                    <p class="font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="pb-2 card-body ">
+                        <div class="pb-2 card-body ">
 
-                        <p class="card-text text-justify">
+                            <p class="card-text text-justify">
                             <span th:each="word : ${post.post.content.split(' ')}">
                                 <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
                                 <a class="blue-text" th:href="'/search?value=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
                             </span>
-                        </p>
+                            </p>
 
-                    </div>
+                        </div>
 
-                    <div class="text-left pl-4 mt-1">
-                        <a href="javascript:void(0)" th:onclick="'likePost(this, ' + ${post.post.id} + ')'" th:class="${post.likedByCurrentUser} ? 'red-text' : ''"><i class="fas fa-thumbs-up mr-2"></i><span th:text="${post.likesCount}">12</span></a>
-                        <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${post.comments != null}" th:text="${post.comments.size()}">12</span><span th:if="${post.comments == null}">0</span></a>
-                    </div>
+                        <div class="text-left pl-4 mt-1">
+                            <a href="javascript:void(0)" th:onclick="'likePost(this, ' + ${post.post.id} + ')'" th:class="${post.likedByCurrentUser} ? 'red-text' : ''"><i class="fas fa-thumbs-up mr-2"></i><span th:text="${post.likesCount}">12</span></a>
+                            <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${post.comments != null}" th:text="${post.comments.size()}" th:id="'commentAmount' + ${post.post.id}">12</span><span th:if="${post.comments == null}" th:id="'commentAmount' + ${post.post.id}">0</span></a>
+                        </div>
 
-                    <div th:if="${post.comments.size() != 0}" class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+                        <div th:if="${post.comments.size() != 0}" class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
 
-                        <div class="card">
+                            <div class="card">
 
-                            <div class="card-header" role="tab" id="headingOne1">
-                                <a data-toggle="collapse" data-parent="#accordionEx" href="#collapseOne1" aria-expanded="false"
-                                   aria-controls="collapseOne1" class="collapsed">
-                                    <h6 class="mb-0">
-                                        Показать комментарии <i class="fas fa-angle-down rotate-icon"></i>
-                                    </h6>
-                                </a>
-                            </div>
+                                <div class="card-header" role="tab" th:id="'headingOne' + ${post.post.id}">
+                                    <a data-toggle="collapse" data-parent="#accordionEx" th:href="'#collapseOne' + ${post.post.id}" aria-expanded="false"
+                                       th:aria-controls="'collapseOne' + ${post.post.id}" class="collapsed">
+                                        <h6 class="mb-0">
+                                            Показать комментарии <i class="fas fa-angle-down rotate-icon"></i>
+                                        </h6>
+                                    </a>
+                                </div>
 
-                            <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1"
-                                 data-parent="#accordionEx">
-                                <div class="card-body">
-                                    <div class="mx-3">
-                                        <div th:each="comment : ${post.comments}">
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div th:if="${comment.avatarTitle != null}" class="square rounded-circle" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${comment.avatarTitle} + ')'" style="background-image: url(../static/img/no-avatar.png)"></div>
-                                                    <div th:if="${comment.avatarTitle == null}" class="square rounded-circle" style="background-image: url(../static/img/no-avatar.png)"></div>
-                                                </div>
-                                                <div class="col-10 text-left">
-                                                    <div class="align-bottom ml-3">
-                                                        <button  th:if="${currentUser != null && comment.comment.user.id == currentUser.id}" type="button" class="close float-right" aria-label="Close" th:onclick="'del(this, `comment`, ' + ${comment.comment.id} + ')'">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                        <h6><a th:href="'/users/' + ${comment.comment.user.id}" th:text="${comment.comment.user.name} + ' ' + ${comment.comment.user.surname}">Владислав Ефимчик</a></h6>
-                                                        <p class="font-small text-black-50"><span th:text="${#dates.format(post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+                                <div th:id="'collapseOne' + ${post.post.id}" class="collapse" role="tabpanel" th:aria-labelledby="'headingOne' + ${post.post.id}"
+                                     data-parent="#accordionEx">
+                                    <div class="card-body">
+                                        <div class="mx-3">
+                                            <div th:each="comment : ${post.comments}">
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <div th:if="${comment.avatarTitle != null}" class="square rounded-circle" th:style="'background-image: url(https://s3.amazonaws.com/' + #{s3.bucket} + '/' + ${comment.avatarTitle} + ')'" style="background-image: url(../static/img/no-avatar.png)"></div>
+                                                        <div th:if="${comment.avatarTitle == null}" class="square rounded-circle" style="background-image: url(../static/img/no-avatar.png)"></div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <p class="font-small text-black-50 text-justify mb-0">
+                                                    <div class="col-10 text-left">
+                                                        <div class="align-bottom ml-3">
+                                                            <button  th:if="${currentUser != null && comment.comment.user.id == currentUser.id}" type="button" class="close float-right" aria-label="Close" th:onclick="'del(this, `comment`, ' + ${comment.comment.id} + ', ' + ${post.post.id} + ')'">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                            <h6><a th:href="'/users/' + ${comment.comment.user.id}" th:text="${comment.comment.user.name} + ' ' + ${comment.comment.user.surname}">Владислав Ефимчик</a></h6>
+                                                            <p class="font-small text-black-50"><span th:text="${#dates.format(post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <p class="font-small text-black-50 text-justify mb-0">
                                                         <span th:each="word : ${post.post.content.split(' ')}">
                                                             <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
                                                             <a class="blue-text" th:href="'/search?value=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
                                                         </span>
-                                                    </p>
+                                                        </p>
+                                                    </div>
                                                 </div>
+                                                <hr class="my-3">
                                             </div>
-                                            <hr class="my-3">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="justify-content-center px-5">
-                        <form class="row pb-0 pl-3" th:action="'javascript:newComment(`post`, ' + ${post.post.id} + ')'">
-                            <div class="col-9 form-sm md-form">
-                                <textarea id="form8" th:name="'commentContent' + ${post.post.id}" class="md-textarea form-control" rows="1" minlength="1" maxlength="255"></textarea>
-                                <label for="form8" class="text-left ml-3">Оставьте комментарий</label>
-                            </div>
-                            <div class="col-3 mt-3">
-                                <button type="submit" class="btn btn-light" id="newComment">
-                                    <i class="fas fa-pencil-alt prefix" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </form>
+                        <div class="justify-content-center px-5">
+                            <form class="row pb-0 pl-3" th:action="'javascript:newComment(`post`, ' + ${post.post.id} + ')'">
+                                <div class="col-9 form-sm md-form">
+                                    <textarea id="form8" th:name="'commentContent' + ${post.post.id}" class="md-textarea form-control" rows="1" minlength="1" maxlength="255"></textarea>
+                                    <label for="form8" class="text-left ml-3">Оставьте комментарий</label>
+                                </div>
+                                <div class="col-3 mt-3">
+                                    <button type="submit" class="btn btn-light" id="newComment">
+                                        <i class="fas fa-pencil-alt prefix" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

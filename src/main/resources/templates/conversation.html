@@ -23,12 +23,16 @@ xmlns:th="http://www.thymeleaf.org">
         var params = 'content=' + textareaContent;
         request.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
+            const message = JSON.parse(request.response)
             let inner = document.getElementById('messagesBlock').innerHTML;
             document.getElementById('messagesBlock').innerHTML =
                             `<div class="w-100">
-                                <div class="w-75 mt-3 p-2 light-blue accent-1 float-right">
+                              <div class="w-75 mt-3 p-2 light-blue accent-1 float-right">
+                                <button type="button" class="close float-right ml-3" onclick="deleteMessage(this, ${message.id})">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
                                 <p class="font-small mb-1"><i class="far fa-clock pr-1"></i><span>Только что</span></p>
-                                <p>` + textareaContent + `</p>
+                                <p>${message.content}</p>
                               </div>
                             </div>` + inner;
           }

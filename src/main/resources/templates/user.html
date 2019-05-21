@@ -36,11 +36,20 @@
             document.getElementById("inputGroupFile01").value = "";
             document.getElementById("av").setAttribute("style", "display: none;");
         }
-        function del(obj, type, id) {
+        function del(obj, type, id, postId) {
             var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
+                if (this.readyState === 4 && this.status === 200) {
                     obj.parentNode.parentNode.hidden = true;
+                    if(type === 'post') {
+                        let postsAmount = document.getElementById('postsAmount')
+                        postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
+                    } else {
+                        let postsAmount = document.getElementById(`commentAmount${postId}`)
+                        postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
+                        if(parseInt(postsAmount.innerHTML) === 0)
+                            obj.parentNode.parentNode.parentNode.parentNode.hidden = true;
+                    }
                 }
             };
             request.open('GET', '/delete/' + type + '/' + id, true);
@@ -51,7 +60,7 @@
                 return
             var request = new XMLHttpRequest();
             request.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
+                if (this.readyState === 4 && this.status === 200) {
                     let child = obj.children[1];
                     let likesAmount = parseInt(child.innerHTML);
                     if (obj.className.includes('red-text')) {
@@ -66,11 +75,117 @@
             request.open('GET', '/likes/post/' + id, true);
             request.send();
         }
+        function newPost(ref, id) {
+            let request = new XMLHttpRequest();
+            let textarea = document.querySelector('textarea[name=content]');
+            let textareaContent = textarea.value.trim()
+            if(textareaContent !== "") {
+                let params = 'content=' + textareaContent;
+                request.onreadystatechange = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                        const post = JSON.parse(request.response)
+                        let content = ''
+                        textarea.value = ''
+                        let postsAmount = document.getElementById('postsAmount')
+                        postsAmount.innerHTML = parseInt(postsAmount.innerHTML) + 1
+                        post.post.content.split(' ').forEach(txt => {
+                            if(!txt.startsWith('#'))
+                                content += `<span>${txt}</span>`
+                            else content += `<a class="blue-text" href="/search?value=${txt.substring(1)}">${txt}</a>`
+                        })
+                        let posts = document.getElementById('posts')
+                        posts.innerHTML =
+                            `
+                                <div>
+                                    <div class="post">
+                                        <button type="button" class="close float-right ml-3" aria-label="Close"  onclick="del(this, 'post', ${post.post.id})">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <a class="post-author" href="/users/${post.post.author.id}">${post.post.author.name} ${post.post.author.surname}</a>
+                                        <p class="font-small"><i class="far fa-clock pr-1"></i><span>Только что</span></p>
+                                        <div id="post${post.post.id}" class="post-content">
+                                            <span>
+                                                ${content}
+                                            </span>
+                                        </div>
+                                        <div class="like-comment-amount">
+                                            <a href="javascript:void(0)" onclick="likePost(this, ${post.post.id})" class=""><i class="fas fa-thumbs-up mr-2"></i><span>${post.likesCount}</span></a>
+                                            <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span id="commentAmount${post.post.id}">0</span></a>
+                                        </div>
+                                        <div>
+                                            <form class="mx-3 row" action="javascript:newComment('post', ${post.post.id})">
+                                                <div class="col-8 pt-2 form-group blue-border-focus">
+                                                    <textarea placeholder="Комментарий" class="form-control" id="commentContent${post.post.id}" name="commentContent${post.post.id}" maxlength="255" minlength="1" required="required" rows="2"></textarea>
+                                                </div>
+                                                <div class="col-4 pt-2">
+                                                    <input class="btn btn-rounded btn-outline-dark" type="submit" value="Отправить">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                ${posts.innerHTML}
+                            `
+                    }
+                };
+                request.open('POST', '/' + ref + '/' + id);
+                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                request.send(params);
+            }
+        }
+        function newComment(ref, id) {
+            var request = new XMLHttpRequest();
+            var textareaContent = document.querySelector('textarea[name=commentContent' + id + ']').value;
+            textareaContent = textareaContent.trim()
+            if(textareaContent !== "") {
+                var params = 'content=' + textareaContent;
+                request.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        const comment = JSON.parse(request.response)
+                        let commentContent = ''
+                        comment.comment.content.split(' ').forEach(txt => {
+                            if(!txt.startsWith('#'))
+                                commentContent += `<span>${txt}</span>`
+                            else commentContent += `<a class="blue-text" href="/search?value=${txt.substring(1)}">${txt}</a>`
+                        })
+                        const commentItem = `<div>
+                                                <div class="photo-comment">
+                                                    <button type="button" class="close float-right ml-3" aria-label="Close" onclick="del(this, 'comment', ${comment.comment.id}, ${id})">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    <a class="photo-owner-name" href="/users/${comment.comment.user.id}">${comment.comment.user.name} ${comment.comment.user.surname}</a>
+                                                    <p class="font-small"><i class="far fa-clock pr-1"></i><span>Только что</span></p>
+                                                    <p class="photo-comment-text">
+                                                        ${commentContent}
+                                                    </p>
+                                                </div>
+                                            </div>`
+                        let item = document.getElementById(`commentAmount${id}`)
+                        if(parseInt(item.innerHTML) === 0) {
+                            const comments = document.getElementById(`commentDetails${id}`)
+                            comments.innerHTML = comments.innerHTML +
+                                    `<details>
+                                        <summary class="show-comments-summary">Показать комментарии</summary>
+                                        <div id="comment${id}">
+                                            ${commentItem}
+                                        </div>
+                                    </details>`
+                        } else  {
+                            const comments = document.getElementById(`comment${id}`)
+                            comments.innerHTML = comments.innerHTML + commentItem
+                        }
+                        document.getElementById(`commentContent${id}`).value = ''
+                        item.innerHTML = parseInt(item.innerHTML) + 1
+                    }
+                };
+                request.open('POST', '/comment/' + ref + '/' + id);
+                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                request.send(params);
+            }
+        }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.2.0/turbolinks.js"></script>
     <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
-    <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>
-    <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
     <script defer type="text/javascript" th:src="@{/js/lib/jquery-3.3.1.min.js}" src="../static/js/lib/jquery-3.3.1.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/lib/popper.min.js}" src="../static/js/lib/popper.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
@@ -254,51 +369,57 @@
                     </div>
                 </form>
             </div>
-            <p th:text="'Записи: ' + ${posts.size()}" class="amount">Записи: 0</p>
-            <div th:each="post : ${posts}">
-                <div class="post">
-                    <button th:if="${currentUser != null && (pageUser.id == currentUser.id || post.post.author.id == currentUser.id)}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `post`, ' + ${post.post.id} + ')'">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <a class="post-author" th:text="${post.post.author.name} + ' ' + ${post.post.author.surname}" th:href="'/users/' + ${post.post.author.id}">Владислав Ефимчик</a>
-                    <p class="font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
-                    <div th:id="'post' + ${post.post.id}" class="post-content">
+            <p class="amount">Записи: <span id="postsAmount" th:text="${posts.size()}">0</span></p>
+            <div id="posts">
+                <div th:each="post : ${posts}">
+                    <div class="post">
+                        <button th:if="${currentUser != null && (pageUser.id == currentUser.id || post.post.author.id == currentUser.id)}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `post`, ' + ${post.post.id} + ')'">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <a class="post-author" th:text="${post.post.author.name} + ' ' + ${post.post.author.surname}" th:href="'/users/' + ${post.post.author.id}">Владислав Ефимчик</a>
+                        <p class="font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(post.post.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+                        <div th:id="'post' + ${post.post.id}" class="post-content">
                             <span th:each="word : ${post.post.content.split(' ')}">
                                 <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '"></span>
                                 <a class="blue-text" th:href="'/search?value=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '"></a>
                             </span>
-                    </div>
-                    <div class="like-comment-amount">
-                        <a href="javascript:void(0)" th:onclick="'likePost(this, ' + ${post.post.id} + ')'" th:class="${post.likedByCurrentUser} ? 'red-text' : ''"><i class="fas fa-thumbs-up mr-2"></i><span th:text="${post.likesCount}">12</span></a>
-                        <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${post.comments != null}" th:text="${post.comments.size()}">12</span><span th:if="${post.comments == null}">0</span></a>
-                    </div>
-                    <div>
-                        <details th:if="${post.comments != null && post.comments.size() != 0}">
-                            <summary class="show-comments-summary">Показать комментарии</summary>
-                            <div th:each="comment : ${post.comments}">
-                                <div class="photo-comment">
-                                    <button th:if="${currentUser != null && (pageUser.id == currentUser.id || comment.comment.user.id == currentUser.id)}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `comment`, ' + ${post.post.id} + ')'">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <a class="photo-owner-name" th:href="'/users/' + ${comment.comment.user.id}" th:text="${comment.comment.user.name} + ' ' + ${comment.comment.user.surname}">Владислав Ефимчик</a>
-                                    <p class="font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(comment.comment.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
-                                    <p th:id="'comment' + ${comment.comment.id}" class="photo-comment-text">
-                                        <span th:each="word : ${comment.comment.content.split(' ')}">
-                                            <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '">Я</span>
-                                            <a th:href="'/search?value=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '">#ефимчик</a>
-                                        </span>
-                                    </p>
+                        </div>
+                        <div class="like-comment-amount">
+                            <a href="javascript:void(0)" th:onclick="'likePost(this, ' + ${post.post.id} + ')'" th:class="${post.likedByCurrentUser} ? 'red-text' : ''"><i class="fas fa-thumbs-up mr-2"></i><span th:text="${post.likesCount}">12</span></a>
+                            <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${post.comments != null}" th:text="${post.comments.size()}" th:id="'commentAmount' + ${post.post.id}">12</span><span th:if="${post.comments == null}" th:id="'commentAmount' + ${post.post.id}">0</span></a>
+                        </div>
+                        <div>
+                            <div th:id="'commentDetails' + ${post.post.id}">
+                                <details th:if="${post.comments != null && post.comments.size() != 0}">
+                                    <summary class="show-comments-summary">Показать комментарии</summary>
+                                    <div th:id="'comment' + ${post.post.id}">
+                                        <div th:each="comment : ${post.comments}">
+                                            <div class="photo-comment">
+                                                <button th:if="${currentUser != null && (pageUser.id == currentUser.id || comment.comment.user.id == currentUser.id)}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `comment`, ' + ${comment.comment.id} + ', ' + ${post.post.id} + ')'">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <a class="photo-owner-name" th:href="'/users/' + ${comment.comment.user.id}" th:text="${comment.comment.user.name} + ' ' + ${comment.comment.user.surname}">Владислав Ефимчик</a>
+                                                <p class="font-small"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(comment.comment.postTime, 'dd/MM/yyyy HH:mm')}">05/10/2015</span></p>
+                                                <p class="photo-comment-text">
+                                                    <span th:each="word : ${comment.comment.content.split(' ')}">
+                                                        <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '">Я</span>
+                                                        <a th:href="'/search?value=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '">#ефимчик</a>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
+                            <form class="mx-3 row" th:action="'javascript:newComment(`post`, ' + ${post.post.id} + ')'">
+                                <div class="col-8 pt-2 form-group blue-border-focus">
+                                    <textarea placeholder="Комментарий" class="form-control" th:id="'commentContent' + ${post.post.id}" th:name="'commentContent' + ${post.post.id}" maxlength="255" minlength="1" required="required" rows="2"></textarea>
                                 </div>
-                            </div>
-                        </details>
-                        <form class="mx-3 row" th:action="'javascript:newComment(`post`, ' + ${post.post.id} + ')'">
-                            <div class="col-8 pt-2 form-group blue-border-focus">
-                                <textarea placeholder="Комментарий" class="form-control" th:id="'commentContent' + ${post.post.id}" th:name="'commentContent' + ${post.post.id}" maxlength="255" minlength="1" required="required" rows="2"></textarea>
-                            </div>
-                            <div class="col-4 pt-2">
-                                <input class="btn btn-rounded btn-outline-dark" type="submit" value="Отправить">
-                            </div>
-                        </form>
+                                <div class="col-4 pt-2">
+                                    <input class="btn btn-rounded btn-outline-dark" type="submit" value="Отправить">
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

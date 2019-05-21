@@ -1,5 +1,6 @@
 package com.network.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,7 @@ public class User implements UserDetails {
 
     @Email
     @Size(min = 5, max = 127)
+    @JsonIgnore
     private String email;
 
     @NotBlank
@@ -56,8 +58,10 @@ public class User implements UserDetails {
     @MatchesPattern("^[а-яА-Я\\p{Cyrillic}a-zA-Z]+$")
     private String city;
 
+    @JsonIgnore
     private String activationCode;
 
+    @JsonIgnore
     @NotBlank
     @Size(min = 6)
     private String password;
@@ -71,71 +75,90 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Photo> photos;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "from")
     private Set<Friendship> fromRequests;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "to")
     private Set<Friendship> toRequests;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author")
     private Set<Post> authors;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private Set<Post> owners;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private PrivacySettings privacySettings;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "from")
     private Set<Message> fromMessages;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "to")
     private Set<Message> toMessages;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "admin")
     private Set<Community> adminIn;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<PhotoAlbum> photoAlbums;
 
+    @JsonIgnore
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> blacklist;
 
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "user")
     private List<CommunitySubscriber> subscriptions;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(role);
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return activationCode == null;

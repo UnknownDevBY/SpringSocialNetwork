@@ -1,38 +1,29 @@
 package com.network.component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 @Component
 public class LikesListTransformer {
 
+    private ObjectMapper mapper = new ObjectMapper();
+
+    @SneakyThrows
     public String serialize(List<Integer> likes) {
         if(likes != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try(ObjectOutputStream outputStream = new ObjectOutputStream(baos)) {
-                outputStream.writeObject(likes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return Base64.getEncoder().encodeToString(baos.toByteArray());
+            return mapper.writeValueAsString(likes);
         }
         return null;
     }
 
+    @SneakyThrows
     public List<Integer> deserialize(String str) {
         if(str != null) {
-            byte[] data = Base64.getDecoder().decode(str);
-            try(ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
-                return (ArrayList<Integer>) ois.readObject();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            return mapper.readValue(str, List.class);
         }
         return new ArrayList<>();
     }

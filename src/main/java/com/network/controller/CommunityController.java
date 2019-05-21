@@ -1,6 +1,7 @@
 package com.network.controller;
 
 import com.network.dto.CommunityDto;
+import com.network.dto.PostDto;
 import com.network.model.Community;
 import com.network.model.User;
 import com.network.repository.CommunityRepository;
@@ -91,10 +92,10 @@ public class CommunityController {
 
     @PostMapping("/communities/public/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void createPost(@PathVariable int id,
-                           @AuthenticationPrincipal User currentUser,
-                           @Valid @RequestParam @NotBlank String content) {
-        userService.savePost(id, content, currentUser, communityRepository.getById(id));
+    public @ResponseBody PostDto createPost(@PathVariable int id,
+                              @AuthenticationPrincipal User currentUser,
+                              @Valid @RequestParam @NotBlank String content) {
+        return userService.savePost(id, content, currentUser, communityRepository.getById(id));
     }
 
     @PostMapping("/communities/public/{id}/edit")

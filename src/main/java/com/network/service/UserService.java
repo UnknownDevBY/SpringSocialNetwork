@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface UserService {
 
-    void savePost(int id, String content, User currentUser, Community community);
+    PostDto savePost(int id, String content, User currentUser, Community community);
     List<UserDto> getFriends(User pageUser);
     boolean isFirstFriendToSecond(int id1, int id2);
     boolean areFriends(int id1, int id2);

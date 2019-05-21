@@ -1,6 +1,7 @@
 package com.network.controller;
 
 import com.network.aspect.annotation.Authorization;
+import com.network.dto.PostDto;
 import com.network.dto.UserDto;
 import com.network.model.User;
 import com.network.repository.PhotoAlbumRepository;
@@ -74,16 +75,16 @@ public class UserController {
 
     @GetMapping("/users/blacklist/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void addPost(@PathVariable int id,
+    public void updateBlacklist(@PathVariable int id,
                         @AuthenticationPrincipal User currentUser) {
         userService.updateBlacklist(currentUser, id);
     }
 
     @PostMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void addPost(@PathVariable int id,
-                        @AuthenticationPrincipal User currentUser,
-                        @Valid @RequestParam @NotBlank String content) {
-        userService.savePost(id, content, currentUser, null);
+    public @ResponseBody PostDto addPost(@PathVariable int id,
+                           @AuthenticationPrincipal User currentUser,
+                           @Valid @RequestParam @NotBlank String content) {
+        return userService.savePost(id, content, currentUser, null);
     }
 }

@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Autowired private PrivacySettingsDtoTransformer privacySettingsDtoTransformer;
 
     @Override
-    public void savePost(int id, String content, User currentUser, Community community) {
+    public PostDto savePost(int id, String content, User currentUser, Community community) {
         Post post = new Post();
         post.setPostTime(new Timestamp(System.currentTimeMillis()));
         post.setContent(content);
@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
             post.setOwner(userRepository.getById(id));
         } else post.setCommunity(community);
         postRepository.save(post);
+        return postDtoTransformer.toPostDto(post, currentUser.getId());
     }
 
     @Override

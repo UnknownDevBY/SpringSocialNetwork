@@ -24,9 +24,8 @@ public class ConversationServiceImpl implements ConversationService {
     @Autowired private PrivacySettingsDtoTransformer privacySettingsDtoTransformer;
     @Autowired private UserService userService;
 
-
     @Override
-    public void saveMessage(int id, User currentUser, String content) {
+    public Message saveMessage(int id, User currentUser, String content) {
         User opponent = userRepository.getById(id);
         PrivacySettingsDto privacySettings =
                 privacySettingsDtoTransformer.toPrivacySettingsDto(currentUser, opponent,
@@ -38,6 +37,7 @@ public class ConversationServiceImpl implements ConversationService {
             message.setContent(content);
             message.setSendingTime(new Timestamp(System.currentTimeMillis()));
             messageRepository.save(message);
+            return message;
         } else throw new RuntimeException("You're not allowed to send messages");
     }
 

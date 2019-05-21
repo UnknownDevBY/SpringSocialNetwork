@@ -1,5 +1,6 @@
 package com.network.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,17 +31,18 @@ public class Photo {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "community_id")
     private Community community;
 
     @Column(length = 65535)
     private String likes;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id")
     private PhotoAlbum photoAlbum;
 }

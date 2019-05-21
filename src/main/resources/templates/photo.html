@@ -14,11 +14,51 @@ xmlns:th="http://www.thymeleaf.org">
   <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
   <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
   <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
-  <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
   <script th:if="${currentUser != null}">
     const unused = 1
   </script>
   <script>
+    function newComment(ref, id) {
+      let request = new XMLHttpRequest();
+      let textarea = document.getElementById('content');
+      let textareaContent = textarea.value.trim()
+      if(textareaContent !== "") {
+        let params = 'content=' + textareaContent;
+        request.onreadystatechange = function() {
+          if (this.readyState === 4 && this.status === 200) {
+            const comment = JSON.parse(request.response)
+            let content = ''
+            textarea.value = ''
+            comment.comment.content.split(' ').forEach(txt => {
+              if(!txt.startsWith('#'))
+                content += `<span>${txt}</span>`
+              else content += `<a class="blue-text" href="/search?value=${txt.substring(1)}">${txt}</a>`
+            })
+            let postsAmount = document.getElementById('commentsAmount')
+            postsAmount.innerHTML = parseInt(postsAmount.innerHTML) + 1
+            let comments = document.getElementById('comments')
+            comments.innerHTML =
+                    `
+                                <div>
+                                  <div id="comment${comment.comment.id}">
+                                    <button type="button" class="close float-right ml-3" aria-label="Close" onclick="del(this, 'comment', ${comment.comment.id})">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <a class="photo-owner-name" href="/users/${comment.comment.user.id}">${comment.comment.user.name} ${comment.comment.user.surname}</a>
+                                    <p class="photo-comment-text">
+                                        ${content}
+                                    </p>
+                                  </div>
+                                </div>
+                                ${comments.innerHTML}
+                            `
+          }
+        };
+        request.open('POST', '/comment/' + ref + '/' + id);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        request.send(params);
+      }
+    }
     function likePhoto(obj, id) {
       if(!unused)
         return
@@ -44,6 +84,10 @@ xmlns:th="http://www.thymeleaf.org">
       request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           obj.parentNode.parentNode.hidden = true;
+          if(type === 'comment') {
+            let postsAmount = document.getElementById('commentsAmount')
+            postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
+          }
         }
       };
       request.open('GET', '/delete/' + type + '/' + id, true);
@@ -114,7 +158,7 @@ xmlns:th="http://www.thymeleaf.org">
         </span>
         <img class="photo-window" th:src="'https://s3.amazonaws.com/' + ${bucketName} + '/' + ${photo.photo.title}" alt="no-photo">
       </div>
-      <div class="photo-comment-block">
+      <div class="photo-comment-block ml-3">
         <button th:if="${canDelete}" title="Удалить фото" type="button" class="close d-inline float-right ml-3 font-small" aria-label="Close" th:onclick="'deletePhoto(' + ${photo.photo.id} + ', ' + ${photo.photo.user != null ? photo.photo.user.id : photo.photo.community.id} + ', ' + ${photo.photo.user != null} + ')'">
           <i class="fa fa-trash mt-2" aria-hidden="true"></i>
         </button>
@@ -123,26 +167,28 @@ xmlns:th="http://www.thymeleaf.org">
         <p class="photo-post-time"><i class="far fa-clock pr-1"></i><span th:text="${#dates.format(photo.photo.dateOfPost, 'dd/MM/yyyy HH:mm')}">2015-04-10 12:30</span></p>
         <div class="like-comment-amount">
           <a href="javascript:void(0)" th:onclick="'likePhoto(this, ' + ${photo.photo.id} + ')'" th:class="${photo.likedByCurrentUser} ? 'red-text' : ''"><i class="fas fa-thumbs-up mr-2"></i><span th:text="${photo.likesCount}">12</span></a>
-          <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${photo.comments != null}" th:text="${photo.comments.size()}">12</span><span th:if="${photo.comments == null}">0</span></a>
+          <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span th:if="${photo.comments != null}" th:text="${photo.comments.size()}" id="commentsAmount">12</span><span th:if="${photo.comments == null}" id="commentsAmount">0</span></a>
         </div>
-        <div th:id="${comments != null}" th:each="comment : ${comments}">
-          <div th:id="'comment' + ${comment.id}">
-            <button th:if="${currentUser != null && comment.user.id == currentUser.id}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `comment`, ' + ${comment.id} + ')'">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
-            <p class="photo-comment-text">
+        <div id="comments">
+          <div th:each="comment : ${comments}">
+            <div th:id="'comment' + ${comment.id}">
+              <button th:if="${currentUser != null && comment.user.id == currentUser.id}" type="button" class="close float-right ml-3" aria-label="Close"  th:onclick="'del(this, `comment`, ' + ${comment.id} + ')'">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <a class="photo-owner-name" th:href="'/users/' + ${comment.user.id}" th:text="${comment.user.name} + ' ' + ${comment.user.surname}">Владислав Ефимчик</a>
+              <p class="photo-comment-text">
               <span th:each="word : ${comment.content.split(' ')}">
                 <span th:if="${!word.startsWith('#')}" th:text="${word} + ' '">Я</span>
                 <a class="blue-text" th:href="'/search?hashtag=' + ${word.substring(1)}" th:if="${word.startsWith('#')}" th:text="${word} + ' '">#ефимчик</a>
               </span>
-            </p>
+              </p>
+            </div>
           </div>
         </div>
         <div th:if="${currentUser != null}">
           <form class="form-sm row" th:action="'javascript:newComment(`photo`, ' + ${id} + ')'">
             <div class="col-7 form-group blue-border-focus pr-0">
-              <textarea placeholder="Ваш комментарий" class="form-control form-control-sm" th:id="'commentContent' + ${id}" th:name="'commentContent' + ${photo.photo.id}"  maxlength="255" minlength="1" required="required" rows="2"></textarea>
+              <textarea placeholder="Ваш комментарий" class="form-control form-control-sm" id="content" th:name="'commentContent' + ${photo.photo.id}"  maxlength="255" minlength="1" required="required" rows="2"></textarea>
             </div>
             <div class="col-5 pl-0">
               <input class="btn btn-sm btn-dark waves-effect ml-0 mt-2" type="submit" value="Отправить">

@@ -1,5 +1,6 @@
 package com.network.controller;
 
+import com.network.model.Message;
 import com.network.model.User;
 import com.network.repository.MessageRepository;
 import com.network.service.ConversationService;
@@ -31,9 +32,9 @@ public class ConversationController {
 
     @PostMapping("/conversations/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void sendMessage(@PathVariable int id,
-                            @Valid @RequestParam @NotBlank String content,
-                            @AuthenticationPrincipal User currentUser) {
-        conversationService.saveMessage(id, currentUser, content);
+    public @ResponseBody Message sendMessage(@PathVariable int id,
+                               @Valid @RequestParam @NotBlank String content,
+                               @AuthenticationPrincipal User currentUser) {
+        return conversationService.saveMessage(id, currentUser, content);
     }
 }

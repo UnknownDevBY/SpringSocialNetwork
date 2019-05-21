@@ -1,5 +1,7 @@
 package com.network.service.impl;
 
+import com.network.component.CommentDtoTransformer;
+import com.network.dto.CommentDto;
 import com.network.model.Comment;
 import com.network.model.User;
 import com.network.repository.CommentRepository;
@@ -17,9 +19,10 @@ public class CommentServiceImpl implements CommentService {
     @Autowired private PostRepository postRepository;
     @Autowired private PhotoRepository photoRepository;
     @Autowired private CommentRepository commentRepository;
+    @Autowired private CommentDtoTransformer commentDtoTransformer;
 
     @Override
-    public void addComment(String type, String content, int id, User currentUser) {
+    public CommentDto addComment(String type, String content, int id, User currentUser) {
         Comment comment = new Comment();
         switch (type) {
             case "photo":
@@ -29,11 +32,12 @@ public class CommentServiceImpl implements CommentService {
                 comment.setPost(postRepository.getById(id));
                 break;
             default:
-                return;
+                return null;
         }
         comment.setPostTime(new Timestamp(System.currentTimeMillis()));
         comment.setContent(content);
         comment.setUser(currentUser);
         commentRepository.save(comment);
+        return commentDtoTransformer.toCommentDto(comment);
     }
 }
