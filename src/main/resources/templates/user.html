@@ -40,16 +40,19 @@
             var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
                 if (this.readyState === 4 && this.status === 200) {
-                    obj.parentNode.parentNode.hidden = true;
                     if(type === 'post') {
                         let postsAmount = document.getElementById('postsAmount')
                         postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
                     } else {
                         let postsAmount = document.getElementById(`commentAmount${postId}`)
                         postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
-                        if(parseInt(postsAmount.innerHTML) === 0)
-                            obj.parentNode.parentNode.parentNode.parentNode.hidden = true;
+                        if(parseInt(postsAmount.innerHTML) === 0) {
+                            let item = obj.parentNode.parentNode.parentNode.parentNode
+                            item.parentNode.removeChild(item)
+                        }
                     }
+                    let delItem = obj.parentNode.parentNode
+                    delItem.parentNode.removeChild(delItem)
                 }
             };
             request.open('GET', '/delete/' + type + '/' + id, true);
@@ -113,6 +116,8 @@
                                             <a href="javascript:void(0)" class="ml-2"><i class="far fa-comments mr-2"></i><span id="commentAmount${post.post.id}">0</span></a>
                                         </div>
                                         <div>
+                                            <div id="commentDetails${post.post.id}">
+                                            </div>
                                             <form class="mx-3 row" action="javascript:newComment('post', ${post.post.id})">
                                                 <div class="col-8 pt-2 form-group blue-border-focus">
                                                     <textarea placeholder="Комментарий" class="form-control" id="commentContent${post.post.id}" name="commentContent${post.post.id}" maxlength="255" minlength="1" required="required" rows="2"></textarea>

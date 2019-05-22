@@ -25,6 +25,7 @@ xmlns:th="http://www.thymeleaf.org">
           if (this.readyState == 4 && this.status == 200) {
             const message = JSON.parse(request.response)
             let inner = document.getElementById('messagesBlock').innerHTML;
+            document.getElementById('content').value = ''
             document.getElementById('messagesBlock').innerHTML =
                             `<div class="w-100">
                               <div class="w-75 mt-3 p-2 light-blue accent-1 float-right">
@@ -46,7 +47,8 @@ xmlns:th="http://www.thymeleaf.org">
       var request = new XMLHttpRequest();
       request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          obj.parentNode.parentNode.hidden = true;
+          let item = obj.parentNode.parentNode
+          item.parentNode.removeChild(item)
         }
       };
       request.open('GET', '/delete/message/' + id, true);

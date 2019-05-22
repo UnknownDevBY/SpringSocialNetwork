@@ -83,7 +83,8 @@ xmlns:th="http://www.thymeleaf.org">
       var request = new XMLHttpRequest();
       request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          obj.parentNode.parentNode.hidden = true;
+          let node = obj.parentNode.parentNode
+          node.parentNode.removeChild(node)
           if(type === 'comment') {
             let postsAmount = document.getElementById('commentsAmount')
             postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1

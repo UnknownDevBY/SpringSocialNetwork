@@ -14,7 +14,6 @@
     <script defer type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}" src="../static/js/lib/bootstrap.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/lib/mdb.min.js}" src="../static/js/lib/mdb.min.js"></script>
     <script defer type="text/javascript" th:src="@{/js/update.js}" src="../static/js/update.js"></script>
-<!--    <script defer type="text/javascript" th:src="@{/js/post.js}" src="../static/js/post.js"></script>-->
     <script defer type="text/javascript" th:src="@{/js/comment.js}" src="../static/js/comment.js"></script>
     <script th:if="${currentUser != null}">
         const unused = 1
@@ -29,16 +28,19 @@
             var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
                 if (this.readyState === 4 && this.status === 200) {
-                    obj.parentNode.parentNode.parentNode.parentNode.hidden = true;
                     if(type === 'post') {
                         let postsAmount = document.getElementById('postsAmount')
                         postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
                     } else {
                         let postsAmount = document.getElementById(`commentAmount${postId}`)
                         postsAmount.innerHTML = parseInt(postsAmount.innerHTML) - 1
-                        if(parseInt(postsAmount.innerHTML) === 0)
-                            obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.hidden = true;
+                        if(parseInt(postsAmount.innerHTML) === 0) {
+                            let parentObj = obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode
+                            parentObj.parentNode.removeChild(parentObj)
+                        }
                     }
+                    let itemObj = obj.parentNode.parentNode.parentNode.parentNode
+                    itemObj.parentNode.removeChild(itemObj)
                 }
             };
             request.open('GET', '/delete/' + type + '/' + id, true);
@@ -48,7 +50,8 @@
             var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    obj.parentNode.hidden = true;
+                    let item = obj.parentNode
+                    obj.parentNode.removeChild(item)
                 }
             };
             request.open('GET', '/communities/public/' + communityId + '/subscription/' + userId + '/confirm', true);
